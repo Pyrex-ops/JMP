@@ -1,6 +1,6 @@
 #include "NewEncoderAdapter.hpp"
 
-NewEncoderAdapter::NewEncoderAdapter(uint8_t clkPin, uint8_t dtPin, uint16_t ppr) 
+NewEncoderAdapter::NewEncoderAdapter(uint8_t clkPin, uint8_t dtPin, uint8_t ppr) 
     : PPR(ppr) , CLK_PIN(clkPin) , DT_PIN(dtPin) , MAX_POS(ppr - 2), MIN_POS(-ppr + 2) ,
     newEncoder(dtPin,clkPin,-ppr, ppr, 0, HALF_PULSE) {
         clockwiseRevolutions = 0;
