@@ -1,6 +1,14 @@
 #include "NewEncoderAdapter.hpp"
 
-void rotatedEncoder(NewEncoder* newEncoder, const volatile NewEncoder::EncoderState* state, void* newEncoderAdapterCasted) {
+NewEncoderAdapter::NewEncoderAdapter(uint8_t clkPin, uint8_t dtPin, uint16_t ppr) 
+    : PPR(ppr) , CLK_PIN(clkPin) , DT_PIN(dtPin) , MAX_POS(ppr - 2), MIN_POS(-ppr + 2) ,
+    newEncoder(dtPin,clkPin,-ppr, ppr, 0, HALF_PULSE) {
+        clockwiseRevolutions = 0;
+        counterClockwiseRevolutions = 0;
+        newEncoder.attachCallback(rotatedEncoder,this);
+}
+
+void NewEncoderAdapter::rotatedEncoder(NewEncoder* newEncoder, const volatile NewEncoder::EncoderState* state, void* newEncoderAdapterCasted) {
     NewEncoderAdapter* newEncoderAdapter = static_cast<NewEncoderAdapter*>(newEncoderAdapterCasted);
     NewEncoder::EncoderState oldEncoderState , newEncoderState;
     if(state->currentValue >= newEncoderAdapter->MAX_POS) {
@@ -11,14 +19,6 @@ void rotatedEncoder(NewEncoder* newEncoder, const volatile NewEncoder::EncoderSt
         newEncoderAdapter->counterClockwiseRevolutions ++;
         newEncoder->getAndSet(0 , oldEncoderState , newEncoderState);
     }
-}
-
-NewEncoderAdapter::NewEncoderAdapter(uint8_t clkPin, uint8_t dtPin, uint16_t ppr) 
-    : PPR(ppr) , CLK_PIN(clkPin) , DT_PIN(dtPin) , MAX_POS(ppr - 2), MIN_POS(-ppr + 2) ,
-    newEncoder(dtPin,clkPin,-ppr, ppr, 0, HALF_PULSE) {
-        clockwiseRevolutions = 0;
-        counterClockwiseRevolutions = 0;
-        newEncoder.attachCallback(rotatedEncoder,this);
 }
 
 int8_t NewEncoderAdapter::getPosition() {

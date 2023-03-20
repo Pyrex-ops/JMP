@@ -14,7 +14,7 @@ class NewEncoderAdapter : public Encoder{
         NewEncoder newEncoder;
         uint16_t clockwiseRevolutions;
         uint16_t counterClockwiseRevolutions;
-        friend void rotatedEncoder(NewEncoder* newEncoder, const volatile NewEncoder::EncoderState* state, void* newEncoderAdapter);
+        static void rotatedEncoder(NewEncoder* newEncoder, const volatile NewEncoder::EncoderState* state, void* newEncoderAdapter);
     public:
         NewEncoderAdapter(uint8_t clkPin, uint8_t dtPin, uint16_t ppr);
         int8_t getPosition() override;
