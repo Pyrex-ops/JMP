@@ -1,0 +1,7 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+#define MINIMUM_MOTORINO_INTENSITY 100
+#define MOTORINO_PIN 12
+
+#endif
