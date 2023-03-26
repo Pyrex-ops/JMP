@@ -7,10 +7,10 @@ class Motorino {
     public:
         virtual ~Motorino() {}
         virtual void begin() = 0;
-        virtual void vibra(uint16_t millisecondi, uint8_t intensity) = 0;
+        virtual void vibra(uint16_t millisecondi, uint16_t intensity) = 0;
         virtual void vibra(uint16_t millisecondi) = 0;
-        virtual void vibra_intermittente(uint16_t millisecondi_spento, uint16_t millisecondi_acceso, uint16_t numero_periodi, uint8_t intensity) = 0;
-        virtual void vibra_intermittente(uint16_t millisecondi_spento, uint16_t millisecondi_acceso, uint16_t numero_periodi) = 0;
+        virtual void vibraIntermittente(uint16_t millisecondiSpento, uint16_t millisecondiAcceso, uint16_t numeroPeriodi, uint16_t intensity) = 0;
+        virtual void vibraIntermittente(uint16_t millisecondiSpento, uint16_t millisecondiAcceso, uint16_t numeroPeriodi) = 0;
 };
 
 #endif
