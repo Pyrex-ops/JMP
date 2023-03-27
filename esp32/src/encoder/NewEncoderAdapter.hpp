@@ -6,21 +6,21 @@
 
 class NewEncoderAdapter : public Encoder{
     private:
-        const uint8_t PPR;
+        const int16_t PPR;
         const uint8_t CLK_PIN;
         const uint8_t DT_PIN;
-        const int8_t MAX_POS;
-        const int8_t MIN_POS;
+        const int16_t MAX_POS;
+        const int16_t MIN_POS;
         NewEncoder newEncoder;
-        uint16_t clockwiseRevolutions;
-        uint16_t counterClockwiseRevolutions;
+        uint32_t clockwiseRevolutions;
+        uint32_t counterClockwiseRevolutions;
         static void rotatedEncoder(NewEncoder* newEncoder, const volatile NewEncoder::EncoderState* state, void* newEncoderAdapter);
     public:
-        NewEncoderAdapter(uint8_t clkPin, uint8_t dtPin, uint8_t ppr);
-        int8_t getPosition() override;
-        uint16_t getClockwiseRevolutions() override;
-        uint16_t getCounterclockwiseRevolutions() override;
-        uint16_t getRevolutions() override;
+        NewEncoderAdapter(uint8_t clkPin, uint8_t dtPin, int16_t ppr);
+        int16_t getPosition() override;
+        uint32_t getClockwiseRevolutions() override;
+        uint32_t getCounterclockwiseRevolutions() override;
+        uint32_t getRevolutions() override;
         void begin() override;
 };
 
