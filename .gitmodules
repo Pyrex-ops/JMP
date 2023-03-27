@@ -1,0 +1,3 @@
+[submodule "esp32/src/encoder/NewEncoder"]
+	path = esp32/src/encoder/NewEncoder
+	url = https://github.com/gfvalvo/NewEncoder.git
