@@ -10,6 +10,11 @@ typedef enum {
     MISSING_INPUT,
 } mainpage_status_t;
 
+typedef struct {
+    String SSID;
+    String password;
+} wifi_configuration_t;
+
 class WifiPasswordGetter {
     private:
         const char* TEMPORARY_NETWORK_SSID;
@@ -22,8 +27,12 @@ class WifiPasswordGetter {
         static const char* MAIN_PAGE_REDIRECTION;
         static mainpage_status_t mainpage_status;
         static String prepareAvailableWifiList(const String& var);
-        static bool passwordCheck(const String& var);
+        static bool passwordCheck(const String& ssid,const String& password);
+        static wifi_configuration_t* wifi_config;
         AsyncWebServer server;
+        friend wifi_configuration_t getWifiConfiguration();
+        void start_wifi();
+        void stop_wifi();
     public:
         WifiPasswordGetter(
             const char* temporary_network_ssid,
@@ -41,9 +50,7 @@ class WifiPasswordGetter {
             const uint8_t temporary_network_subnet_mask_2,
             const uint8_t temporary_network_subnet_mask_3
         );
-        void start_wifi();
-        void getWifiConfiguration(char* ssidBuffer, char* passwordBuffer);
-        void stop_wifi();
+        wifi_configuration_t getWifiConfiguration();
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <AsyncTCP.h>
 
 mainpage_status_t WifiPasswordGetter::mainpage_status = NO_INPUT_YET;
+wifi_configuration_t* WifiPasswordGetter::wifi_config = nullptr;
 
 String WifiPasswordGetter::prepareAvailableWifiList(const String& var){
   if(var == "BUTTONPLACEHOLDER"){
@@ -29,15 +30,15 @@ String WifiPasswordGetter::prepareAvailableWifiList(const String& var){
             return "Password errata. Riprovare. <br>";
             break;
         case MISSING_INPUT:
-            return "Compilare tutti i campi.";
+            return "Compilare tutti i campi. <br>";
             break;
     }
   }
   return String();
 }
 
-bool WifiPasswordGetter::passwordCheck(const String& var) {
-    if(var.length() > 0)
+bool WifiPasswordGetter::passwordCheck(const String& ssid,const String& password) {
+    if(password.length() > 0)
         return true;
     return false;
 }
@@ -160,6 +161,7 @@ WifiPasswordGetter::WifiPasswordGetter(
                 server(80){
                 
                     WifiPasswordGetter::mainpage_status = NO_INPUT_YET;
+                    WifiPasswordGetter::wifi_config = nullptr;
 
                     MICROCONTROLLER_IP[0] = microcontroller_ip_0;
                     MICROCONTROLLER_IP[1] = microcontroller_ip_1;
@@ -191,30 +193,29 @@ void WifiPasswordGetter::start_wifi() {
     });
 
     server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
-    String inputMessage;
+    String password;
     String inputParam;
     String ssid;
     // GET input1 value on <ESP_IP>/get?input1=<inputMessage>
     if (request->hasParam("password") && request->hasParam("SSID")) {
-      inputMessage = request->getParam("password")->value();
+      password = request->getParam("password")->value();
       ssid = request->getParam("SSID")->value();
-      if(passwordCheck(inputMessage)) {
+      if(passwordCheck(ssid,password)) {
         inputParam = "password";
-        Serial.println(inputMessage);
-        Serial.println(ssid);
+        wifi_configuration_t* new_wifi_config;
+        new_wifi_config = new wifi_configuration_t();
+        new_wifi_config->password = password;
+        new_wifi_config->SSID = ssid;
+        wifi_config = new_wifi_config;
         request->send(200, "text/html", SUCCESS_PAGE);
       }
       else {
         WifiPasswordGetter::mainpage_status = INCORRECT_PASSWORD;
-        inputMessage = "Password errata";
-        inputParam = "password";
         request->redirect("/");
       }
     }
     else {
       WifiPasswordGetter::mainpage_status = MISSING_INPUT;
-      inputMessage = "No message sent";
-      inputParam = "none";
       request->redirect("/");
     }
     });
@@ -222,10 +223,19 @@ void WifiPasswordGetter::start_wifi() {
     server.begin();
 }
 
-void WifiPasswordGetter::getWifiConfiguration(char* ssidBuffer, char* passwordBuffer) {
-
+wifi_configuration_t WifiPasswordGetter::getWifiConfiguration() {
+    start_wifi();
+    wifi_configuration_t wifi_conf;
+    while(WifiPasswordGetter::wifi_config == nullptr) {
+        delay(1000);
+    }
+    wifi_conf = *WifiPasswordGetter::wifi_config;
+    delete(WifiPasswordGetter::wifi_config);
+    stop_wifi();
+    return wifi_conf;
 }
 
 void WifiPasswordGetter::stop_wifi(){
-
+    WiFi.disconnect();
+    WiFi.mode(WIFI_STA);
 }

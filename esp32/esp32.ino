@@ -9,9 +9,13 @@ WifiPasswordGetter wifiPasswordGetter(
                                         DEFAULT_TEMPORARY_NETWORK_SUBNET_MASK
                                       );
 
+wifi_configuration_t wifi_config;
+
 void setup() {
   Serial.begin(115200);
-  wifiPasswordGetter.start_wifi();
+  wifi_config = wifiPasswordGetter.getWifiConfiguration();
+  Serial.println(wifi_config.password);
+  Serial.println(wifi_config.SSID);
 }
 
 void loop() {
