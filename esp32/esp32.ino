@@ -1,21 +1,18 @@
-#include "src/encoder/Encoder.hpp"
-#include "src/encoder/NewEncoderAdapter.hpp"
-#include "constants.h"
+#include "src/wifiPasswordGetter/WifiPasswordGetter.hpp"
+#include "constants.hpp"
 
-Encoder* encoder = new NewEncoderAdapter(ENCODER_CLK_PIN,ENCODER_DT_PIN,ENCODER_PPR);
+WifiPasswordGetter wifiPasswordGetter(
+                                        DEFAULT_TEMPORARY_NETWORK_SSID,
+                                        DEFAULT_TEMPORARY_NETWORK_PASSWORD,
+                                        DEFAULT_MICROCONTROLLER_IP,
+                                        DEFAULT_TEMPORARY_NETWORK_GATEWAY,
+                                        DEFAULT_TEMPORARY_NETWORK_SUBNET_MASK
+                                      );
 
 void setup() {
   Serial.begin(115200);
-  encoder->begin();
+  wifiPasswordGetter.start_wifi();
 }
 
 void loop() {
-  Serial.print(encoder->getPosition());
-  Serial.print(",");
-  Serial.print(encoder->getClockwiseRevolutions());
-  Serial.print(",");
-  Serial.print(encoder->getCounterclockwiseRevolutions());
-  Serial.print(",");
-  Serial.println(encoder->getRevolutions());
-  delay(10);
 }
