@@ -25,7 +25,9 @@ L'utente, opzionalmente, può partecipare alla classifica globale, stilata in ba
 
 ## Requisiti
 
-Di seguito sono riportati i requisiti che dovrà rispettare il progetto
+Di seguito sono riportati i requisiti che dovrà rispettare il progetto.  
+I seguenti requisiti saranno rappresentati in **due** diagrammi dei casi d'uso, uno per il dispositivo fisico e un altro per la parte *cloud*.  
+I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita etichetta (dispositivo/server).  
 
 ### Requisiti funzionali
 
@@ -59,6 +61,8 @@ Di seguito sono riportati i requisiti che dovrà rispettare il progetto
   * Peso
   * Età
   * Sesso
+* Il sistema consentirà all'utente di eliminare i parametri personali forniti in precedenza.
+* Il sistema non fornirà il calcolo delle calorie spese se l'utente non ha fornito i dati necessari per il calcolo.
 
 ### Requisiti non funzionali
 
