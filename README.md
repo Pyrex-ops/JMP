@@ -2,6 +2,14 @@
 
 Smart Jumping Rope - IoT
 
+- [JMP](#jmp)
+  - [Descrizione](#descrizione)
+  - [Requisiti](#requisiti)
+    - [Requisiti funzionali](#requisiti-funzionali)
+    - [Requisiti non funzionali](#requisiti-non-funzionali)
+  - [Struttura cartelle](#struttura-cartelle)
+
+
 ## Descrizione
 
 ---
