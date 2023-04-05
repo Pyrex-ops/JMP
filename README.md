@@ -33,6 +33,10 @@ Di seguito sono riportati i requisiti che dovrà rispettare il progetto
 * Il sistema consentirà all'utente di eliminare di dati raccolti.
 * Il sistema comporrà una classifica degli utenti che vi vorranno partecipare, in base alla velocità di salto media e tempo di allenamento.
 * L'utente potrà ritirare la partecipazione alla classifica.
+* Il sistema permetterà all'utente di indicare i parametri necessari al calcolo delle calorie spese:
+  * Peso
+  * Età
+  * Sesso
 
 ### Requisiti non funzionali
 
