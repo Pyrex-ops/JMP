@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  php-apache:
+    container_name: php-apache
+    ports:
+      - "80:80"
+    build: './build/php'
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - mysql
+  mysql:
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    build: './build/mysql'
+    environment:
+      MYSQL_ROOT_PASSWORD: "super-secret-password"
+      MYSQL_DATABASE: "JMPdb"
+      #MYSQL_USER: "utente"
+      #MYSQL_PASSWORD: "passwordUtente"
+    volumes:
+      - dbData:/var/lib/mysql
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mysql
+    depends_on:
+      - mysql
+volumes:
+  dbData:
