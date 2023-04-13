@@ -16,8 +16,9 @@ Smart Jumping Rope - IoT
 
 Nella seguente descrizione resta da revisionare:
 
-- [ ] la presenza degli esempi
+- [x] la presenza degli esempi (TOLTI)
 - [ ] Definire le informazioni da mostrare sullo schermo
+- [ ] Ricorda che l'account è obbligatorio!
 
 ---
 
@@ -25,7 +26,7 @@ Si vuole sviluppare un’applicazione IoT per il supporto agli allenamenti di sa
 L’applicazione fornisce due funzioni principali: 
 
 1. Collezione e visualizzazione di statistiche sugli allenamenti quali: la velocità media di salto, il numero di salti, la durata dell’allenamento, il numero di calorie consumate. 
-2. Feedback durante l’allenamento, fornito da un motorino vibrante, ovvero, l'utente può impostare un obiettivo da raggiungere durante il prossimo allenamento con il fine di migliorare le proprie prestazioni. Ad esempio, il dispositivo esegue 3 vibrazioni in rapida successione al raggiungimento dell'obiettivo impostato, come il numero di salti ecc.   
+2. Feedback durante l’allenamento, fornito da un motorino vibrante, ovvero, l'utente può impostare un obiettivo da raggiungere durante il prossimo allenamento con il fine di migliorare le proprie prestazioni.  
 
 Dal piccolo schermo montato sul manico, l'utente ha una visualizzazione compatta delle informazioni relative all'allenamento in corso. Per visualizzare le statistiche complete l’utente dovrà registrare un profilo, sul portale web dedicato, a cui il dispositivo invierà i dati, fornendo una serie di dati personali quali l’altezza, il sesso e l’età che saranno utilizzati per il calcolo, da parte del server, delle calorie consumate.  
 Ogni corda per saltare è identificata da un codice univoco che sarà utilizzato in fase di registrazione per associare la corda ad un solo profilo e per distinguere le corde nel sistema. Il codice verrà fornito insieme alla corda.  
