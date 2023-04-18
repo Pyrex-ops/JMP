@@ -12,16 +12,6 @@ Smart Jumping Rope - IoT
 
 ## Descrizione
 
----
-
-Nella seguente descrizione resta da revisionare:
-
-- [x] la presenza degli esempi (TOLTI)
-- [ ] Definire le informazioni da mostrare sullo schermo
-- [ ] Ricorda che l'account è obbligatorio!
-
----
-
 Si vuole sviluppare un’applicazione IoT per il supporto agli allenamenti di salto con la corda. 
 L’applicazione fornisce due funzioni principali: 
 
@@ -63,15 +53,13 @@ I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita eti
   * Velocità di salto media: $\frac{\text{Numero di salti}}{\text{Tempo di allenamento}}$.
   * Calorie spese in media negli allenamenti.
 * Il sistema consentirà all'utente di visualizzare le statistiche elaborate.
-* Il sistema consentirà all'utente di eliminare di dati raccolti.
 * Il sistema comporrà una classifica degli utenti che vi vorranno partecipare, in base alla velocità di salto media e tempo di allenamento.
 * L'utente potrà ritirare la partecipazione alla classifica.
 * Il sistema permetterà all'utente di indicare i parametri necessari al calcolo delle calorie spese:
   * Peso
   * Età
   * Sesso
-* Il sistema consentirà all'utente di eliminare i parametri personali forniti in precedenza.
-* Il sistema non fornirà il calcolo delle calorie spese se l'utente non ha fornito i dati necessari per il calcolo.
+* Il sistema consentirà all'utente di modificare i parametri personali forniti in precedenza.
 
 ### Requisiti non funzionali
 
