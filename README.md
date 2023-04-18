@@ -49,7 +49,7 @@ I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita eti
   * Frequenza di salto.
   * Calorie spese.
   * Tempo di allenamento.
-* Il dispositivo avviserà l'utente, tramite vibrazioni controllate, del raggiungimento degli obiettivi.
+* Il dispositivo avviserà l'utente, tramite vibrazioni controllate e messaggio sullo schermo, del raggiungimento degli obiettivi.
 * Il dispositivo mostrerà, in tempo reale:
   * Il numero di salti effettuati.
   * Il numero di calorie *spese*.
