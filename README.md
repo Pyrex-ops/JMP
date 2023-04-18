@@ -26,7 +26,7 @@ Si vuole sviluppare un’applicazione IoT per il supporto agli allenamenti di sa
 L’applicazione fornisce due funzioni principali: 
 
 1. Collezione e visualizzazione di statistiche sugli allenamenti quali: la velocità media di salto, il numero di salti, la durata dell’allenamento, il numero di calorie consumate. 
-2. Feedback durante l’allenamento, fornito da un motorino vibrante, ovvero, l'utente può impostare un obiettivo da raggiungere durante il prossimo allenamento con il fine di migliorare le proprie prestazioni.  
+2. Feedback durante l’allenamento, fornito da un motorino vibrante e da un piccolo schermo disposto sul manico, ovvero, l'utente può impostare un obiettivo da raggiungere durante il prossimo allenamento con il fine di migliorare le proprie prestazioni e riceverà un feedback al raggiungimento di quest'ultimo.  
 
 Dal piccolo schermo montato sul manico, l'utente ha una visualizzazione compatta delle informazioni relative all'allenamento in corso. Per visualizzare le statistiche complete l’utente dovrà registrare un profilo, sul portale web dedicato, a cui il dispositivo invierà i dati, fornendo una serie di dati personali quali l’altezza, il sesso e l’età che saranno utilizzati per il calcolo, da parte del server, delle calorie consumate.  
 Ogni corda per saltare è identificata da un codice univoco che sarà utilizzato in fase di registrazione per associare la corda ad un solo profilo e per distinguere le corde nel sistema. Il codice verrà fornito insieme alla corda.  
@@ -40,8 +40,8 @@ I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita eti
 
 ### Requisiti funzionali
 
-* Il sistema consentirà all'utente di iniziare un allenamento.
-* Il sistema consentirà all'utente di terminare un allenamento.
+* Il sistema rileverà l'inizio di un allenamento.
+* Il sistema rileverà la fine un allenamento.
 * Il sistema permetterà all'utente di conoscere le calorie *spese* durante l'allenamento.
 * Il sistema consentirà all'utente di conoscere la durata degli allenamenti.
 * Il sistema consentirà all'utente di impostare i seguenti obiettivi:

@@ -3558,11 +3558,11 @@
 								"$ref": "AAAAAAGHdHEjjsXAIuw="
 							},
 							"font": "Arial;13;0",
-							"left": 816,
-							"top": 248,
+							"left": 824,
+							"top": 232,
 							"width": 110.3271484375,
-							"height": 97,
-							"text": "Questo va sul dispositivo? O sul web?Entrambi?"
+							"height": 103,
+							"text": "Il dispositivo rileva l'inizio di un allenamento a seguito dell'inizio dell'attività di salto"
 						},
 						{
 							"_type": "UMLNoteLinkView",
@@ -3578,7 +3578,7 @@
 								"$ref": "AAAAAAGHdIgGewGYpzs="
 							},
 							"lineStyle": 1,
-							"points": "815:289;594:260"
+							"points": "823:278;594:257"
 						},
 						{
 							"_type": "UMLNoteLinkView",
@@ -3594,7 +3594,7 @@
 								"$ref": "AAAAAAGHdIgGewGYpzs="
 							},
 							"lineStyle": 1,
-							"points": "815:299;606:310"
+							"points": "823:288;606:306"
 						},
 						{
 							"_type": "UMLNoteView",
