@@ -10,24 +10,21 @@ services:
     depends_on:
       - mysql
   mysql:
+    env_file:
+      - ./.env
     container_name: mysql
     ports:
       - "3306:3306"
     build: './build/mysql'
-    environment:
-      MYSQL_ROOT_PASSWORD: "super-secret-password"
-      MYSQL_DATABASE: "JMPdb"
-      #MYSQL_USER: "utente"
-      #MYSQL_PASSWORD: "passwordUtente"
     volumes:
       - dbData:/var/lib/mysql
   phpmyadmin:
+    env_file:
+      - ./.env
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
     ports:
       - "8080:80"
-    environment:
-      - PMA_HOST=mysql
     depends_on:
       - mysql
 volumes:
