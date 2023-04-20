@@ -66,7 +66,7 @@ I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita eti
 * Il dispositivo dovrà salvare nella memoria non volatile le credenziali della rete
 * Il dispositivo, per garantire la confidenzialità delle comunicazioni, dovrà supportare reti wireless protette da password
 * I dati elaborati dal sistema saranno consultati dall'utente mediante un'interfaccia web
-* Il sistema conserverà le credenziali sotto forma di hash
+* Il sistema conserverà le credenziali degli account in sicurezza.
 
 ## Struttura cartelle
 
