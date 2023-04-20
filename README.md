@@ -50,10 +50,17 @@ I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita eti
 * Il sistema consentirà all'utente di rimuovere un dispositivo dal proprio account.
 * Il sistema consentirà all'utente di visualizzare i dati raccolti.
 * Il sistema elaborerà le seguenti statistiche:
-  * Velocità di salto media: $\frac{\text{Numero di salti}}{\text{Tempo di allenamento}}$.
+  * Frequenza di salto media: $\frac{1}{N}\sum^N_1\frac{\text{Numero di salti}}{\text{Tempo di allenamento}} \quad [Hz]$.
   * Calorie spese in media negli allenamenti.
 * Il sistema consentirà all'utente di visualizzare le statistiche elaborate.
-* Il sistema comporrà una classifica degli utenti che vi vorranno partecipare, in base alla velocità di salto media e tempo di allenamento.
+* Il sistema comporrà una classifica degli utenti che vi vorranno partecipare, in base alla frequenza di salto media e tempo di allenamento.
+  * Query d'esempio:
+    ```SQL
+      SELECT idutente, AVG(frequency) as frequenza, AVG(time) as tempo
+      FROM `provaClassifica`
+      GROUP BY idutente
+      ORDER BY frequenza DESC, tempo DESC;
+    ```
 * L'utente potrà ritirare la partecipazione alla classifica.
 * Il sistema permetterà all'utente di indicare i parametri necessari al calcolo delle calorie spese:
   * Peso
