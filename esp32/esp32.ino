@@ -32,25 +32,26 @@ void setup() {
   /*Serial.println("Ora eliminiamo tutto");
     manager.dropEveryNamespace();
     Serial.println("OK");*/
-  if(manager.getSSID().length()!=0){
-      Serial.println("In memoria ho trovato le seguenti credenziali: ");
-      Serial.print(manager.getSSID());
-      Serial.print(" - ");
-      Serial.println(manager.getPassword());
-  }else{
-    Serial.println("Salviamo le credenziali nella memoria flash persistente");
-    if(manager.newRecord(wifi_config.SSID,wifi_config.password)){
-      Serial.println("Credenziali salvate con successo");
-      Serial.print("Numero totali di chiavi: ");
-      Serial.println(manager.getSize());
-    }
-    Serial.println("Ora proviamo a recuperare le credenziali");
-    Serial.print("Per l'SSID ");
-    Serial.print(manager.getSSID());
-    Serial.print(" è stata ritrovata la chiave: ");
-    Serial.print(manager.getPassword());
-  }
+  //if(manager.getSSID().length()!=0){
+  //    Serial.println("In memoria ho trovato le seguenti credenziali: ");
+  //    Serial.print(manager.getSSID());
+  //    Serial.print(" - ");
+  //    Serial.println(manager.getPassword());
+  //}else{
+  //  Serial.println("Salviamo le credenziali nella memoria flash persistente");
+  //  if(manager.newRecord(wifi_config.SSID,wifi_config.password)){
+  //    Serial.println("Credenziali salvate con successo");
+  //    Serial.print("Numero totali di chiavi: ");
+  //    Serial.println(manager.getSize());
+  //  }
+  //  Serial.println("Ora proviamo a recuperare le credenziali");
+  //  Serial.print("Per l'SSID ");
+  //  Serial.print(manager.getSSID());
+  //  Serial.print(" è stata ritrovata la chiave: ");
+  //  Serial.print(manager.getPassword());
+  //}
 }
 
 void loop() {
+  
 }

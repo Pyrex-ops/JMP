@@ -19,10 +19,10 @@ class WifiPasswordGetter {
     private:
         const char* TEMPORARY_NETWORK_SSID;
         const char* TEMPORARY_NETWORK_PASSWORD;
-        uint8_t MICROCONTROLLER_IP[4];
+        //uint8_t MICROCONTROLLER_IP[4];
+        IPAddress MICROCONTROLLER_IP;
         uint8_t TEMPORARY_NETWORK_GATEWAY[4];
-        uint8_t TEMPORARY_NETWORK_SUBNET_MASK[4];
-        static const char* MAIN_PAGE;
+        IPAddress  TEMPORARY_NETWORK_SUBNET_MASK;
         static const char* SUCCESS_PAGE;
         static const char* MAIN_PAGE_REDIRECTION;
         static mainpage_status_t mainpage_status;
@@ -50,7 +50,17 @@ class WifiPasswordGetter {
             const uint8_t temporary_network_subnet_mask_2,
             const uint8_t temporary_network_subnet_mask_3
         );
+        static const char* MAIN_PAGE;
         wifi_configuration_t getWifiConfiguration();
 };
 
+class CaptiveRequestHandler : public AsyncWebHandler {
+public:
+  CaptiveRequestHandler();
+  virtual ~CaptiveRequestHandler();
+
+  bool canHandle(AsyncWebServerRequest *request);
+
+  void handleRequest(AsyncWebServerRequest *request);
+};
 #endif

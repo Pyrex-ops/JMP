@@ -2,6 +2,10 @@
 
 #include <WiFi.h>
 #include <AsyncTCP.h>
+#include <DNSServer.h>
+#include <ESPmDNS.h>
+
+DNSServer dnsServer;
 
 mainpage_status_t WifiPasswordGetter::mainpage_status = NO_INPUT_YET;
 wifi_configuration_t* WifiPasswordGetter::wifi_config = nullptr;
@@ -89,7 +93,7 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             <br>
             inserisci la password:
             <br>
-            <input type="text" name="password" id="password">
+            <input type="password" name="password" id="password">
             <br>
             <input type="submit" value="OK">
         </form>
@@ -141,6 +145,49 @@ const char* WifiPasswordGetter::SUCCESS_PAGE = R"rawliteral(
 </html>
 )rawliteral";
 
+const char CAPTIVE_PAGE[] PROGMEM = R"rawliteral(
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <style>
+        html, body { 
+            font-family: Helvetica; 
+            display: inline-block; 
+            margin: 0px auto; 
+            text-align: center;
+            background-color: #181a1b;
+            border-color: #736b5e;
+            color: #e8e6e3;
+        }
+        .button { 
+            background-color: #4CAF50; 
+            border: none; 
+            color: white; 
+            padding: 8px 20px;
+            text-decoration: none; 
+            font-size: 25px; 
+            margin: 2px; 
+            cursor: pointer;
+        }
+        .button2 {
+            background-color: #555555;
+        }
+        .centered{
+            text-align: center;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurazione completata</title>
+</head>
+<body>
+    <h1>Pagina non trovata</h1>
+    Per connettere la corda al wifi visita <a href='http:///8.8.8.8'>questa pagina</a>.</p>
+</body>
+</html>
+)rawliteral";
+
 WifiPasswordGetter::WifiPasswordGetter(
             const char* temporary_network_ssid,
             const char* temporary_network_password,
@@ -158,23 +205,31 @@ WifiPasswordGetter::WifiPasswordGetter(
             const uint8_t temporary_network_subnet_mask_3) :
                 TEMPORARY_NETWORK_SSID(temporary_network_ssid) ,
                 TEMPORARY_NETWORK_PASSWORD(temporary_network_password) ,
-                server(80){
+                server(80),
+                MICROCONTROLLER_IP(microcontroller_ip_0,
+                                    microcontroller_ip_1,
+                                    microcontroller_ip_2,
+                                    microcontroller_ip_3),
+                TEMPORARY_NETWORK_SUBNET_MASK(temporary_network_subnet_mask_0,
+                                                temporary_network_subnet_mask_1,
+                                                temporary_network_subnet_mask_2,
+                                                temporary_network_subnet_mask_3){
                 
                     WifiPasswordGetter::mainpage_status = NO_INPUT_YET;
                     WifiPasswordGetter::wifi_config = nullptr;
 
-                    MICROCONTROLLER_IP[0] = microcontroller_ip_0;
-                    MICROCONTROLLER_IP[1] = microcontroller_ip_1;
-                    MICROCONTROLLER_IP[2] = microcontroller_ip_2;
-                    MICROCONTROLLER_IP[3] = microcontroller_ip_3;
+                    //MICROCONTROLLER_IP[0] = microcontroller_ip_0;
+                    //MICROCONTROLLER_IP[1] = microcontroller_ip_1;
+                    //MICROCONTROLLER_IP[2] = microcontroller_ip_2;
+                    //MICROCONTROLLER_IP[3] = microcontroller_ip_3;
                     TEMPORARY_NETWORK_GATEWAY[0] = temporary_network_gateway_0;
                     TEMPORARY_NETWORK_GATEWAY[1] = temporary_network_gateway_1;
                     TEMPORARY_NETWORK_GATEWAY[2] = temporary_network_gateway_2;
                     TEMPORARY_NETWORK_GATEWAY[3] = temporary_network_gateway_3;
-                    TEMPORARY_NETWORK_SUBNET_MASK[0] = temporary_network_subnet_mask_0;
-                    TEMPORARY_NETWORK_SUBNET_MASK[1] = temporary_network_subnet_mask_1;
-                    TEMPORARY_NETWORK_SUBNET_MASK[2] = temporary_network_subnet_mask_2;
-                    TEMPORARY_NETWORK_SUBNET_MASK[3] = temporary_network_subnet_mask_3;
+                    //TEMPORARY_NETWORK_SUBNET_MASK[0] = temporary_network_subnet_mask_0;
+                    //TEMPORARY_NETWORK_SUBNET_MASK[1] = temporary_network_subnet_mask_1;
+                    //TEMPORARY_NETWORK_SUBNET_MASK[2] = temporary_network_subnet_mask_2;
+                    //TEMPORARY_NETWORK_SUBNET_MASK[3] = temporary_network_subnet_mask_3;
 }
 
 void WifiPasswordGetter::start_wifi() {
@@ -182,8 +237,10 @@ void WifiPasswordGetter::start_wifi() {
     WiFi.mode(WIFI_AP);
     Serial.print("Setting AP (Access Point)");
     WiFi.softAP(TEMPORARY_NETWORK_SSID, TEMPORARY_NETWORK_PASSWORD);
-
+    WiFi.softAPConfig(MICROCONTROLLER_IP, MICROCONTROLLER_IP, TEMPORARY_NETWORK_SUBNET_MASK);
     IPAddress IP = WiFi.softAPIP();
+    dnsServer.setErrorReplyCode(DNSReplyCode::NoError); 
+    dnsServer.start(53, "*", IP);
     Serial.print("AP IP address: ");
     Serial.println(IP);
 
@@ -220,6 +277,7 @@ void WifiPasswordGetter::start_wifi() {
     }
     });
 
+    server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
     server.begin();
 }
 
@@ -227,7 +285,8 @@ wifi_configuration_t WifiPasswordGetter::getWifiConfiguration() {
     start_wifi();
     wifi_configuration_t wifi_conf;
     while(WifiPasswordGetter::wifi_config == nullptr) {
-        delay(1000);
+        dnsServer.processNextRequest(); 
+        delay(100);
     }
     wifi_conf = *WifiPasswordGetter::wifi_config;
     delete(WifiPasswordGetter::wifi_config);
@@ -239,4 +298,15 @@ void WifiPasswordGetter::stop_wifi(){
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
     server.end(); //Interrompiamo il Web Server
+}
+
+CaptiveRequestHandler::CaptiveRequestHandler() {}
+
+CaptiveRequestHandler::~CaptiveRequestHandler() {}
+bool CaptiveRequestHandler::canHandle(AsyncWebServerRequest *request){
+  //request->addInterestingHeader("ANY");
+  return true;
+}
+void CaptiveRequestHandler::handleRequest(AsyncWebServerRequest *request) {
+  request->redirect("http://smart.rope/");
 }
