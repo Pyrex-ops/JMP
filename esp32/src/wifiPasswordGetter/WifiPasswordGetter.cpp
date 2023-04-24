@@ -266,7 +266,7 @@ WifiPasswordGetter::WifiPasswordGetter(
 }
 
 void WifiPasswordGetter::start_wifi() {
-    WiFi.disconnect();
+    WiFi.disconnect(true,true);
     WiFi.mode(WIFI_AP_STA);
     Serial.print("Setting AP (Access Point)");
     WiFi.softAP(TEMPORARY_NETWORK_SSID, TEMPORARY_NETWORK_PASSWORD);

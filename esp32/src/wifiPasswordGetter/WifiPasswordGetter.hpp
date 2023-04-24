@@ -25,6 +25,12 @@ typedef struct {
     String password;
 } wifi_configuration_t;
 
+/**
+ * @brief Classe utilizzata per l'ottenimento delle credenziali del wifi.
+ * 
+ * Utilizza un web server per raccoglierle tramite input dell'utente.
+ * 
+ */
 class WifiPasswordGetter {
     private:
         const char* TEMPORARY_NETWORK_SSID;
@@ -43,7 +49,26 @@ class WifiPasswordGetter {
         friend wifi_configuration_t getWifiConfiguration();
         void start_wifi();
         void stop_wifi();
+        static const char* MAIN_PAGE;
     public:
+        /**
+         * @brief Costruttore della classe WifiPasswordGetter
+         * 
+         * @param temporary_network_ssid SSID della rete a cui si connetterà l'utente
+         * @param temporary_network_password password della rete a cui si connetterà l'utente
+         * @param microcontroller_ip_0 Primo numero dell'ip del microcontrollore in notazione dotted decimal.
+         * @param microcontroller_ip_1 Secondo numero dell'ip del microcontrollore in notazione dotted decimal.
+         * @param microcontroller_ip_2 Terzo numero dell'ip del microcontrollore in notazione dotted decimal.
+         * @param microcontroller_ip_3 Quarto numero dell'ip del microcontrollore in notazione dotted decimal.
+         * @param temporary_network_gateway_0 Primo numero del default gateway del microcontrollore in notazione dotted decimal.
+         * @param temporary_network_gateway_1 Secondo numero del default gateway del microcontrollore in notazione dotted decimal.
+         * @param temporary_network_gateway_2 Terzo numero del default gateway del microcontrollore in notazione dotted decimal.
+         * @param temporary_network_gateway_3 Quarto numero del default gateway del microcontrollore in notazione dotted decimal.
+         * @param temporary_network_subnet_mask_0 Primo numero della subnet mask del microcontrollore in notazione dotted decimal.
+         * @param temporary_network_subnet_mask_1 Secondo numero della subnet mask del microcontrollore in notazione dotted decimal.
+         * @param temporary_network_subnet_mask_2 Terzo numero della subnet mask del microcontrollore in notazione dotted decimal.
+         * @param temporary_network_subnet_mask_3 Quarto numero della subnet mask del microcontrollore in notazione dotted decimal.
+         */
         WifiPasswordGetter(
             const char* temporary_network_ssid,
             const char* temporary_network_password,
@@ -60,17 +85,50 @@ class WifiPasswordGetter {
             const uint8_t temporary_network_subnet_mask_2,
             const uint8_t temporary_network_subnet_mask_3
         );
-        static const char* MAIN_PAGE;
+        /**
+         * @brief Ottieni le credenziali del wifi.
+         * 
+         * Il microcontrollore aprirà un webserver per permettere all'utente di inserirle tramite un browser.
+         * 
+         * @return wifi_configuration_t Struct con SSID e password della rete wifi a cui dovrà connettersi il microcontrollore.
+         */
         wifi_configuration_t getWifiConfiguration();
 };
 
+/**
+ * @brief Classe utilizzata per reindirizzare tutte le richieste al web server ad 
+ * un captive portal.
+ * 
+ * Eredita la classe AsyncWebHandler e ha il compito di indicare tutte le richieste come soddisfabili
+ * e soddisfarle tramite la redirezione al captive portal.
+ */
 class CaptiveRequestHandler : public AsyncWebHandler {
 public:
+  /**
+   * @brief Costruisce un oggetto CaptiveRequestHandler.
+   * 
+   */
   CaptiveRequestHandler();
+  /**
+   * @brief Distrugge un oggetto CaptiveRequestHandler.
+   * 
+   */
   virtual ~CaptiveRequestHandler();
 
+  /**
+   * @brief Determina se la richiesta può essere soddisfatta.
+   * 
+   * @param request La richiesta all'AP.
+   * @return true La richiesta può essere soddisfatta.
+   * @return false La richiesta non può essere soddisfatta.
+   */
   bool canHandle(AsyncWebServerRequest *request);
 
+  /**
+   * @brief Soddisfa la richiesta al web server.
+   * 
+   * @param request 
+   */
   void handleRequest(AsyncWebServerRequest *request);
 };
 #endif
