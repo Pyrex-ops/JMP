@@ -7,6 +7,7 @@
 /**
     Classe per la gestione dell'archivio Key-Value su memoria flash dell'ESP32
     Fornisce un interfaccia più astratta rispetto alla libreria "Preferences.h"
+    Memorizza una singola coppia (SSID,password)
 */
 class credentialsManager {
     private:
@@ -16,6 +17,10 @@ class credentialsManager {
 
         
     public:
+        /**
+         * Costruttore della classe
+         * @param namespaceName nome arbitrario con cui identificare il contesto in cui saranno salvate le credenziali
+        */
         credentialsManager(const char* namespaceName);
         /**
          * Aggiunge due record all'archivio
@@ -24,37 +29,30 @@ class credentialsManager {
         */
         bool newRecord(String SSID, String password);
         /**
-         * Rimuove un record dall'archivio
-         * @param SSID Identificativo da rimuovere dall'archivio
+         * Restituisce la password memorizzata
         */
-        //bool deleteRecord(String SSID);
-        /**
-         * Aggiorna i campi SSID e password
-         * @param SSID Nuovo identificativo della rete
-         * @param newPassword Nuova password che sostituirà la precedente
-        */
-        bool updateRecord(String newSSID, String newPassword);
-        /**
-         * Restituisce il valore associato alla chiave
-         * @param key Chiave di cui si vuole conoscere il valore associato
-        */
-        //String getRecord(String key);
         String getPassword();
-
+        /**
+         * Restituisce l'SSID salvato
+        */
         String getSSID();
-
         /**
          * Rimuove tutte le voci senza eliminare il namespace
         */
         bool deleteNamespace();
         /**
          * Elimina l'intero contenuto della memoria in quanto non è fornito un modo per eliminare il singolo namespace
+         * @warning Sono eliminati anche i dati scritti nella memoria flash da altre funzioni
         */
         void dropEveryNamespace();
         /**
          * Distruttore, chiude il namespace aperto
         */
         ~credentialsManager();
+        /**
+         * Restituisce il numero di credenziali salvate
+         * Valori interi in [0,1]
+        */
         int getSize();
         
 };
