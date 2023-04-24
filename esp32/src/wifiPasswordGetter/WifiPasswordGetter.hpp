@@ -4,12 +4,22 @@
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 
+/**
+ * @brief Tutti gli stati possibili del processo di configurazione del wifi.
+ * 
+ * Lo stato è utilizzato per determinare eventuali messaggi di errore.
+ * 
+ */
 typedef enum {
     NO_INPUT_YET,
     INCORRECT_PASSWORD,
     MISSING_INPUT,
 } mainpage_status_t;
 
+/**
+ * @brief Credenziali per la connessione ad una rete wifi.
+ * 
+ */
 typedef struct {
     String SSID;
     String password;

@@ -4,6 +4,8 @@
 #include <AsyncTCP.h>
 #include <DNSServer.h>
 #include <ESPmDNS.h>
+#include "soc/timer_group_struct.h"
+#include "soc/timer_group_reg.h"
 
 DNSServer dnsServer;
 
@@ -42,9 +44,40 @@ String WifiPasswordGetter::prepareAvailableWifiList(const String& var){
 }
 
 bool WifiPasswordGetter::passwordCheck(const String& ssid,const String& password) {
-    if(password.length() > 0)
-        return true;
-    return false;
+    uint32_t TIMEOUT_CONNECTION_ATTEMPT_MILLIS = 3000;
+    bool connected = false;
+    uint32_t time_passed_milliseconds = 0;
+    WiFi.begin(ssid.c_str(), password.c_str());
+    /*
+        A volte il wifi status resta WL_DISCONNECTED indefinitamente. 
+        Il timeout impedisce un loop infinito in questo caso.
+    */
+    while(WiFi.status()==WL_DISCONNECTED && time_passed_milliseconds<TIMEOUT_CONNECTION_ATTEMPT_MILLIS) {
+        /*
+            Alimento il watchdog. Very bad, ma necessario perché 
+            async_tcp proibisce l'utilizzo di delay nelle callback.
+        */
+        TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
+        TIMERG0.wdt_feed=1;
+        TIMERG0.wdt_wprotect=0;
+        delay(500);
+        time_passed_milliseconds += 500;
+    }
+    while (WiFi.status()!=WL_CONNECT_FAILED && WiFi.status()!=WL_DISCONNECTED && WiFi.status()!=WL_CONNECTED) {
+        delay(500);
+        /*
+            Vedi sopra.
+        */
+        TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
+        TIMERG0.wdt_feed=1;
+        TIMERG0.wdt_wprotect=0;
+
+    }
+    if(WiFi.status()==WL_CONNECTED) {
+        connected = true;
+    }
+    WiFi.disconnect(false, false);
+    return connected;
 }
 
 const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
@@ -234,7 +267,7 @@ WifiPasswordGetter::WifiPasswordGetter(
 
 void WifiPasswordGetter::start_wifi() {
     WiFi.disconnect();
-    WiFi.mode(WIFI_AP);
+    WiFi.mode(WIFI_AP_STA);
     Serial.print("Setting AP (Access Point)");
     WiFi.softAP(TEMPORARY_NETWORK_SSID, TEMPORARY_NETWORK_PASSWORD);
     WiFi.softAPConfig(MICROCONTROLLER_IP, MICROCONTROLLER_IP, TEMPORARY_NETWORK_SUBNET_MASK);
@@ -295,6 +328,7 @@ wifi_configuration_t WifiPasswordGetter::getWifiConfiguration() {
 }
 
 void WifiPasswordGetter::stop_wifi(){
+    delay(500);
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
     server.end(); //Interrompiamo il Web Server
