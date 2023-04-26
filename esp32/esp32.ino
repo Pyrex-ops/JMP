@@ -1,10 +1,16 @@
 #include "src/wifiManager/WifiManager.hpp"
+#include "src/motorino/Motorino.hpp"
+#include "src/motorino/MotorinoGravity.hpp""
 #include "constants.hpp"
 
 void handleDisconnected();
 void handleNewCredentialsRequired();
 void handleIdle();
 void handleTraining();
+
+Motorino* motorino = new MotorinoGravity(MOTORINO_PIN,MINIMUM_MOTORINO_INTENSITY ,
+  MOTORINO_LEDC_CHANNEL , MOTORINO_LEDC_FREQUENCY, MOTORINO_LEDC_RESOLUTION , 
+  MOTORINO_TASK_PRIORITY , MOTORINO_TASK_CORE , MOTORINO_TEMPO_FRA_VIBRAZIONI);
 
 
 typedef enum {
@@ -19,6 +25,7 @@ state_t currentState = DISCONNECTED;
 
 void setup() {
   Serial.begin(115200);
+  motorino->begin();
 }
 
 void loop() {
@@ -57,8 +64,8 @@ void handleIdle() {
   if(!wifiManager.checkConnection()) {
     currentState = DISCONNECTED;
   }
-  Serial.println("idle");
-  delay(200);
+  motorino->vibra(100);
+  delay(500);
 }
 
 void handleTraining() {

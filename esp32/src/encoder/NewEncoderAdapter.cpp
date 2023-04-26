@@ -1,6 +1,6 @@
 #include "NewEncoderAdapter.hpp"
 
-NewEncoderAdapter::NewEncoderAdapter(uint8_t clkPin, uint8_t dtPin, uint16_t ppr) 
+NewEncoderAdapter::NewEncoderAdapter(uint8_t clkPin, uint8_t dtPin, int16_t ppr) 
     : PPR(ppr) , CLK_PIN(clkPin) , DT_PIN(dtPin) , MAX_POS(ppr - 2), MIN_POS(-ppr + 2) ,
     newEncoder(dtPin,clkPin,-ppr, ppr, 0, HALF_PULSE) {
         clockwiseRevolutions = 0;
@@ -21,18 +21,18 @@ void NewEncoderAdapter::rotatedEncoder(NewEncoder* newEncoder, const volatile Ne
     }
 }
 
-int8_t NewEncoderAdapter::getPosition() {
+int16_t NewEncoderAdapter::getPosition() {
     NewEncoder::EncoderState state;
     newEncoder.getState(state);
     return state.currentValue;
 }
-uint16_t NewEncoderAdapter::getClockwiseRevolutions() {
+uint32_t NewEncoderAdapter::getClockwiseRevolutions() {
     return clockwiseRevolutions;
 }
-uint16_t NewEncoderAdapter::getCounterclockwiseRevolutions() {
+uint32_t NewEncoderAdapter::getCounterclockwiseRevolutions() {
     return counterClockwiseRevolutions;
 }
-uint16_t NewEncoderAdapter::getRevolutions() {
+uint32_t NewEncoderAdapter::getRevolutions() {
     return clockwiseRevolutions + counterClockwiseRevolutions;
 }
 void NewEncoderAdapter::begin() {
