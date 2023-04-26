@@ -13,4 +13,6 @@
 #define ENCODER_DT_PIN 25
 #define ENCODER_PPR 40
 
+// Wifi constants
+
 #endif

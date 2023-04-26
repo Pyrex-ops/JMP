@@ -1,33 +1,73 @@
+#include "src/wifiManager/WifiManager.hpp"
 #include "src/motorino/Motorino.hpp"
-#include "src/motorino/MotorinoGravity.hpp"
-#include "src/encoder/Encoder.hpp"
-#include "src/encoder/NewEncoderAdapter.hpp"
-#include "constants.h"
+#include "src/motorino/MotorinoGravity.hpp""
+#include "constants.hpp"
+
+void handleDisconnected();
+void handleNewCredentialsRequired();
+void handleIdle();
+void handleTraining();
 
 Motorino* motorino = new MotorinoGravity(MOTORINO_PIN,MINIMUM_MOTORINO_INTENSITY ,
   MOTORINO_LEDC_CHANNEL , MOTORINO_LEDC_FREQUENCY, MOTORINO_LEDC_RESOLUTION , 
   MOTORINO_TASK_PRIORITY , MOTORINO_TASK_CORE , MOTORINO_TEMPO_FRA_VIBRAZIONI);
 
-Encoder* encoder = new NewEncoderAdapter(ENCODER_CLK_PIN,ENCODER_DT_PIN,ENCODER_PPR);
+
+typedef enum {
+  DISCONNECTED,
+  NEW_CREDENTIALS_REQUIRED,
+  IDLE,
+  TRAINING,
+} state_t;
+
+WifiManager wifiManager;
+state_t currentState = DISCONNECTED;
 
 void setup() {
   Serial.begin(115200);
-  encoder->begin();
   motorino->begin();
 }
 
 void loop() {
-  motorino->vibraIntermittente(20,200,3);
-  motorino->vibra(500);
-  motorino->vibraIntermittente(300,200,5,200);
-  for(int i=0;i<500;i++) {
-    Serial.print(encoder->getPosition());
-    Serial.print(",");
-    Serial.print(encoder->getClockwiseRevolutions());
-    Serial.print(",");
-    Serial.print(encoder->getCounterclockwiseRevolutions());
-    Serial.print(",");
-    Serial.println(encoder->getRevolutions());
-    delay(10);
+  switch(currentState) {
+    case DISCONNECTED:
+      handleDisconnected();
+      break;
+    case NEW_CREDENTIALS_REQUIRED:
+      handleNewCredentialsRequired();
+      break;
+    case IDLE:
+      handleIdle();
+      break;
+    case TRAINING:
+      handleTraining();
+      break;
   }
+}
+
+void handleDisconnected() {
+  Serial.println("disconnected");
+  if(!wifiManager.connect()) {
+    currentState = NEW_CREDENTIALS_REQUIRED;
+  }
+  else if(wifiManager.checkConnection()){
+    currentState = IDLE;
+  }
+}
+
+void handleNewCredentialsRequired() {
+  wifiManager.getNewCredentials();
+  currentState = DISCONNECTED;
+}
+
+void handleIdle() {
+  if(!wifiManager.checkConnection()) {
+    currentState = DISCONNECTED;
+  }
+  motorino->vibra(100);
+  delay(500);
+}
+
+void handleTraining() {
+
 }
