@@ -37,7 +37,7 @@ bool WifiManager::checkConnection() {
 bool WifiManager::connect() {
 
     if(checkConnection())
-        return;
+        return true;
 
     credentialsManager cManager(CREDENTIALS_KEY);
 

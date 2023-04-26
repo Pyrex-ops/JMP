@@ -1,6 +1,12 @@
 #include "src/wifiManager/WifiManager.hpp"
 #include "constants.hpp"
 
+void handleDisconnected();
+void handleNewCredentialsRequired();
+void handleIdle();
+void handleTraining();
+
+
 typedef enum {
   DISCONNECTED,
   NEW_CREDENTIALS_REQUIRED,
@@ -21,7 +27,7 @@ void loop() {
       handleDisconnected();
       break;
     case NEW_CREDENTIALS_REQUIRED:
-      handleNewCredenditalsRequired();
+      handleNewCredentialsRequired();
       break;
     case IDLE:
       handleIdle();
@@ -37,12 +43,12 @@ void handleDisconnected() {
   if(!wifiManager.connect()) {
     currentState = NEW_CREDENTIALS_REQUIRED;
   }
-  else {
+  else if(wifiManager.checkConnection()){
     currentState = IDLE;
   }
 }
 
-void newCrendtialsRequired() {
+void handleNewCredentialsRequired() {
   wifiManager.getNewCredentials();
   currentState = DISCONNECTED;
 }
