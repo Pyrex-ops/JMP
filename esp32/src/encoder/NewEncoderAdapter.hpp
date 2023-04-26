@@ -22,6 +22,7 @@ class NewEncoderAdapter : public Encoder{
         uint32_t getCounterclockwiseRevolutions() override;
         uint32_t getRevolutions() override;
         void begin() override;
+        void reset();
 };
 
 #endif

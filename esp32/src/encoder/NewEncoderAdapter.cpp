@@ -38,3 +38,8 @@ uint32_t NewEncoderAdapter::getRevolutions() {
 void NewEncoderAdapter::begin() {
     newEncoder.begin();
 }
+
+void NewEncoderAdapter::reset() {
+    clockwiseRevolutions = 0;
+    counterClockwiseRevolutions = 0;
+}

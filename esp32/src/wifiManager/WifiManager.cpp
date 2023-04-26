@@ -49,10 +49,7 @@ bool WifiManager::connect() {
 
 
     Serial.println("\nConnecting");
-
-    Serial.print("Numero totali di chiavi: ");
-    Serial.println(cManager.getSize());
-    Serial.println("OK");
+    
     if(cManager.getSSID().length()!=0){
         wifi_config.SSID = cManager.getSSID();
         wifi_config.password = cManager.getPassword();
