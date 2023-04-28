@@ -2,6 +2,7 @@
 #include "src/motorino/MotorinoGravity.hpp"
 #include "src/encoder/NewEncoderAdapter.hpp"
 #include "constants.hpp"
+#include "src/schermo/Schermo.hpp"
 
 void handleDisconnected();
 void handleNewCredentialsRequired();
@@ -14,6 +15,7 @@ MotorinoGravity motorino(MOTORINO_PIN,MINIMUM_MOTORINO_INTENSITY ,
 
 NewEncoderAdapter encoder(ENCODER_CLK_PIN,ENCODER_DT_PIN,ENCODER_PPR);
 
+
 typedef enum {
   DISCONNECTED,
   NEW_CREDENTIALS_REQUIRED,
@@ -24,10 +26,13 @@ typedef enum {
 WifiManager wifiManager;
 state_t currentState = DISCONNECTED;
 
+Schermo schermo;
+
 void setup() {
   Serial.begin(115200);
   encoder.begin();
   motorino.begin();
+  schermo.begin();
 }
 
 void loop() {
@@ -49,12 +54,15 @@ void loop() {
 
 void handleDisconnected() {
   Serial.println("disconnected");
+  schermo.scrivi(0,"disconnected");
   if(!wifiManager.connect()) {
     Serial.println("new credentials required");
+    schermo.scrivi(0,"new credentials required");
     currentState = NEW_CREDENTIALS_REQUIRED;
   }
   else if(wifiManager.checkConnection()){
     Serial.println("connected");
+    schermo.scrivi(0,"connected");
     encoder.reset();
     currentState = IDLE;
   }
@@ -68,10 +76,12 @@ void handleNewCredentialsRequired() {
 void handleIdle() {
   if(!wifiManager.checkConnection()) {
     Serial.println("connection lost");
+    schermo.scrivi(0,"connection lost");
     currentState = DISCONNECTED;
   }
   else if(encoder.getRevolutions() != 0) {
     Serial.println("training started");
+    schermo.scrivi(0,"training started");
     currentState = TRAINING;
     encoder.reset();
   }
@@ -88,11 +98,13 @@ void handleTraining() {
   }
   if((millis() - timestampLastRevolution) > TIMEOUT_STOP_TRAINING_MILLISECONDS) {
     Serial.println("training ended");
+    schermo.scrivi(0,"training ended");
     encoder.reset();
     currentState = IDLE;
   }
   if(!wifiManager.checkConnection()) {
     Serial.println("connection lost");
+    schermo.scrivi(0,"connection lost");
     currentState = DISCONNECTED;
   }
   delay(500);
