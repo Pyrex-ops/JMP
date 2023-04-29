@@ -6,6 +6,6 @@ $database = new mysqli($servername, $username, $password, "jmp-db");
 if ($database->connect_error) {
     die("Connection failed: " . $database->connect_error);
 }
-echo "Connected successfully";
+//echo "Connected successfully";
 
 ?>
