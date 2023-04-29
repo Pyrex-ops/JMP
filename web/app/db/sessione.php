@@ -1,3 +1,5 @@
 <?php
 session_start();
-$_SESSION["auth"]=false;
+if (!isset($_SESSION["auth"])) {
+    $_SESSION["auth"] = false;
+}
