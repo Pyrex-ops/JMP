@@ -14,7 +14,7 @@ if (isset($_POST["id"]) && isset($_POST["valore"])) {
             $queryUtente->execute();
             $temp = $queryUtente->get_result()->fetch_assoc();
             $userID = $temp["IDUtente"]; //TODO: Sarà unico. Trova un modo più pulito.
-            $queryAllenamento = $database->query("SELECT IDAllenamento FROM allenamento WHERE IDUtente = '$userID'");
+            $queryAllenamento = $database->query("SELECT IDAllenamento FROM allenamento WHERE IDUtente = '$userID' ORDER BY IDAllenamento DESC LIMIT 1");
             $temp2 = $queryAllenamento->fetch_assoc();
             $allenamentoID = $temp2["IDAllenamento"]; //TODO: AGGIUNGI CONTROLLO, SE ALLENAMENTO NON C'è, QUESTO è NULL e l'inserimento non avviene!
             //In teoria se stiamo qui allora la scheda ha già comunicato l'inizio dell'allenamento però è sempre meglio controllare
