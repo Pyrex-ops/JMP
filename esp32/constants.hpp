@@ -15,7 +15,10 @@
 #define SCHERMO_PIN_1 21
 #define SCHERMO_PIN_2 22
 
+#define API_URL "http://el.mogus"
+
 #define TIMEOUT_STOP_TRAINING_MILLISECONDS 3000
+#define SAMPLE_SENDING_PERIOD_SECONDS 2
 
 // Wifi constants
 

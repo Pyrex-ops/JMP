@@ -3,6 +3,7 @@
 #include "src/encoder/NewEncoderAdapter.hpp"
 #include "constants.hpp"
 #include "src/schermo/Schermo.hpp"
+#include "src/trainingManager/TrainingManager.hpp"
 
 void handleDisconnected();
 void handleNewCredentialsRequired();
@@ -14,6 +15,8 @@ MotorinoGravity motorino(MOTORINO_PIN,MINIMUM_MOTORINO_INTENSITY ,
   MOTORINO_TASK_PRIORITY , MOTORINO_TASK_CORE , MOTORINO_TEMPO_FRA_VIBRAZIONI);
 
 NewEncoderAdapter encoder(ENCODER_CLK_PIN,ENCODER_DT_PIN,ENCODER_PPR);
+TrainingManager* trainingManager = nullptr;
+BackendServer backendServer(new String(API_URL));
 
 
 typedef enum {
@@ -50,6 +53,7 @@ void loop() {
       handleTraining();
       break;
   }
+  delay(200);
 }
 
 void handleDisconnected() {
@@ -82,11 +86,12 @@ void handleIdle() {
   else if(encoder.getRevolutions() != 0) {
     Serial.println("training started");
     schermo.scrivi(0,"training started");
-    currentState = TRAINING;
     encoder.reset();
+    trainingManager = new TrainingManager(&backendServer,SAMPLE_SENDING_PERIOD_SECONDS,
+                                                      &schermo,encoder.getRevolutions(),&motorino);
+    currentState = TRAINING;
   }
   //motorino.vibra(100);
-  delay(500);
 }
 
 void handleTraining() {
@@ -96,6 +101,7 @@ void handleTraining() {
     lastRevolutionNumber = encoder.getRevolutions();
     timestampLastRevolution = millis();
   }
+  trainingManager->storeData(encoder.getRevolutions());
   if((millis() - timestampLastRevolution) > TIMEOUT_STOP_TRAINING_MILLISECONDS) {
     Serial.println("training ended");
     schermo.scrivi(0,"training ended");
@@ -107,5 +113,4 @@ void handleTraining() {
     schermo.scrivi(0,"connection lost");
     currentState = DISCONNECTED;
   }
-  delay(500);
 }
