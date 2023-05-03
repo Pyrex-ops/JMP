@@ -1,8 +1,8 @@
 <?php
-$servername = "mysql";
-$username = "jmp-user";
-$password = "mysql-user-password";
-$database = new mysqli($servername, $username, $password, "jmp-db");
+$servername = getenv("PMA_HOST");
+$username = getenv("MYSQL_USER");
+$password = getenv("MYSQL_PASSWORD");
+$database = new mysqli($servername, $username, $password, getenv("MYSQL_DATABASE"));
 if ($database->connect_error) {
     die("Connection failed: " . $database->connect_error);
 }
