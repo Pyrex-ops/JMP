@@ -1,6 +1,7 @@
 <?php
 //Connessione al database
 require_once("../db/dbconnessione.php");
+header("Content-Type: application/json");
 
 if (isset($_POST["id"]) && isset($_POST["valore"])) {
     if (isset($database)) {
@@ -21,9 +22,13 @@ if (isset($_POST["id"]) && isset($_POST["valore"])) {
             $queryInserimento = $database->prepare("INSERT INTO misura(IDAllenamento, valore) VALUE (?,?)");
             $queryInserimento->bind_param("si", $allenamentoID, $_POST["valore"]);
             $queryInserimento->execute();
-            echo "\nScheda riconosciuta e dato inserito";
+            http_response_code(200);
+            echo json_encode(array("stato"=>"ok"));
+            exit();
         } else {
-            echo "\nScheda non riconosciuta";
+            http_response_code(401);
+            echo json_encode(array("stato"=>"errore"));
+            exit();
         }
     }
 }

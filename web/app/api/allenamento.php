@@ -1,5 +1,8 @@
 <?php
 require_once("../db/dbconnessione.php");
+header("Content-Type: application/json");
+
+
 
 if (isset($_GET["id"])) {
     //Da id dispositivo ricavare utente e aggiungere un nuovo allenamento
@@ -15,10 +18,13 @@ if (isset($_GET["id"])) {
             $temp = $queryUtente->get_result()->fetch_assoc();
             $userID = $temp["IDUtente"]; //TODO: Sarà unico. Trova un modo più pulito.
             $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente) VALUE ('$userID')");
-
-            echo "\nScheda riconosciuta e allenamento inserito";
+            http_response_code(200);
+            echo json_encode(array("stato"=>"ok"));
+            exit;
         } else {
-            echo "\nScheda non riconosciuta";
+            http_response_code(401);
+            echo json_encode(array("stato"=>"errore"));
+            exit;
         }
     }
 }
