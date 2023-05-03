@@ -19,7 +19,8 @@ services:
       - "3306:3306"
     build: './build/mysql'
     volumes:
-      - dbData:/var/lib/mysql
+      - './data:/var/lib/mysql'
+      - './sql/scripts:/docker-entrypoint-initdb.d'
   phpmyadmin:
     env_file:
       - ./.env

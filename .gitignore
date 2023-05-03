@@ -54,3 +54,4 @@ dkms.conf
 .vscode
 build
 .env
+web/data
