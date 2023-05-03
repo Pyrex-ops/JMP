@@ -18,7 +18,9 @@ class TrainingManager {
         MotorinoGravity* motorino;
         float moltiplicatoreCalorie;
         uint32_t lastSentTimestamp;
+        const uint32_t TIMESTAMP_START_TRAINING;
         bool raggiuntoObiettivo;
+        int calcolaCalorie();
 
         bool checkObiettivo();
     public:

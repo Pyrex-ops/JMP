@@ -17,6 +17,8 @@ MotorinoGravity motorino(MOTORINO_PIN,MINIMUM_MOTORINO_INTENSITY ,
 NewEncoderAdapter encoder(ENCODER_CLK_PIN,ENCODER_DT_PIN,ENCODER_PPR);
 TrainingManager* trainingManager = nullptr;
 BackendServer backendServer(new String(API_URL));
+uint32_t timestampLastRevolution;
+uint32_t lastRevolutionNumber;
 
 
 typedef enum {
@@ -87,6 +89,8 @@ void handleIdle() {
     Serial.println("training started");
     schermo.scrivi(0,"training started");
     encoder.reset();
+    timestampLastRevolution = millis();
+    lastRevolutionNumber = encoder.getRevolutions();
     trainingManager = new TrainingManager(&backendServer,SAMPLE_SENDING_PERIOD_SECONDS,
                                                       &schermo,encoder.getRevolutions(),&motorino);
     currentState = TRAINING;
@@ -95,8 +99,6 @@ void handleIdle() {
 }
 
 void handleTraining() {
-  static uint32_t timestampLastRevolution = millis();
-  static uint32_t lastRevolutionNumber = encoder.getRevolutions();
   if(encoder.getRevolutions() != lastRevolutionNumber) {
     lastRevolutionNumber = encoder.getRevolutions();
     timestampLastRevolution = millis();

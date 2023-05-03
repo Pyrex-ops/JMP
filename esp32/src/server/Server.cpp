@@ -17,8 +17,8 @@ void BackendServer::sendData(uint32_t revolutions) {
 obiettivo_t BackendServer::getObiettivo() {
     // @todo call endpoint
     return {
-        NUMERO_SALTI,
-        50,
+        TEMPO_ALLENAMENTO_MINUTI,
+        1,
     };
 }
 
