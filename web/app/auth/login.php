@@ -96,7 +96,6 @@ if (isset($_POST["username"]) && isset($_POST["password"]) && !isset($_SESSION["
     <!-- Bootstrap JS -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-Tt+Fto21Ubk+1G2v01BkFwCYA/kP8WpZldVGvZnX9MzCrAOuA6gY+7VSNyxCeLw7"
       crossorigin="anonymous"
     ></script>
   </body>
