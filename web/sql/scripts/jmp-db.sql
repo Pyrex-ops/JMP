@@ -50,12 +50,6 @@ CREATE TABLE `dispositivo` (
   `IDUtente` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dump dei dati per la tabella `dispositivo`
---
-
-INSERT INTO `dispositivo` (`IDDispositivo`, `IDUtente`) VALUES
-(1, 1);
 
 -- --------------------------------------------------------
 
@@ -70,17 +64,6 @@ CREATE TABLE `misura` (
   `valore` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dump dei dati per la tabella `misura`
---
-
-INSERT INTO `misura` (`IDMisura`, `IDAllenamento`, `timestamp`, `valore`) VALUES
-(1, 1, '2023-04-28 19:25:34', 1),
-(2, 1, '2023-04-28 19:30:20', 2),
-(3, 1, '2023-04-28 19:30:22', 2),
-(4, 1, '2023-04-28 19:30:23', 2),
-(5, 1, '2023-04-28 19:30:24', 2);
-
 -- --------------------------------------------------------
 
 --
@@ -94,28 +77,6 @@ CREATE TABLE `provaClassifica` (
   `time` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dump dei dati per la tabella `provaClassifica`
---
-
-INSERT INTO `provaClassifica` (`id`, `idutente`, `frequency`, `time`) VALUES
-(1, 0, 10, 30),
-(2, 1, 2, 6),
-(3, 2, 15, 1),
-(4, 3, 33, 99),
-(5, 4, 12, 7),
-(6, 5, 7, 12),
-(7, 6, 48, 35),
-(8, 7, 9, 36),
-(9, 7, 48, 130),
-(10, 0, 12, 33),
-(11, 0, 12, 33),
-(12, 0, 14, 68),
-(13, 1, 22, 54),
-(14, 1, 2, 99),
-(15, 1, 15, 18),
-(16, 2, 8, 24);
-
 -- --------------------------------------------------------
 
 --
@@ -124,19 +85,15 @@ INSERT INTO `provaClassifica` (`id`, `idutente`, `frequency`, `time`) VALUES
 
 CREATE TABLE `utente` (
   `IDUtente` int NOT NULL,
-  `username` varchar(30) NOT NULL,
-  `passwordhash` varchar(60) NOT NULL
+  `username` varchar(30) UNIQUE NOT NULL,
+  `passwordhash` varchar(60) NOT NULL,
+  `peso` int NOT NULL,
+  `altezza` int NOT NULL,
+  `dataDiNascita` timestamp NOT NULL,
+  `idObiettivo` int,
+  `partecipazioneClassifica` boolean DEFAULT FALSE,
+  `sesso` ENUM('maschio','femmina')
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dump dei dati per la tabella `utente`
---
-
-INSERT INTO `utente` (`IDUtente`, `username`, `passwordhash`) VALUES
-(1, 'user', '$2y$10$0aoe.lyHAoWiQ3KPV4GhE.Md7LuODGQ9OayiUkIQBd47Q/X71Z76S'),
-(2, 'user', '$2y$10$TCMqd4y2jtLJ4R9SH65T6.NDQTOlBCTe5Wja7Me3cK1NdjhRlLe1C'),
-(3, 'user', '$2y$10$Ekn7f9fOe8F9.lWjF5bTe.tL1e1YRx0OreGiu2PC1nz7WDPZz0rXm'),
-(4, 'user', '$2y$10$RNQa89i/xCeJ8oPxNzSoweTYgO8uHpu6ph0vS0L5gpZshdxcCsmJa');
 
 --
 -- Indici per le tabelle scaricate
