@@ -25,30 +25,68 @@ if (isset($_POST["username"]) && isset($_POST["password"]) && !isset($_SESSION["
 
 }
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login | ConfigurazioneCorda</title>
+<html>
+<head>
+  <title>User Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/bootstrap.css">
+  <style>
+	body {
+      background-color: #f5f5f5;
+    }
+    .card {
+      margin-bottom: 20px;
+    }
+    .circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-block;
+      text-align: center;
+      line-height: 30px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .green {
+      background-color: green;
+    }
+    .gray {
+      background-color: gray;
+    }
+    .graph {
+      height: 300px;
+    }
+    .training-box {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+    }
+    .goal-reached {
+      color: gold;
+    }
+    .navbar {
+      margin-bottom: 20px;
+    }
+    .username-card {
+      width: fit-content;
+      margin: 0 auto;
+    }
+    .first-card {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">JMPCorda.com</a>
+    </div>
+  </nav>
 
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="/bootstrap.css"
-      crossorigin="anonymous"
-    />
-  </head>
-  <body class="bg-light d-flex flex-column min-vh-100">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">ConfigurazioneCorda.it</a>
-      </div>
-    </nav>
-
-    <!-- Login form -->
-    <div class="container my-5">
+  <!-- Login form -->
+  <div class="container my-5">
       <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
           <div class="card">
@@ -84,19 +122,9 @@ if (isset($_POST["username"]) && isset($_POST["password"]) && !isset($_SESSION["
         </div>
       </div>
     </div>
-
-    <div class="wrapper flex-grow-1"></div>
-    <!-- Footer -->
-    <footer class="bg-primary mt-auto py-3">
-      <div class="container text-center">
-        &copy; ConfigurazioneCorda 2023
-      </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script
+  <!-- Bootstrap JS -->
+  <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-Tt+Fto21Ubk+1G2v01BkFwCYA/kP8WpZldVGvZnX9MzCrAOuA6gY+7VSNyxCeLw7"
       crossorigin="anonymous"
     ></script>
   </body>
