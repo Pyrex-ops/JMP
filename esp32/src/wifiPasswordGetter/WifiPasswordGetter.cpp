@@ -238,7 +238,6 @@ WifiPasswordGetter::WifiPasswordGetter(
             const uint8_t temporary_network_subnet_mask_3) :
                 TEMPORARY_NETWORK_SSID(temporary_network_ssid) ,
                 TEMPORARY_NETWORK_PASSWORD(temporary_network_password) ,
-                server(80),
                 MICROCONTROLLER_IP(microcontroller_ip_0,
                                     microcontroller_ip_1,
                                     microcontroller_ip_2,
@@ -246,7 +245,8 @@ WifiPasswordGetter::WifiPasswordGetter(
                 TEMPORARY_NETWORK_SUBNET_MASK(temporary_network_subnet_mask_0,
                                                 temporary_network_subnet_mask_1,
                                                 temporary_network_subnet_mask_2,
-                                                temporary_network_subnet_mask_3){
+                                                temporary_network_subnet_mask_3) ,
+                    server(80){
                 
                     WifiPasswordGetter::mainpage_status = NO_INPUT_YET;
                     WifiPasswordGetter::wifi_config = nullptr;

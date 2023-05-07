@@ -33,11 +33,14 @@ state_t currentState = DISCONNECTED;
 
 Schermo schermo;
 
+uint32_t lostConnectionTimestamp;
+
 void setup() {
   Serial.begin(115200);
   encoder.begin();
   motorino.begin();
   schermo.begin();
+  lostConnectionTimestamp = millis();
 }
 
 void loop() {
@@ -59,14 +62,17 @@ void loop() {
 }
 
 void handleDisconnected() {
-  Serial.println("disconnected");
-  schermo.scrivi(0,"disconnected");
-  if(!wifiManager.connect()) {
+  if(millis() - lostConnectionTimestamp > TIMEOUT_NEW_CREDENTIALS_MILLISECONDS ||
+        !wifiManager.hasSavedCredentials()) {
+    wifiManager.deleteCredentials();
     Serial.println("new credentials required");
     schermo.scrivi(0,"new credentials required");
     currentState = NEW_CREDENTIALS_REQUIRED;
   }
-  else if(wifiManager.checkConnection()){
+  else {
+    wifiManager.connect();
+  }
+  if(wifiManager.checkConnection()){
     Serial.println("connected");
     schermo.scrivi(0,"connected");
     encoder.reset();
@@ -76,6 +82,7 @@ void handleDisconnected() {
 
 void handleNewCredentialsRequired() {
   wifiManager.getNewCredentials();
+  lostConnectionTimestamp = millis();
   currentState = DISCONNECTED;
 }
 
@@ -83,6 +90,7 @@ void handleIdle() {
   if(!wifiManager.checkConnection()) {
     Serial.println("connection lost");
     schermo.scrivi(0,"connection lost");
+    lostConnectionTimestamp = millis();
     currentState = DISCONNECTED;
   }
   else if(encoder.getRevolutions() != 0) {
@@ -113,6 +121,14 @@ void handleTraining() {
   if(!wifiManager.checkConnection()) {
     Serial.println("connection lost");
     schermo.scrivi(0,"connection lost");
+    lostConnectionTimestamp = millis();
     currentState = DISCONNECTED;
   }
+}
+
+void disconnected() {
+  Serial.println("connection lost");
+  schermo.scrivi(0,"connection lost");
+  lostConnectionTimestamp = millis();
+  currentState = DISCONNECTED;
 }

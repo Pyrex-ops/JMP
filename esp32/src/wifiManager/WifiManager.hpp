@@ -18,6 +18,8 @@ class WifiManager {
         bool connect();
         void getNewCredentials();
         bool checkConnection();
+        bool hasSavedCredentials();
+        void deleteCredentials();
 };
 
 #endif
