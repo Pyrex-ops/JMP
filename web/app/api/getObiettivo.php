@@ -16,6 +16,7 @@ if (isset($_GET["id"])) {
             $queryObiettivo->execute();
             $idObiettivo = $queryObiettivo->get_result();
             if ($idObiettivo->num_rows!=0) {
+                //Può essere null se non c'è un obiettivo associato all'utente
                 http_response_code(200);
                 echo json_encode(array("stato" => "ok", "idObiettivo" => $idObiettivo->fetch_row()[0]));
             } else {

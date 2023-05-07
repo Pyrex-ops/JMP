@@ -16,7 +16,7 @@ if (isset($_GET["id"])) {
             $queryUtente->bind_param("s", $_GET["id"]);
             $queryUtente->execute();
             $temp = $queryUtente->get_result()->fetch_assoc();
-            $userID = $temp["IDUtente"]; //TODO: Sarà unico. Trova un modo più pulito.
+            $userID = $temp["IDUtente"]; //TODO: Sarà unico. Trova un modo più pulito. Vedi se aggregare tutto in unica query (quella di sopra in questa qui sotto)
             $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente) VALUE ('$userID')");
             http_response_code(200);
             echo json_encode(array("stato"=>"ok"));
