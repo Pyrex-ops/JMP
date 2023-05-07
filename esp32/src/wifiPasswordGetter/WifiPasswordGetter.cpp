@@ -1,225 +1,20 @@
 #include "WifiPasswordGetter.hpp"
+#include "CaptiveRequestHandler.hpp"
 
 #include <WiFi.h>
 #include <AsyncTCP.h>
+#include "AsyncJson.h"
 #include <DNSServer.h>
 #include <ESPmDNS.h>
-#include "soc/timer_group_struct.h"
-#include "soc/timer_group_reg.h"
+#include <ArduinoJson.h>
 
 DNSServer dnsServer;
 
 mainpage_status_t WifiPasswordGetter::mainpage_status = NO_INPUT_YET;
 wifi_configuration_t* WifiPasswordGetter::wifi_config = nullptr;
-
-String WifiPasswordGetter::prepareAvailableWifiList(const String& var){
-  if(var == "BUTTONPLACEHOLDER"){
-    uint8_t n = WiFi.scanNetworks();
-    if(n>0){
-        String buttons = "";
-        for(int i=0;i<n;i++){
-            buttons += "<input type=\"radio\" name=\"SSID\" id=\""+ String(i) +"\" value=\""+ WiFi.SSID(i) +"\"";
-            if(i==0) {
-                buttons += " checked";
-            }
-            buttons += "><label for=\""+ String(i) +"\">"+WiFi.SSID(i) + "</label><br>";
-        }
-        return buttons;
-    }
-  }
-  else if(var == "WARNINGPLACEHOLDER") {
-    switch(WifiPasswordGetter::mainpage_status) {
-        case OK:
-            return "";
-            break;
-        case INCORRECT_PASSWORD:
-            return "Password errata. Riprovare. <br>";
-            break;
-        case MISSING_INPUT:
-            return "Compilare tutti i campi. <br>";
-            break;
-    }
-  }
-  return String();
-}
-
-bool WifiPasswordGetter::passwordCheck(const String& ssid,const String& password) {
-    uint32_t TIMEOUT_CONNECTION_ATTEMPT_MILLIS = 3000;
-    bool connected = false;
-    uint32_t time_passed_milliseconds = 0;
-    WiFi.begin(ssid.c_str(), password.c_str());
-    /*
-        A volte il wifi status resta WL_DISCONNECTED indefinitamente. 
-        Il timeout impedisce un loop infinito in questo caso.
-    */
-    while(WiFi.status()==WL_DISCONNECTED && time_passed_milliseconds<TIMEOUT_CONNECTION_ATTEMPT_MILLIS) {
-        /*
-            Alimento il watchdog. Very bad, ma necessario perché 
-            async_tcp proibisce l'utilizzo di delay nelle callback.
-        */
-        TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
-        TIMERG0.wdt_feed=1;
-        TIMERG0.wdt_wprotect=0;
-        delay(500);
-        time_passed_milliseconds += 500;
-    }
-    while (WiFi.status()!=WL_CONNECT_FAILED && WiFi.status()!=WL_DISCONNECTED && WiFi.status()!=WL_CONNECTED) {
-        delay(500);
-        /*
-            Vedi sopra.
-        */
-        TIMERG0.wdt_wprotect=TIMG_WDT_WKEY_VALUE;
-        TIMERG0.wdt_feed=1;
-        TIMERG0.wdt_wprotect=0;
-
-    }
-    if(WiFi.status()==WL_CONNECTED) {
-        connected = true;
-    }
-    WiFi.disconnect(false, false);
-    return connected;
-}
-
-const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <style>
-        html, body { 
-            font-family: Helvetica; 
-            display: inline-block; 
-            margin: 0px auto; 
-            text-align: center;
-            background-color: #181a1b;
-            border-color: #736b5e;
-            color: #e8e6e3;
-        }
-        .button { 
-            background-color: #4CAF50; 
-            border: none; 
-            color: white; 
-            padding: 8px 20px;
-            text-decoration: none; 
-            font-size: 25px; 
-            margin: 2px; 
-            cursor: pointer;
-        }
-        .button2 {
-            background-color: #555555;
-        }
-        .centered{
-            text-align: center;
-        }
-    </style>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imposta Wi-Fi</title>
-</head>
-<body>
-    <h1>Wi-Fi</h1>
-    %WARNINGPLACEHOLDER%
-    Seleziona la rete Wi-Fi a cui collegare la scheda.
-    <div class="centered">
-        <form action="/get">
-            %BUTTONPLACEHOLDER%
-            <br>
-            inserisci la password:
-            <br>
-            <input type="password" name="password" id="password">
-            <br>
-            <input type="submit" value="OK">
-        </form>
-    </div>
-</body>
-</html>
-)rawliteral";
-
-const char* WifiPasswordGetter::SUCCESS_PAGE = R"rawliteral(
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <style>
-        html, body { 
-            font-family: Helvetica; 
-            display: inline-block; 
-            margin: 0px auto; 
-            text-align: center;
-            background-color: #181a1b;
-            border-color: #736b5e;
-            color: #e8e6e3;
-        }
-        .button { 
-            background-color: #4CAF50; 
-            border: none; 
-            color: white; 
-            padding: 8px 20px;
-            text-decoration: none; 
-            font-size: 25px; 
-            margin: 2px; 
-            cursor: pointer;
-        }
-        .button2 {
-            background-color: #555555;
-        }
-        .centered{
-            text-align: center;
-        }
-    </style>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configurazione completata</title>
-</head>
-<body>
-    <h1>Configurazione completata</h1>
-    A breve verrai disconnesso dalla rete.
-</body>
-</html>
-)rawliteral";
-
-const char CAPTIVE_PAGE[] PROGMEM = R"rawliteral(
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <style>
-        html, body { 
-            font-family: Helvetica; 
-            display: inline-block; 
-            margin: 0px auto; 
-            text-align: center;
-            background-color: #181a1b;
-            border-color: #736b5e;
-            color: #e8e6e3;
-        }
-        .button { 
-            background-color: #4CAF50; 
-            border: none; 
-            color: white; 
-            padding: 8px 20px;
-            text-decoration: none; 
-            font-size: 25px; 
-            margin: 2px; 
-            cursor: pointer;
-        }
-        .button2 {
-            background-color: #555555;
-        }
-        .centered{
-            text-align: center;
-        }
-    </style>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configurazione completata</title>
-</head>
-<body>
-    <h1>Pagina non trovata</h1>
-    Per connettere la corda al wifi visita <a href='http:///8.8.8.8'>questa pagina</a>.</p>
-</body>
-</html>
-)rawliteral";
+uint16_t WifiPasswordGetter::numberOfWifiNetworks = 0;
+String* WifiPasswordGetter::candidateSSID;
+String* WifiPasswordGetter::candeidatePassword;
 
 WifiPasswordGetter::WifiPasswordGetter(
             const char* temporary_network_ssid,
@@ -279,51 +74,92 @@ void WifiPasswordGetter::start_wifi() {
 
     // Route for root / web page
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-      request->send_P(200, "text/html", MAIN_PAGE, prepareAvailableWifiList);
+      request->send_P(200, "text/html", MAIN_PAGE);
     });
 
-    server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
-    String password;
-    String inputParam;
-    String ssid;
-    // GET input1 value on <ESP_IP>/get?input1=<inputMessage>
-    if (request->hasParam("password") && request->hasParam("SSID")) {
-      password = request->getParam("password")->value();
-      ssid = request->getParam("SSID")->value();
-      if(passwordCheck(ssid,password)) {
-        inputParam = "password";
-        wifi_configuration_t* new_wifi_config;
-        new_wifi_config = new wifi_configuration_t();
-        new_wifi_config->password = password;
-        new_wifi_config->SSID = ssid;
-        wifi_config = new_wifi_config;
-        request->send(200, "text/html", SUCCESS_PAGE);
-      }
-      else {
-        WifiPasswordGetter::mainpage_status = INCORRECT_PASSWORD;
-        request->redirect("/");
-      }
-    }
-    else {
-      WifiPasswordGetter::mainpage_status = MISSING_INPUT;
-      request->redirect("/");
-    }
+    server.on("/api/get-ssids", HTTP_GET, [](AsyncWebServerRequest *request){
+      DynamicJsonDocument doc(250);
+      char buffer[250];
+        JsonArray ssids = doc.createNestedArray("ssids");
+        for(int i=0;i<WifiPasswordGetter::getNumberOfWifiNetworks();i++){
+            ssids.add(WiFi.SSID(i));
+        }
+        serializeJson(doc, buffer);
+        request->send_P(200, "text/json", buffer);
+    });
+
+    AsyncCallbackJsonWebHandler *handler = new AsyncCallbackJsonWebHandler("/api/connect",
+        [](AsyncWebServerRequest *request, JsonVariant &json){
+    DynamicJsonDocument doc(250);
+      StaticJsonDocument<200> data;
+        if (json.is<JsonArray>())
+        {
+          data = json.as<JsonArray>();
+        }
+        else if (json.is<JsonObject>())
+        {
+          data = json.as<JsonObject>();
+        }
+        const char* ssid = data["ssid"];
+        Serial.println(ssid);
+        const char* password = data["password"];
+        Serial.println(password);
+        if(strlen(ssid)==0 || strlen(password)==0) {
+            request->send(400, "application/json", "{}");
+        }
+        else {
+            candidateSSID = new String(ssid);
+            candeidatePassword = new String(password);
+            WiFi.begin(ssid, password);
+            request->send(200, "application/json", "{}");
+        }
+    });
+    server.addHandler(handler);
+    server.on("/api/check-status", HTTP_GET, [](AsyncWebServerRequest *request){
+        switch(WiFi.status()) {
+            case WL_IDLE_STATUS:
+                    request->send(200, "application/json", "{\"status\": \"trying\"}");
+            case WL_DISCONNECTED:
+                    request->send(200, "application/json", "{\"status\": \"wrong credentials\"}");
+                break;
+            case WL_CONNECTED:
+                    wifi_configuration_t* new_wifi_config;
+                    new_wifi_config = new wifi_configuration_t();
+                    new_wifi_config->password = *candidateSSID;
+                    new_wifi_config->SSID = *candeidatePassword;
+                    wifi_config = new_wifi_config;
+                    request->send(200, "application/json", "{\"status\": \"connected\"}");
+                break;
+            case WL_CONNECT_FAILED:
+                    request->send(200, "application/json", "{\"status\": \"wrong credentials\"}");
+                break;
+            default:
+                    request->send(200, "application/json", "{\"status\": \"wrong credentials\"}");
+                break;
+        }
     });
 
     server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
     server.begin();
 }
 
+uint16_t WifiPasswordGetter::getNumberOfWifiNetworks() {
+    return numberOfWifiNetworks;
+}
+
 wifi_configuration_t WifiPasswordGetter::getWifiConfiguration() {
     start_wifi();
     wifi_configuration_t wifi_conf;
+    numberOfWifiNetworks = WiFi.scanNetworks();
     while(WifiPasswordGetter::wifi_config == nullptr) {
         dnsServer.processNextRequest(); 
-        delay(100);
+        delay(500);
     }
     wifi_conf = *WifiPasswordGetter::wifi_config;
     delete(WifiPasswordGetter::wifi_config);
     stop_wifi();
+    Serial.println(wifi_conf.SSID);
+    Serial.println(wifi_conf.password);
     return wifi_conf;
 }
 
@@ -332,15 +168,4 @@ void WifiPasswordGetter::stop_wifi(){
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
     server.end(); //Interrompiamo il Web Server
-}
-
-CaptiveRequestHandler::CaptiveRequestHandler() {}
-
-CaptiveRequestHandler::~CaptiveRequestHandler() {}
-bool CaptiveRequestHandler::canHandle(AsyncWebServerRequest *request){
-  //request->addInterestingHeader("ANY");
-  return true;
-}
-void CaptiveRequestHandler::handleRequest(AsyncWebServerRequest *request) {
-  request->redirect("http://smart.rope/");
 }

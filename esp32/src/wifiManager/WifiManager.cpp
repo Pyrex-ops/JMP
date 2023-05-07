@@ -69,9 +69,6 @@ void WifiManager::getNewCredentials() {
                                                   DEFAULT_TEMPORARY_NETWORK_GATEWAY,
                                                   DEFAULT_TEMPORARY_NETWORK_SUBNET_MASK))->getWifiConfiguration();
     cManager.newRecord(wifi_config.SSID,wifi_config.password);
-    Serial.println(wifi_config.SSID);
-    Serial.println(wifi_config.password);
-    Serial.println(cManager.getSSID());
 }
 
 WifiManager::WifiManager() {
