@@ -9,11 +9,13 @@ services:
       - ./app:/var/www/html
     env_file:
       - ./.env
+    restart: unless-stopped
     depends_on:
       - mysql
   mysql:
     env_file:
       - ./.env
+    restart: unless-stopped
     container_name: mysql
     ports:
       - "3306:3306"
@@ -24,6 +26,7 @@ services:
   phpmyadmin:
     env_file:
       - ./.env
+    restart: unless-stopped
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
     ports:
