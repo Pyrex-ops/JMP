@@ -6,7 +6,8 @@ services:
       - "80:80"
     build: './build/php'
     volumes:
-      - ./app:/var/www/html
+      - ./app/public:/var/www/html
+      - ./app/private:/php/private
     env_file:
       - ./.env
     restart: unless-stopped
