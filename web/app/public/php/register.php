@@ -1,55 +1,57 @@
 <?php
-require_once("/php/private/model/db/sessione.php");
-require_once("/php/private/model/db/dbconnessione.php");
-session_start();
+    include_once "/php/private/model/db/sessione.php";
+    include_once "/php/private/model/user/user.php";
 
-// Server-side validation and database handling
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Retrieve form data
-  $username = $_POST['username'];
-  $password = $_POST['password'];
-  $confirm_password = $_POST['confirm_password'];
-  $height = $_POST['height'];
-  $weight = $_POST['weight'];
-  $dob = $_POST['dob'];
-  $gender = $_POST['gender'];
+    function registration_error($error) {
+      $_SESSION['error_message'] = $error;
+      header("Location: /register.php");
+      exit;
+    }
 
-  // Server-side validation
-  if (strlen($password) < 6 || !preg_match('/[A-Z]/', $password)) {
-    $_SESSION['alert'] = 'Password must be at least 6 characters long and contain an uppercase letter.';
-    header("Location: register.php");
-    exit();
-  } elseif ($password !== $confirm_password) {
-    $_SESSION['alert'] = 'Passwords do not match.';
-    header("Location: register.php");
-    exit();
-  } elseif (!in_array($gender, ['male', 'female'])) {
-    $_SESSION['alert'] = 'Please select a valid gender.';
-    header("Location: register.php");
-    exit();
-  }
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $username = $_POST["username"];
+        if(strlen($username)==0) {
+          registration_error("Inserisci l'username.");
+        }
+        $password = $_POST["password"];
+        if(strlen($password)==0) {
+          registration_error("Inserisci la password.");
+        }
+        $height = $_POST["height"];
+        if(strlen($height)==0) {
+          registration_error("Inserisci l'altezza.");
+        }
+        $weight = $_POST["weight"];
+        if(strlen($weight)==0) {
+          registration_error("Inserisci il peso.");
+        }
+        $dob = $_POST["dob"];
+        if(strlen($dob)==0) {
+          registration_error("Inserisci la data di nascita.");
+        }
+        $gender = $_POST["gender"];
+        if(strlen($gender)==0) {
+          registration_error("Inserisci il sesso.");
+        }
+        if (strlen($password) <= 6) {
+            registration_error("La password deve essere più lunga di 6 caratteri.");
+        } elseif (!preg_match('/[A-Z]/', $password)) {
+          registration_error("La password deve contenere un carattere maiuscolo.");
+        }
 
-  // Database query and exception handling
-  try {
-    //TODO: Consentire solo username univoci
-    //TODO: Aggiornare tabella e inserire tutti i campi
-    $query = $database->prepare("INSERT INTO utente(username, passwordhash,peso,altezza,dataDiNascita,sesso) VALUES (?,?,?,?,?,?)");
-    $passhash = password_hash($_POST["password"], PASSWORD_BCRYPT);
-    $query->bind_param("ssssss",$_POST["username"], $passhash,$_POST["weigth"],$_POST["heigth"],$_POST["dob"],$_POST["gender"]);
-    $query->execute();
-    $query->close();
+        if(does_user_exist($username)) {
+          registration_error("Un utente con questo username è già registrato.");
+        }
 
-    // Redirect to login page on success
-    header("Location: login.php");
-    exit();
-  } catch (Exception $e) {
-    $_SESSION['alert'] = 'An error occurred. Please try again later.';
-    header("Location: register.php");
-    exit();
-  }
-} else {
-  // Redirect to register page if accessed directly without a POST request
-  header("Location: register.php");
-  exit();
-}
+        try {
+          add_user($_POST["username"],$_POST["password"],$_POST["weight"],$_POST["height"],$_POST["dob"],$_POST["gender"]);
+          header("Location: /login.php");
+        }
+        catch(exception $exception) {
+          registration_error("Dati non validi. Riprovare.");
+        }
+        exit;
+    } else {
+      registration_error("errore generico");
+    }
 ?>

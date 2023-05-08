@@ -1,14 +1,15 @@
-<?php require_once "/php/private/view/navbar.php"?>
-
+<?php require_once "/php/private/model/db/sessione.php";
+require_once "/php/private/view/navbar.php";?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Registrazione</title>
-  <link rel="stylesheet" href="/bootstrap.css">
-  
-  <style>
-    body {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <style>
+        body {
       background-color: #f8f9fa;
       margin: 0;
     }
@@ -21,6 +22,7 @@
       margin-top: 50px;
       margin-bottom: 50px;
       border-radius: 5px;
+      border: 1px solid #ccc;
     }
     
     
@@ -34,9 +36,10 @@
     }
     .button {
   display: inline-block;
-  padding: 12px 60px;
+  width: 100%;
+  padding: 12px;
   background-color: #198754;
-  margin-top: 20px;
+  margin-top: 40px;
   color: #ffffff;
   border-radius: 6px;
   border: none;
@@ -68,98 +71,67 @@
   border: 1px solid #f5c6cb;
   border-radius: 4px;
 }
-
-  </style>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    </style>
 </head>
 <body>
-  <?php echo_navbar() ?>
-  <div class="container">
-    <h2 class="text-center">Registrazione</h2>
-    <div id="error-container"></div>
-    <form method="post" action="/php/register.php">
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" class="form-control" id="username" name="username" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" class="form-control" id="password" name="password" required>
-      </div>
-      <div class="form-group">
-        <label for="confirm_password">Reinserisci la password:</label>
-        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-      </div>
-      <div class="form-group">
-        <label for="height">Altezza:</label>
-        <input type="number" class="form-control" id="height" name="height" required>
-      </div>
-      <div class="form-group">
-        <label for="weight">Peso:</label>
-        <input type="number" class="form-control" id="weight" name="weight" required>
-      </div>
-      <div class="form-group">
-        <label for="dob">Data di nascita:</label>
-        <input type="date" class="form-control" id="dob" name="dob" required>
-      </div> 
-      <div class="form-group">
-    <label for="gender">Sesso:</label>
-    <select class="form-control" id="gender" name="gender" required>
-      <option value="" disabled selected>Seleziona il sesso</option>
-      <option value="male">Maschio</option>
-      <option value="female">Femmina</option>
-    </select>
-  </div>
-      <div class="text-center">
-        <button type="submit" class="btn btn-primary button">Registrati</button>
-      </div>
+<?php echo_navbar() ?>
+
+<div class="container">
+    <?php
+    if (isset($_SESSION['error_message'])) {
+        $error = $_SESSION['error_message'];
+        unset($_SESSION['error_message']);
+        echo '<div class="alert alert-danger">' . $error . '</div>';
+    }
+    ?>
+    <form method="POST" action="php/register.php">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+            <small class="text-muted">La password deve essere lunga 6 caratteri e contenere una lettera maiuscola.</small>
+        </div>
+        <div class="form-group">
+            <label for="weight">Peso (kg)</label>
+            <input type="number" class="form-control" id="weight" name="weight" required>
+        </div>
+        <div class="form-group">
+            <label for="height">Altezza (cm)</label>
+            <input type="number" class="form-control" id="height" name="height" required>
+        </div>
+        <div class="form-group">
+            <label for="dob">Data di nascita</label>
+            <input type="date" class="form-control" id="dob" name="dob" required>
+        </div>
+        <div class="form-group">
+            <label for="gender">Sesso</label>
+            <select class="form-control" id="gender" name="gender" required>
+                <option value="">Select</option>
+                <option value="maschio">maschio</option>
+                <option value="femmina">femmina</option>
+            </select>
+        </div>
+        <button type="submit" class="btn button btn-primary">Register</button>
     </form>
-  </div>
+</div>
 
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <script>
-    // Client-side validation
-    // Client-side validation
-document.querySelector('form').addEventListener('submit', function(event) {
-  var password = document.getElementById('password').value;
-  var confirm_password = document.getElementById('confirm_password').value;
-  var height = document.getElementById('height').value;
-  var weight = document.getElementById('weight').value;
-
-  var errorMessages = [];
-
-  if (password.length < 6 || !/[A-Z]/.test(password)) {
-    errorMessages.push('La password deve essere lunga almeno 6 caratteri e contenere un carattere maiuscolo.');
-  }
-
-  if (password !== confirm_password) {
-    errorMessages.push('Le password non corrispondono.');
-  }
-
-  if (isNaN(height)) {
-    errorMessages.push('Inserisci l'altezza.');
-  }
-
-  if (isNaN(weight)) {
-    errorMessages.push('Inserisci il peso.');
-  }
-
-  var errorContainer = document.getElementById('error-container');
-  errorContainer.innerHTML = '';
-
-  if (errorMessages.length > 0) {
-    event.preventDefault();
-    errorMessages.forEach(function(message) {
-      var errorElement = document.createElement('div');
-      errorElement.classList.add('error');
-      errorElement.textContent = message;
-      errorContainer.appendChild(errorElement);
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#password').keyup(function () {
+            var password = $(this).val();
+            var uppercaseRegex = /[A-Z]/;
+            var isValid = password.length >= 6 && uppercaseRegex.test(password);
+            if (isValid) {
+                $(this).removeClass('is-invalid').addClass('is-valid');
+            } else {
+                $(this).removeClass('is-valid').addClass('is-invalid');
+            }
+        });
     });
-  }
-});
-
-  </script>
+</script>
 </body>
 </html>
