@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 if (isset($_POST["id"]) && isset($_POST["valore"])) {
     if (isset($database)) {
         $queryDispositivo = $database->prepare("SELECT IDDispositivo FROM dispositivo WHERE IDDispositivo = (?)");
-        $queryDispositivo->bind_param("i", $_POST["id"]);
+        $queryDispositivo->bind_param("s", $_POST["id"]);
         $queryDispositivo->execute();
         if (!$queryDispositivo->get_result()->num_rows == 0) {
             $queryDispositivo->close();
