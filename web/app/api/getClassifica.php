@@ -6,7 +6,7 @@ if (isset($database)) {
     if (isset($_GET["tipo"])) {
         if ($_GET["tipo"] == 1) {
             //Numero salti utente
-            $numSalti = $database->query("SELECT utente.username, SUM(valore) as numSalti 
+            $numSalti = $database->query("SELECT utente.username, SUM(numeroSalti) as numSalti 
                                         FROM misura
                                             JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
                                             JOIN utente ON allenamento.IDUtente = utente.IDUtente
