@@ -36,7 +36,7 @@ if (isset($database)) {
             http_response_code(200);
             echo json_encode(array("stato" => "ok", "classificaDurata" => $arrayDurata));
             exit;
-        }else{
+        } else {
             http_response_code(401);
             echo json_encode(array("stato" => "errore"));
             exit;
