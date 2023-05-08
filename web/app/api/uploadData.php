@@ -15,9 +15,8 @@ if (isset($_POST["id"]) && isset($_POST["valore"])) {
             $queryAllenamento->execute();
             $tempAllenamento = $queryAllenamento->get_result();
             if ($tempAllenamento->num_rows != 0) {
-                $allenamentoID=$tempAllenamento->fetch_row()[0];
-            }
-            else{
+                $allenamentoID = $tempAllenamento->fetch_row()[0];
+            } else {
                 http_response_code(401);
                 echo json_encode(array("stato" => "errore"));
                 exit();
