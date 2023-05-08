@@ -2,7 +2,7 @@
 require_once "/php/private/view/navbar.php";?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -109,12 +109,12 @@ require_once "/php/private/view/navbar.php";?>
         <div class="form-group">
             <label for="gender">Sesso</label>
             <select class="form-control" id="gender" name="gender" required>
-                <option value="">Select</option>
+                <option value="">Seleziona</option>
                 <option value="maschio">maschio</option>
                 <option value="femmina">femmina</option>
             </select>
         </div>
-        <button type="submit" class="btn button btn-primary">Register</button>
+        <button type="submit" class="btn button btn-primary">Registrati</button>
     </form>
 </div>
 
