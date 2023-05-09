@@ -44,7 +44,7 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             font-size: 16px;
         }
         .form-container button {
-            background-color: #4caf50;
+            background-color: #198754;
             color: #fff;
             cursor: pointer;
         }
@@ -123,7 +123,7 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
         }
 
         .success {
-            background-color: #4caf50;
+            background-color: #198754;
         }
         #refreshButton {
     background-color: #2196f3;
@@ -160,7 +160,7 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             <select id="ssidSelect" disabled></select>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <span style="margin-left: 5px;">Aggiorna reti WiFi</span>
-                <button id="refreshButton" class="small-button" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: none; margin-left:20px;border-radius: 5px; background-color: #2196f3; color: #fff; margin-top: 10px;">
+                <button id="refreshButton" class="small-button" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: none; margin-left:20px;border-radius: 5px; background-color: #198754; color: #fff; margin-top: 10px;">
                     &#x21bb;
                 </button>
             </div>
