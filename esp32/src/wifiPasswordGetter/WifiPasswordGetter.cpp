@@ -63,14 +63,11 @@ WifiPasswordGetter::WifiPasswordGetter(
 void WifiPasswordGetter::start_wifi() {
     WiFi.disconnect(true,true);
     WiFi.mode(WIFI_AP_STA);
-    Serial.print("Setting AP (Access Point)");
     WiFi.softAP(TEMPORARY_NETWORK_SSID, TEMPORARY_NETWORK_PASSWORD);
     WiFi.softAPConfig(MICROCONTROLLER_IP, MICROCONTROLLER_IP, TEMPORARY_NETWORK_SUBNET_MASK);
     IPAddress IP = WiFi.softAPIP();
     dnsServer.setErrorReplyCode(DNSReplyCode::NoError); 
     dnsServer.start(53, "*", IP);
-    Serial.print("AP IP address: ");
-    Serial.println(IP);
 
     // Route for root / web page
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -106,9 +103,7 @@ void WifiPasswordGetter::start_wifi() {
           data = json.as<JsonObject>();
         }
         const char* ssid = data["ssid"];
-        Serial.println(ssid);
         const char* password = data["password"];
-        Serial.println(password);
         if(strlen(ssid)==0 || strlen(password)==0) {
             request->send(400, "application/json", "{}");
         }
@@ -130,8 +125,8 @@ void WifiPasswordGetter::start_wifi() {
             case WL_CONNECTED:
                     wifi_configuration_t* new_wifi_config;
                     new_wifi_config = new wifi_configuration_t();
-                    new_wifi_config->password = *candidateSSID;
-                    new_wifi_config->SSID = *candeidatePassword;
+                    new_wifi_config->password = *candeidatePassword;
+                    new_wifi_config->SSID = *candidateSSID;
                     wifi_config = new_wifi_config;
                     request->send(200, "application/json", "{\"status\": \"connected\"}");
                 break;
@@ -163,8 +158,6 @@ wifi_configuration_t WifiPasswordGetter::getWifiConfiguration() {
     wifi_conf = *WifiPasswordGetter::wifi_config;
     delete(WifiPasswordGetter::wifi_config);
     stop_wifi();
-    Serial.println(wifi_conf.SSID);
-    Serial.println(wifi_conf.password);
     return wifi_conf;
 }
 

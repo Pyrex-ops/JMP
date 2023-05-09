@@ -15,7 +15,7 @@ class WifiManager {
         wifi_configuration_t getCredentialsFromUser();
     public:
         WifiManager();
-        bool connect();
+        void connect();
         void getNewCredentials();
         bool checkConnection();
         bool hasSavedCredentials();

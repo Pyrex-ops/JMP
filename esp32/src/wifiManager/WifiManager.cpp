@@ -7,43 +7,15 @@
 #define DEFAULT_TEMPORARY_NETWORK_SUBNET_MASK 255 , 255, 255, 0
 #define CREDENTIALS_KEY "credenzialiWiFi"
 
-bool WifiManager::checkCredentials(wifi_configuration_t wifi_config) {
-    uint32_t TIMEOUT_CONNECTION_ATTEMPT_MILLIS = 500;
-    bool connected = false;
-    uint32_t time_passed_milliseconds = 0;
-    WiFi.begin(wifi_config.SSID.c_str(), wifi_config.password.c_str());
-    /*
-        A volte il wifi status resta WL_DISCONNECTED indefinitamente. 
-        Il timeout impedisce un loop infinito in questo caso.
-    */
-    while(WiFi.status()==WL_DISCONNECTED && time_passed_milliseconds<TIMEOUT_CONNECTION_ATTEMPT_MILLIS) {
-        delay(100);
-        time_passed_milliseconds += 100;
-    }
-    while (WiFi.status()!=WL_CONNECT_FAILED && WiFi.status()!=WL_DISCONNECTED && WiFi.status()!=WL_CONNECTED) {
-        delay(100);
-
-    }
-    if(WiFi.status()==WL_CONNECTED) {
-        connected = true;
-    }
-    return connected;
-}
-
 bool WifiManager::checkConnection() {
     return WiFi.status()==WL_CONNECTED;
 }
 
-bool WifiManager::connect() {
-
-    if(checkConnection())
-        return true;
-
+void WifiManager::connect() {
+    
     credentialsManager cManager(CREDENTIALS_KEY);
 
     wifi_configuration_t wifi_config;
-
-    bool connected = false;
 
     WiFi.mode(WIFI_STA); //Optional
     
@@ -53,11 +25,7 @@ bool WifiManager::connect() {
     /*
         Provo a connettermi.
     */
-    if(checkCredentials(wifi_config)) {
-            connected = true;
-    } 
-
-    return connected;
+    WiFi.begin(wifi_config.SSID.c_str(), wifi_config.password.c_str());
 }
 
 void WifiManager::getNewCredentials() {
