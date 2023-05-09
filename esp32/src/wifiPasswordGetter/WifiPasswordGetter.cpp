@@ -88,6 +88,11 @@ void WifiPasswordGetter::start_wifi() {
         request->send_P(200, "text/json", buffer);
     });
 
+    server.on("/api/refresh-ssids", HTTP_GET, [](AsyncWebServerRequest *request){
+        numberOfWifiNetworks = WiFi.scanNetworks();
+        request->send(200, "application/json", "{\"status\": \"trying\"}");
+    });
+
     AsyncCallbackJsonWebHandler *handler = new AsyncCallbackJsonWebHandler("/api/connect",
         [](AsyncWebServerRequest *request, JsonVariant &json){
     DynamicJsonDocument doc(250);
