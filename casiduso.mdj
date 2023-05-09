@@ -364,7 +364,7 @@
 									"font": "Arial;13;0",
 									"left": 447.5,
 									"top": 236.5,
-									"width": 121.97265625,
+									"width": 121,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGHdHMms8YeYbo="
@@ -558,7 +558,7 @@
 									"font": "Arial;13;0",
 									"left": 439,
 									"top": 345.5,
-									"width": 139.0732421875,
+									"width": 138,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGHdHNCksZMjds="
@@ -757,7 +757,7 @@
 									"font": "Arial;13;0",
 									"left": 453,
 									"top": 563.5,
-									"width": 110.39453125,
+									"width": 110,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGHdHvqccgFloo="
@@ -1527,7 +1527,7 @@
 									"font": "Arial;13;0",
 									"left": 372,
 									"top": 454.5,
-									"width": 273.45947265625,
+									"width": 272,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGHldGE7otGPXA="
@@ -2881,7 +2881,7 @@
 									"font": "Arial;13;0",
 									"left": 425.5,
 									"top": 396.5,
-									"width": 160.97265625,
+									"width": 160,
 									"height": 25,
 									"stereotypeLabel": {
 										"$ref": "AAAAAAGHsmSvRcaSAZA="
@@ -4617,7 +4617,7 @@
 							"top": 568,
 							"width": 99.80908203125,
 							"height": 90,
-							"text": "Calorie, numero salti e durata allenamento, frequenza di salto"
+							"text": "Calorie, numero salti e durata allenamento."
 						},
 						{
 							"_type": "UMLNoteLinkView",

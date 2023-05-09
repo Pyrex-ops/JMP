@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+  php-apache:
+    container_name: php-apache
+    ports:
+      - "80:80"
+    build: './build/php'
+    volumes:
+      - ./app/public:/var/www/html
+      - ./app/private:/php/private
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    depends_on:
+      - mysql
+  mysql:
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    build: './build/mysql'
+    volumes:
+      - './data:/var/lib/mysql'
+      - './sql/scripts:/docker-entrypoint-initdb.d'
+  phpmyadmin:
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+volumes:
+  dbData:
