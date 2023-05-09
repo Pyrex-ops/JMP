@@ -20,7 +20,7 @@ DNSServer dnsServer;
 wifi_configuration_t* WifiPasswordGetter::wifi_config = nullptr;
 uint16_t WifiPasswordGetter::numberOfWifiNetworks	  = 0;
 String* WifiPasswordGetter::candidateSSID;
-String* WifiPasswordGetter::candeidatePassword;
+String* WifiPasswordGetter::candidatePassword;
 
 WifiPasswordGetter::WifiPasswordGetter(
 	const char* temporary_network_ssid, const char* temporary_network_password)
@@ -75,8 +75,8 @@ void WifiPasswordGetter::start_wifi() {
 			if (strlen(ssid) == 0 || strlen(password) == 0) {
 				request->send(400, "application/json", "{}");
 			} else {
-				candidateSSID	   = new String(ssid);
-				candeidatePassword = new String(password);
+				candidateSSID	  = new String(ssid);
+				candidatePassword = new String(password);
 				WiFi.begin(ssid, password);
 				request->send(200, "application/json", "{}");
 			}
@@ -93,7 +93,7 @@ void WifiPasswordGetter::start_wifi() {
 			case WL_CONNECTED:
 				wifi_configuration_t* new_wifi_config;
 				new_wifi_config			  = new wifi_configuration_t();
-				new_wifi_config->password = *candeidatePassword;
+				new_wifi_config->password = *candidatePassword;
 				new_wifi_config->SSID	  = *candidateSSID;
 				wifi_config				  = new_wifi_config;
 				request->send(200, "application/json", "{\"status\": \"connected\"}");

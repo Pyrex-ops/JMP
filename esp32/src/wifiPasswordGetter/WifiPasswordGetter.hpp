@@ -79,6 +79,6 @@ class WifiPasswordGetter {
 	 * @brief Puntatore alla password inserita dall'utente.
 	 *
 	 */
-	static String* candeidatePassword;
+	static String* candidatePassword;
 };
 #endif
