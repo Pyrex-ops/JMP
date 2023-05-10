@@ -38,7 +38,6 @@ uint32_t lostConnectionTimestamp;
 
 void setup() {
 	Serial.begin(115200);
-	Serial.println(WiFi.macAddress());
 	encoder.begin();
 	motorino.begin();
 	schermo.begin();
