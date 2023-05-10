@@ -8,6 +8,6 @@
   <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
 </head>
 <body>
-  <?php echo "prova"?>
+  <?php echo 'prova'?>
 </body>
 </html>

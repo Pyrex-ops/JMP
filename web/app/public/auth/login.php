@@ -1,21 +1,20 @@
 <?php
-require_once("../db/dbconnessione.php");
-require_once("../db/sessione.php");
+require_once '../db/dbconnessione.php';
+require_once '../db/sessione.php';
 
-
-if (isset($_POST["username"]) && isset($_POST["password"]) && !isset($_SESSION["auth"])) {
+if (isset($_POST['username']) && isset($_POST['password']) && ! isset($_SESSION['auth'])) {
     if (isset($database)) {
-        $queryHash = $database->prepare("SELECT passwordhash FROM utente WHERE username = ?");
-        $queryHash->bind_param("s", $_POST["username"]);
+        $queryHash = $database->prepare('SELECT passwordhash FROM utente WHERE username = ?');
+        $queryHash->bind_param('s', $_POST['username']);
         $queryHash->execute();
         $arrayHash = $queryHash->get_result()->fetch_assoc();
-        if (isset($arrayHash["passwordhash"])) {
-            if (password_verify($_POST["password"], $arrayHash["passwordhash"])) {
-                $_SESSION["auth"] = true;
+        if (isset($arrayHash['passwordhash'])) {
+            if (password_verify($_POST['password'], $arrayHash['passwordhash'])) {
+                $_SESSION['auth'] = true;
                 //echo "\nLogin eseguito con successo";
-                header("location:../dashboard.php");
+                header('location:../dashboard.php');
             } else {
-                $_SESSION["auth"] = false;
+                $_SESSION['auth'] = false;
                 //echo "\nPassword errata";
             }
             $queryHash->close();

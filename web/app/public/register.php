@@ -1,4 +1,4 @@
-<?php require_once "/php/private/view/navbar.php"?>
+<?php require_once '/php/private/view/navbar.php'?>
 
 
 <!DOCTYPE html>

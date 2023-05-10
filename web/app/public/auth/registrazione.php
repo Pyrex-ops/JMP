@@ -1,6 +1,6 @@
 <?php
-require_once("../db/sessione.php");
-require_once("../db/dbconnessione.php");
+require_once '../db/sessione.php';
+require_once '../db/dbconnessione.php';
 //Registrazione
 /**
  * Username: stringa
@@ -10,32 +10,30 @@ require_once("../db/dbconnessione.php");
  * datanascita: data (gg/mm/aaaa)
  * sesso: stringa
  */
-
- function myErrorHandler($errno, $errstr, $errfile, $errline)
+function myErrorHandler($errno, $errstr, $errfile, $errline)
 {
-  header('location:"../registrazione.php"'); 
+    header('location:"../registrazione.php"');
 }
 
 set_error_handler('myErrorHandler');
 
-if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["peso"]) && isset($_POST["altezza"]) && isset($_POST["datanascita"]) && isset($_POST["sesso"])) {
-    $_SESSION["erroreRegistrazione"] = "Errore generico. Riprova più tardi.";
-    echo $_POST["username"];
+if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['peso']) && isset($_POST['altezza']) && isset($_POST['datanascita']) && isset($_POST['sesso'])) {
+    $_SESSION['erroreRegistrazione'] = 'Errore generico. Riprova più tardi.';
+    echo $_POST['username'];
     try {
-      if (isset($database)) {
-        //TODO: Consentire solo username univoci
-        //TODO: Aggiornare tabella e inserire tutti i campi
-        $query = $database->prepare("INSERT INTO utente(username, passwordhash,peso,altezza,dataDiNascita,sesso) VALUES (?,?,?,?,?,?)");
-        $passhash = password_hash($_POST["password"], PASSWORD_BCRYPT);
-        $query->bind_param("ssssss",$_POST["username"], $passhash,$_POST["peso"],$_POST["altezza"],$_POST["datanascita"],$_POST["sesso"]);
-        $query->execute();
-        $query->close();
-        $_SESSION["erroreRegistrazione"] = false; //Tutto ok, se falso mostriamo errore all'utente
-        //header('location:"../registrazione.php"');
-    }
-    }
-    catch(error) {
-      header('location:"../registrazione.php"');
+        if (isset($database)) {
+            //TODO: Consentire solo username univoci
+            //TODO: Aggiornare tabella e inserire tutti i campi
+            $query = $database->prepare('INSERT INTO utente(username, passwordhash,peso,altezza,dataDiNascita,sesso) VALUES (?,?,?,?,?,?)');
+            $passhash = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            $query->bind_param('ssssss', $_POST['username'], $passhash, $_POST['peso'], $_POST['altezza'], $_POST['datanascita'], $_POST['sesso']);
+            $query->execute();
+            $query->close();
+            $_SESSION['erroreRegistrazione'] = false; //Tutto ok, se falso mostriamo errore all'utente
+            //header('location:"../registrazione.php"');
+        }
+    } catch (error) {
+        header('location:"../registrazione.php"');
     }
 }
 ?>
@@ -73,13 +71,13 @@ if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["peso
 
                 // Check if the session variable "error" is set
                 if (isset($_SESSION['erroreRegistrazione'])) {
-                  // Display an alert with the error message
-                  echo '<div class="alert alert-danger">' . $_SESSION['erroreRegistrazione'] . '</div>';
-                
-                  // Unset the session variable "error" to prevent it from being displayed again
-                  unset($_SESSION['error']);
+                    // Display an alert with the error message
+                    echo '<div class="alert alert-danger">'.$_SESSION['erroreRegistrazione'].'</div>';
+
+                    // Unset the session variable "error" to prevent it from being displayed again
+                    unset($_SESSION['error']);
                 }
-                ?>
+?>
 
               <form method="POST" action="">
       <div class="mb-3">
