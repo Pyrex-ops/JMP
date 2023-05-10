@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `misura` (
   `IDMisura` int NOT NULL AUTO_INCREMENT,
   `IDAllenamento` int NOT NULL,
   `numeroSalti` int NOT NULL CONSTRAINT numSalti_maggiore_zero CHECK(`numeroSalti`>=0),
-  `timestamp` timestamp NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`IDMisura`),
   KEY `IDAllenamento` (`IDAllenamento`)
 ) ;
