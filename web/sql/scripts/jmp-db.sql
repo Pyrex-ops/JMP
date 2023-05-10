@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `dispositivo` (
 CREATE TABLE IF NOT EXISTS `misura` (
   `IDMisura` int NOT NULL AUTO_INCREMENT,
   `IDAllenamento` int NOT NULL,
-  `numeroSalti` int NOT NULL,
+  `numeroSalti` int NOT NULL CONSTRAINT numSalti_maggiore_zero CHECK(`numeroSalti`>=0),
   `timestamp` timestamp NOT NULL,
   PRIMARY KEY (`IDMisura`),
   KEY `IDAllenamento` (`IDAllenamento`)
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `misura` (
 CREATE TABLE IF NOT EXISTS `obiettivo` (
   `IDObiettivo` int NOT NULL AUTO_INCREMENT,
   `IDCategoria` int NOT NULL,
-  `parametro` int NOT NULL,
+  `parametro` int NOT NULL CONSTRAINT parametro_maggiore_zero CHECK(`parametro`>=0),
   PRIMARY KEY (`IDObiettivo`),
   KEY `IDCategoria` (`IDCategoria`)
 ) ;
@@ -122,8 +122,8 @@ CREATE TABLE IF NOT EXISTS `utente` (
   `IDUtente` int NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
   `passwordHash` char(60) NOT NULL,
-  `peso` int NOT NULL,
-  `altezza` int NOT NULL,
+  `peso` int NOT NULL CONSTRAINT peso_maggiore_zero CHECK(`peso`>=0),
+  `altezza` int NOT NULL CONSTRAINT altezza_maggiore_zero CHECK(`altezza`>=0),
   `dataNascita` date NOT NULL,
   `genere` enum('maschio','femmina') NOT NULL,
   `partecipazioneClassifica` tinyint(1) NOT NULL DEFAULT '0',
