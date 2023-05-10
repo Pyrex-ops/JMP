@@ -59,7 +59,6 @@ void loop() {
 void handleDisconnected() {
 	if (millis() - lostConnectionTimestamp > TIMEOUT_NEW_CREDENTIALS_MILLISECONDS
 		|| !wifiManager.hasSavedCredentials()) {
-		Serial.println(wifiManager.hasSavedCredentials());
 		wifiManager.deleteCredentials();
 		Serial.println("new credentials required");
 		schermo.scrivi(0, "new credentials required");

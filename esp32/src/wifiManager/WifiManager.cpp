@@ -1,7 +1,7 @@
 #include "WifiManager.hpp"
 
-#define DEFAULT_TEMPORARY_NETWORK_SSID "ConfigurazioneCorda"
-#define DEFAULT_TEMPORARY_NETWORK_PASSWORD "elSugusWifi"
+#define DEFAULT_TEMPORARY_NETWORK_SSID "Configurazione JMPCorda"
+#define DEFAULT_TEMPORARY_NETWORK_PASSWORD "JMPitnow"
 #define CREDENTIALS_KEY "credenzialiWiFi"
 
 bool WifiManager::checkConnection() {
