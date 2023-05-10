@@ -18,6 +18,7 @@ class TrainingManager {
 	MotorinoGravity* motorino;
 	float moltiplicatoreCalorie;
 	uint32_t lastSentTimestamp;
+	void uploadData();
 	const uint32_t TIMESTAMP_START_TRAINING;
 	bool raggiuntoObiettivo;
 	int calcolaCalorie();
@@ -27,6 +28,8 @@ class TrainingManager {
 	TrainingManager(BackendServer* server_in, uint32_t sample_period_seconds,
 					Schermo* schermo_in, uint32_t revolutions, MotorinoGravity* motorino_in);
 	void storeData(uint32_t revolutions);
+	~TrainingManager();
 };
+	
 
 #endif

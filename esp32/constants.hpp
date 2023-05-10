@@ -15,7 +15,7 @@
 #define SCHERMO_PIN_SDA 21
 #define SCHERMO_PIN_SCL 22
 
-#define API_URL "http://el.mogus"
+#define API_URL "https://jmpit.serveo.net/"
 #define SCHERMO_PIN_1 21
 #define SCHERMO_PIN_2 22
 #define TIMEOUT_NEW_CREDENTIALS_MILLISECONDS 20000

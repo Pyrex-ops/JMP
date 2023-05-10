@@ -27,12 +27,14 @@ void TrainingManager::storeData(uint32_t revolutions_in) {
 	}
 	revolutions = revolutions_in - INITIAL_REVOLUTIONS;
 	if (millis() - lastSentTimestamp > SAMPLE_PERIOD_MILLISECONDS) {
-		Serial.print("data sent to server = ");
-		Serial.println(revolutions - lastSentRevolutions);
-		server->sendData(revolutions - lastSentRevolutions);
-		lastSentTimestamp	= millis();
-		lastSentRevolutions = revolutions;
+		uploadData();
 	}
+}
+
+void TrainingManager::uploadData() {
+	server->sendData(revolutions - lastSentRevolutions);
+	lastSentTimestamp	= millis();
+	lastSentRevolutions = revolutions;
 }
 
 bool TrainingManager::checkObiettivo() {
@@ -48,6 +50,7 @@ bool TrainingManager::checkObiettivo() {
 				raggiuntoObiettivo = ((millis() - TIMESTAMP_START_TRAINING) * 1e-3
 									  > (obiettivo.valore * 60));
 				break;
+			default: break;
 		}
 		return raggiuntoObiettivo;
 	}
@@ -56,4 +59,8 @@ bool TrainingManager::checkObiettivo() {
 
 int TrainingManager::calcolaCalorie() {
 	return moltiplicatoreCalorie * revolutions;
+}
+
+TrainingManager::~TrainingManager() {
+	uploadData();
 }

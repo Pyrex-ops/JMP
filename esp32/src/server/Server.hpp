@@ -8,9 +8,10 @@ typedef struct {
 } training_sample_t;
 
 typedef enum {
-	NUMERO_SALTI,
-	CALORIE_SPESE,
-	TEMPO_ALLENAMENTO_MINUTI,
+	NESSUNO = 0,
+	NUMERO_SALTI = 1,
+	CALORIE_SPESE = 2,
+	TEMPO_ALLENAMENTO_MINUTI = 3,
 } tipologiaObiettivo_t;
 
 typedef struct {
@@ -20,9 +21,9 @@ typedef struct {
 
 class BackendServer {
   private:
-	String* SERVER_NAME;
+	String SERVER_NAME;
   public:
-	BackendServer(String* serverName);
+	BackendServer(const char* serverName);
 	void startTraining();
 	void sendData(uint32_t revolutions);
 	obiettivo_t getObiettivo();

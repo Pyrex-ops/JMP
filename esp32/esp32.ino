@@ -17,7 +17,7 @@ MotorinoGravity motorino(
 
 NewEncoderAdapter encoder(ENCODER_CLK_PIN, ENCODER_DT_PIN, ENCODER_PPR);
 TrainingManager* trainingManager = nullptr;
-BackendServer backendServer(new String(API_URL));
+BackendServer backendServer(API_URL);
 uint32_t timestampLastRevolution;
 uint32_t lastRevolutionNumber;
 
@@ -38,6 +38,7 @@ uint32_t lostConnectionTimestamp;
 
 void setup() {
 	Serial.begin(115200);
+	Serial.println(WiFi.macAddress());
 	encoder.begin();
 	motorino.begin();
 	schermo.begin();
@@ -106,6 +107,7 @@ void handleTraining() {
 		Serial.println("training ended");
 		schermo.scrivi(0, "training ended");
 		encoder.reset();
+		delete (trainingManager);
 		currentState = IDLE;
 	}
 	if (!wifiManager.checkConnection()) { disconnected(); }
