@@ -3,6 +3,7 @@
 const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Configurazione WiFi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,10 +14,12 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             margin: 0;
             padding: 0;
         }
+
         body {
             font-family: Arial, sans-serif;
             text-align: center;
         }
+
         .container {
             display: flex;
             flex-direction: column;
@@ -25,6 +28,7 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             height: 100vh;
             padding: 20px;
         }
+
         .form-container {
             max-width: 400px;
             width: 100%;
@@ -33,6 +37,7 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             border-radius: 5px;
             padding: 20px;
         }
+
         .form-container select,
         .form-container input[type="password"],
         .form-container button {
@@ -43,20 +48,24 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             border: 1px solid #ccc;
             font-size: 16px;
         }
+
         .form-container button {
             background-color: #198754;
             color: #fff;
             cursor: pointer;
         }
+
         .form-container button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
+
         .loading-container {
             display: none;
             max-width: 400px;
             width: 100%;
         }
+
         .loading-animation {
             width: 50px;
             height: 50px;
@@ -66,34 +75,40 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             animation: spin 1s infinite linear;
             margin: 0 auto 20px auto;
         }
+
         .status-message {
             margin-bottom: 20px;
         }
-        .alert-container {
-    margin-top: 20px;
-    text-align: center;
-}
 
-.alert-box {
-    display: inline-block;
-    padding: 10px;
-    background-color: #f44336;
-    color: #fff;
-    border-radius: 5px;
-}
+        .alert-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .alert-box {
+            display: inline-block;
+            padding: 10px;
+            background-color: #f44336;
+            color: #fff;
+            border-radius: 5px;
+        }
+
         .small-button {
             width: 120px;
             padding: 8px;
             font-size: 14px;
         }
+
         .title {
             font-size: 24px;
             margin-bottom: 20px;
         }
+
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
             }
+
             100% {
                 transform: rotate(360deg);
             }
@@ -105,6 +120,7 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
                 margin: 0 auto;
             }
         }
+
         .alert-container {
             margin-top: 20px;
             text-align: center;
@@ -125,42 +141,44 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
         .success {
             background-color: #198754;
         }
+
         #refreshButton {
-    background-color: #2196f3;
-    color: #fff;
-    margin-top: 10px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: 5px;
-}
+            background-color: #2196f3;
+            color: #fff;
+            margin-top: 10px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 5px;
+        }
 
-#refreshButton:hover {
-    background-color: #1976d2;
-}
+        #refreshButton:hover {
+            background-color: #1976d2;
+        }
 
-@media (max-width: 480px) {
-    #refreshButton {
-        width: 100%;
-    }
-}
-
+        @media (max-width: 480px) {
+            #refreshButton {
+                width: 100%;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1 class="title">Configurazione WiFi</h1>
 
         <div id="formContainer" class="form-container">
-            
+
 
             <select id="ssidSelect" disabled></select>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <span style="margin-left: 5px;">Aggiorna reti WiFi</span>
-                <button id="refreshButton" class="small-button" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: none; margin-left:20px;border-radius: 5px; background-color: #198754; color: #fff; margin-top: 10px;">
+                <button id="refreshButton" class="small-button"
+                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: none; margin-left:20px;border-radius: 5px; background-color: #198754; color: #fff; margin-top: 10px;">
                     &#x21bb;
                 </button>
             </div>
@@ -189,47 +207,47 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             // Make a request to the api to get the list of SSIDs
             getSsids();
 
-// Function to display an alert message
-function displayAlert(type, message) {
-    const alertElement = document.createElement('div');
-    alertElement.className = `alert-box ${type}`;
-    alertElement.textContent = message;
+            // Function to display an alert message
+            function displayAlert(type, message) {
+                const alertElement = document.createElement('div');
+                alertElement.className = `alert-box ${type}`;
+                alertElement.textContent = message;
 
-    alertContainer.innerHTML = ''; // Clear previous alerts
-    alertContainer.appendChild(alertElement);
+                alertContainer.innerHTML = ''; // Clear previous alerts
+                alertContainer.appendChild(alertElement);
 
-    // Remove the alert after 3 seconds
-    setTimeout(() => {
-        alertContainer.innerHTML = '';
-    }, 3000);
-}
+                // Remove the alert after 3 seconds
+                setTimeout(() => {
+                    alertContainer.innerHTML = '';
+                }, 3000);
+            }
 
 
-function getSsids() {
-    fetch('api/get-ssids')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ssids && data.ssids.length > 0) {
-                        // Populate the SSID select dropdown
-                        data.ssids.forEach(ssid => {
-                            const option = document.createElement('option');
-                            option.value = ssid;
-                            option.textContent = ssid;
-                            ssidSelect.appendChild(option);
-                        });
+            function getSsids() {
+                fetch('api/get-ssids')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ssids && data.ssids.length > 0) {
+                            // Populate the SSID select dropdown
+                            data.ssids.forEach(ssid => {
+                                const option = document.createElement('option');
+                                option.value = ssid;
+                                option.textContent = ssid;
+                                ssidSelect.appendChild(option);
+                            });
 
-                        ssidSelect.disabled = false;
-                        submitButton.disabled = false;
-                    } else {
-                        formContainer.style.display = 'block';
-                        loadingContainer.style.display = 'none';
-                        displayAlert('error', 'Nessuna rete WiFi trovata.');
-                    }
-                })
-                .catch(error => {
-                    statusMessage.textContent = 'Error occurred while fetching SSIDs.';
-                });
-}
+                            ssidSelect.disabled = false;
+                            submitButton.disabled = false;
+                        } else {
+                            formContainer.style.display = 'block';
+                            loadingContainer.style.display = 'none';
+                            displayAlert('error', 'Nessuna rete WiFi trovata.');
+                        }
+                    })
+                    .catch(error => {
+                        statusMessage.textContent = 'Error occurred while fetching SSIDs.';
+                    });
+            }
 
 
 
@@ -266,59 +284,59 @@ function getSsids() {
             });
 
             // Add the refresh button variable
-const refreshButton = document.getElementById('refreshButton');
+            const refreshButton = document.getElementById('refreshButton');
 
-// Refresh button click event
-refreshButton.addEventListener('click', () => {
-    // Clear the SSID select dropdown and password input
-    ssidSelect.innerHTML = '';
-    passwordInput.value = '';
+            // Refresh button click event
+            refreshButton.addEventListener('click', () => {
+                // Clear the SSID select dropdown and password input
+                ssidSelect.innerHTML = '';
+                passwordInput.value = '';
 
-    fetch('api/refresh-ssids');
+                fetch('api/refresh-ssids');
 
-    // Make a request to get the updated list of SSIDs
-    getSsids();
-});
+                // Make a request to get the updated list of SSIDs
+                getSsids();
+            });
 
 
-// Function to periodically check the status
-function checkStatus() {
-    fetch('api/check-status')
-        .then(response => response.json())
-        .then(data => {
-            const status = data.status;
-            if (status === 'trying') {
-                if(attemptNumber<3) {
-                    attemptNumber++;
-                    setTimeout(checkStatus, 1000); // Check status after 1 second
-                }
-                else {
-                    displayAlert('error', 'Errore di connessione. Riprovare.');
-                    formContainer.style.display = 'block';
-                    loadingContainer.style.display = 'none';
-                }
-            } else if (status === 'connected') {
-                displayAlert('success', 'Configurazione completata. A breve verrai disconnesso.');
-                formContainer.style.display = 'none';
-                loadingContainer.style.display = 'none';
-            } else if (status === 'wrong credentials') {
-                formContainer.style.display = 'block';
-                loadingContainer.style.display = 'none';
-                displayAlert('error', 'Password errata. Riprovare.');
-            } else {
-                throw new Error('Unknown status.');
+            // Function to periodically check the status
+            function checkStatus() {
+                fetch('api/check-status')
+                    .then(response => response.json())
+                    .then(data => {
+                        const status = data.status;
+                        if (status === 'trying') {
+                            if (attemptNumber < 3) {
+                                attemptNumber++;
+                                setTimeout(checkStatus, 1000); // Check status after 1 second
+                            }
+                            else {
+                                displayAlert('error', 'Errore di connessione. Riprovare.');
+                                formContainer.style.display = 'block';
+                                loadingContainer.style.display = 'none';
+                            }
+                        } else if (status === 'connected') {
+                            displayAlert('success', 'Configurazione completata. A breve verrai disconnesso.');
+                            formContainer.style.display = 'none';
+                            loadingContainer.style.display = 'none';
+                        } else if (status === 'wrong credentials') {
+                            formContainer.style.display = 'block';
+                            loadingContainer.style.display = 'none';
+                            displayAlert('error', 'Password errata. Riprovare.');
+                        } else {
+                            throw new Error('Unknown status.');
+                        }
+                    })
+                    .catch(error => {
+                        displayAlert('error', 'Errore generico. Riprovare.');
+                        formContainer.style.display = 'block';
+                        loadingContainer.style.display = 'none';
+                    });
             }
-        })
-        .catch(error => {
-            displayAlert('error', 'Errore generico. Riprovare.');
-            formContainer.style.display = 'block';
-            loadingContainer.style.display = 'none';
-        });
-}
 
         </script>
     </div>
 </body>
-</html>
 
+</html>
 )rawliteral";
