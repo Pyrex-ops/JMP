@@ -27,7 +27,7 @@ class BackendServer {
   public:
 	BackendServer(const char* serverName);
 	void startTraining();
-	void sendData(uint32_t revolutions,bool);
+	void sendData(uint32_t revolutions);
 	obiettivo_t getObiettivo();
 	float getMoltiplicatoreCalorie();
 };
