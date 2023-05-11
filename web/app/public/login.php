@@ -1,5 +1,7 @@
-<?php require_once "/php/private/model/db/sessione.php";
-require_once "/php/private/view/navbar.php"; ?>
+<?php require_once "/php/private/model/auth/sessione.php";
+require_once "/php/private/view/navbar.php";
+include_once "/php/private/model/auth/auth.php";
+redirect_to_dashboard_if_logged_in(); ?>
 
 <!DOCTYPE html>
 <html lang="it">
@@ -38,7 +40,7 @@ require_once "/php/private/view/navbar.php"; ?>
       </div>
       <button type="submit" class="btn button btn-primary">Login</button>
     </form>
-    <p class="mt-5 text-center">Non sei registrato? Registrati cliccando <a href="register.php">qui</a></p>
+    <p class="mt-5 text-center">Non sei registrato? Registrati cliccando <a href="registrazione">qui</a></p>
   </div>
 
   <!-- Bootstrap JS -->

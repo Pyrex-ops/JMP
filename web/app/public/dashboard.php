@@ -1,5 +1,7 @@
-<?php require_once "/php/private/model/db/sessione.php";
-require_once "/php/private/view/navbar.php"; ?>
+<?php require_once "/php/private/model/auth/sessione.php";
+require_once "/php/private/view/navbar.php"; 
+include_once "/php/private/model/auth/auth.php";
+redirect_to_login_if_not_logged_in()?>
 
 <!DOCTYPE html>
 <html>

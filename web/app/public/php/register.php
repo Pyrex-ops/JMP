@@ -1,5 +1,5 @@
 <?php
-include_once "/php/private/model/db/sessione.php";
+include_once "/php/private/model/auth/sessione.php";
 include_once "/php/private/model/user/user.php";
 
 function registration_error($error)
@@ -8,6 +8,8 @@ function registration_error($error)
   header("Location: /register.php");
   exit;
 }
+
+redirect_to_dashboard_if_logged_in();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $username = $_POST["username"];
