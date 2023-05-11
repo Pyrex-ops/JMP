@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Creato il: Apr 28, 2023 alle 19:45
+-- Creato il: Mag 10, 2023 alle 09:50
 -- Versione del server: 8.0.33
 -- Versione PHP: 8.1.17
 
@@ -27,17 +27,48 @@ SET time_zone = "+00:00";
 -- Struttura della tabella `allenamento`
 --
 
-CREATE TABLE `allenamento` (
-  `IDAllenamento` int NOT NULL,
-  `IDUtente` int NOT NULL
+CREATE TABLE IF NOT EXISTS `allenamento` (
+  `IDAllenamento` int NOT NULL AUTO_INCREMENT,
+  `IDUtente` int NOT NULL,
+  `IDObiettivo` int DEFAULT NULL,
+  PRIMARY KEY (`IDAllenamento`),
+  KEY `IDUtente` (`IDUtente`),
+  KEY `IDObiettivo` (`IDObiettivo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dump dei dati per la tabella `allenamento`
+-- Struttura della tabella `categoriaObiettivo`
 --
 
-INSERT INTO `allenamento` (`IDAllenamento`, `IDUtente`) VALUES
-(1, 1);
+CREATE TABLE IF NOT EXISTS `categoriaObiettivo` (
+  `IDCategoria` int NOT NULL AUTO_INCREMENT,
+  `Descrizione` text NOT NULL,
+  PRIMARY KEY (`IDCategoria`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura stand-in per le viste `classificadurata`
+-- (Vedi sotto per la vista effettiva)
+--
+CREATE TABLE IF NOT EXISTS `classificadurata` (
+`durataAllenamento` bigint
+,`username` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura stand-in per le viste `classificanumsalti`
+-- (Vedi sotto per la vista effettiva)
+--
+CREATE TABLE IF NOT EXISTS `classificanumsalti` (
+`numSalti` decimal(32,0)
+,`username` varchar(255)
+);
 
 -- --------------------------------------------------------
 
@@ -45,11 +76,12 @@ INSERT INTO `allenamento` (`IDAllenamento`, `IDUtente`) VALUES
 -- Struttura della tabella `dispositivo`
 --
 
-CREATE TABLE `dispositivo` (
-  `IDDispositivo` int NOT NULL,
-  `IDUtente` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
+CREATE TABLE IF NOT EXISTS `dispositivo` (
+  `IDDispositivo` char(17) NOT NULL,
+  `IDUtente` int NOT NULL,
+  PRIMARY KEY (`IDDispositivo`),
+  KEY `IDUtente` (`IDUtente`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='IDDispositivo è il MAC Address';
 
 -- --------------------------------------------------------
 
@@ -57,25 +89,28 @@ CREATE TABLE `dispositivo` (
 -- Struttura della tabella `misura`
 --
 
-CREATE TABLE `misura` (
-  `IDMisura` int NOT NULL,
+CREATE TABLE IF NOT EXISTS `misura` (
+  `IDMisura` int NOT NULL AUTO_INCREMENT,
   `IDAllenamento` int NOT NULL,
+  `numeroSalti` int NOT NULL CONSTRAINT numSalti_maggiore_zero CHECK(`numeroSalti`>=0),
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `valore` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`IDMisura`),
+  KEY `IDAllenamento` (`IDAllenamento`)
+) ;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `provaClassifica`
+-- Struttura della tabella `obiettivo`
 --
 
-CREATE TABLE `provaClassifica` (
-  `id` int NOT NULL,
-  `idutente` int NOT NULL,
-  `frequency` int NOT NULL,
-  `time` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS `obiettivo` (
+  `IDObiettivo` int NOT NULL AUTO_INCREMENT,
+  `IDCategoria` int NOT NULL,
+  `parametro` int NOT NULL CONSTRAINT parametro_maggiore_zero CHECK(`parametro`>=0),
+  PRIMARY KEY (`IDObiettivo`),
+  KEY `IDCategoria` (`IDCategoria`)
+) ;
 
 -- --------------------------------------------------------
 
@@ -83,85 +118,73 @@ CREATE TABLE `provaClassifica` (
 -- Struttura della tabella `utente`
 --
 
-CREATE TABLE `utente` (
-  `IDUtente` int NOT NULL,
-  `username` varchar(30) UNIQUE NOT NULL,
-  `passwordhash` varchar(60) NOT NULL,
-  `peso` int NOT NULL,
-  `altezza` int NOT NULL,
-  `dataDiNascita` timestamp NOT NULL,
-  `idObiettivo` int,
-  `partecipazioneClassifica` boolean DEFAULT FALSE,
-  `sesso` ENUM('maschio','femmina')
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS `utente` (
+  `IDUtente` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `passwordHash` char(60) NOT NULL,
+  `peso` int NOT NULL CONSTRAINT peso_maggiore_zero CHECK(`peso`>=0),
+  `altezza` int NOT NULL CONSTRAINT altezza_maggiore_zero CHECK(`altezza`>=0),
+  `dataNascita` date NOT NULL,
+  `genere` enum('maschio','femmina') NOT NULL,
+  `partecipazioneClassifica` tinyint(1) NOT NULL DEFAULT '0',
+  `IDObiettivo` int DEFAULT NULL,
+  PRIMARY KEY (`IDUtente`),
+  UNIQUE KEY `username` (`username`),
+  KEY `IDObiettivo` (`IDObiettivo`)
+) ;
+
+-- --------------------------------------------------------
 
 --
--- Indici per le tabelle scaricate
+-- Struttura per vista `classificadurata`
+--
+DROP TABLE IF EXISTS `classificadurata`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `classificadurata`  AS SELECT `utente`.`username` AS `username`, (unix_timestamp(max(`misura`.`timestamp`)) - unix_timestamp(min(`misura`.`timestamp`))) AS `durataAllenamento` FROM ((`misura` join `allenamento` on((`misura`.`IDAllenamento` = `allenamento`.`IDAllenamento`))) join `utente` on((`allenamento`.`IDUtente` = `utente`.`IDUtente`))) WHERE (`utente`.`partecipazioneClassifica` = 1) GROUP BY `misura`.`IDAllenamento` ORDER BY `durataAllenamento` DESC ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura per vista `classificanumsalti`
+--
+DROP TABLE IF EXISTS `classificanumsalti`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `classificanumsalti`  AS SELECT `utente`.`username` AS `username`, sum(`misura`.`numeroSalti`) AS `numSalti` FROM ((`misura` join `allenamento` on((`misura`.`IDAllenamento` = `allenamento`.`IDAllenamento`))) join `utente` on((`allenamento`.`IDUtente` = `utente`.`IDUtente`))) WHERE (`utente`.`partecipazioneClassifica` = 1) GROUP BY `allenamento`.`IDAllenamento` ORDER BY `numSalti` DESC ;
+
+--
+-- Limiti per le tabelle scaricate
 --
 
 --
--- Indici per le tabelle `allenamento`
+-- Limiti per la tabella `allenamento`
 --
 ALTER TABLE `allenamento`
-  ADD PRIMARY KEY (`IDAllenamento`);
+  ADD CONSTRAINT `allenamento_ibfk_1` FOREIGN KEY (`IDUtente`) REFERENCES `utente` (`IDUtente`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `allenamento_ibfk_2` FOREIGN KEY (`IDObiettivo`) REFERENCES `obiettivo` (`IDObiettivo`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Indici per le tabelle `dispositivo`
+-- Limiti per la tabella `dispositivo`
 --
 ALTER TABLE `dispositivo`
-  ADD PRIMARY KEY (`IDDispositivo`);
+  ADD CONSTRAINT `dispositivo_ibfk_1` FOREIGN KEY (`IDUtente`) REFERENCES `utente` (`IDUtente`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Indici per le tabelle `misura`
+-- Limiti per la tabella `misura`
 --
 ALTER TABLE `misura`
-  ADD PRIMARY KEY (`IDMisura`);
+  ADD CONSTRAINT `misura_ibfk_1` FOREIGN KEY (`IDAllenamento`) REFERENCES `allenamento` (`IDAllenamento`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Indici per le tabelle `provaClassifica`
+-- Limiti per la tabella `obiettivo`
 --
-ALTER TABLE `provaClassifica`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `obiettivo`
+  ADD CONSTRAINT `obiettivo_ibfk_1` FOREIGN KEY (`IDCategoria`) REFERENCES `categoriaObiettivo` (`IDCategoria`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Indici per le tabelle `utente`
+-- Limiti per la tabella `utente`
 --
 ALTER TABLE `utente`
-  ADD PRIMARY KEY (`IDUtente`);
-
---
--- AUTO_INCREMENT per le tabelle scaricate
---
-
---
--- AUTO_INCREMENT per la tabella `allenamento`
---
-ALTER TABLE `allenamento`
-  MODIFY `IDAllenamento` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT per la tabella `dispositivo`
---
-ALTER TABLE `dispositivo`
-  MODIFY `IDDispositivo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT per la tabella `misura`
---
-ALTER TABLE `misura`
-  MODIFY `IDMisura` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT per la tabella `provaClassifica`
---
-ALTER TABLE `provaClassifica`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT per la tabella `utente`
---
-ALTER TABLE `utente`
-  MODIFY `IDUtente` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  ADD CONSTRAINT `utente_ibfk_1` FOREIGN KEY (`IDObiettivo`) REFERENCES `obiettivo` (`IDObiettivo`) ON DELETE SET NULL ON UPDATE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

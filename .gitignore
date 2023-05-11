@@ -53,5 +53,8 @@ dkms.conf
 
 .vscode
 build
-.env
 web/data
+*.env
+# Laravel Pint
+*.lock
+vendor/

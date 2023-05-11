@@ -49,5 +49,3 @@ function echo_navbar($active_page)
   </div>
 </nav>';
 }
-
-?>

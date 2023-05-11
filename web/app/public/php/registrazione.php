@@ -1,11 +1,12 @@
 <?php
 include_once "/php/private/model/auth/sessione.php";
 include_once "/php/private/model/user/user.php";
+include_once "/php/private/model/auth/auth.php";
 
 function registration_error($error)
 {
   $_SESSION['error_message'] = $error;
-  header("Location: /register.php");
+  header("Location: /registrazione.php");
   exit;
 }
 

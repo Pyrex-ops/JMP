@@ -14,7 +14,7 @@ function does_user_exist($username) {
 
 function add_user($username,$password,$weight,$height,$dob,$gender) {
     global $database;
-    $query = $database->prepare("INSERT INTO utente(username, passwordhash,peso,altezza,dataDiNascita,sesso) VALUES (?,?,?,?,?,?)");
+    $query = $database->prepare("INSERT INTO utente(username, passwordhash,peso,altezza,dataNascita,genere) VALUES (?,?,?,?,?,?)");
     $passhash = password_hash($password, PASSWORD_BCRYPT);
     $query->bind_param("ssiiss",$username, $passhash,$weight,$height,$dob,$gender);
     $query->execute();

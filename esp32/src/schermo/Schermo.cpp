@@ -24,7 +24,7 @@ void Schermo::scriviCarattere(int riga, int colonna, char carattere) {
 
 void Schermo::scrivi(int riga, String messaggio) {
 	if (riga == 0 || riga == 1) {
-        Schermo::pulisci();
+		Schermo::pulisci();
 		if (messaggio.length() < 16) {
 			lcd.setCursor(0, riga);
 			lcd.print(messaggio);

@@ -27,7 +27,7 @@ redirect_to_dashboard_if_logged_in(); ?>
       echo '<div class="alert alert-danger">' . $error . '</div>';
     }
     ?>
-    <form method="POST" action="php/register.php">
+    <form method="POST" action="php/registrazione.php">
       <div class="form-group">
         <label for="username">Username</label>
         <input type="text" class="form-control" id="username" name="username" required>
