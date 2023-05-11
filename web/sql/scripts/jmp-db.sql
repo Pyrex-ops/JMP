@@ -76,20 +76,12 @@ CREATE TABLE IF NOT EXISTS `classificanumsalti` (
 -- Struttura della tabella `dispositivo`
 --
 
-HEAD
 CREATE TABLE IF NOT EXISTS `dispositivo` (
   `IDDispositivo` char(17) NOT NULL,
   `IDUtente` int NOT NULL,
   PRIMARY KEY (`IDDispositivo`),
   KEY `IDUtente` (`IDUtente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='IDDispositivo è il MAC Address';
-=======
-CREATE TABLE `dispositivo` (
-  `IDDispositivo` int NOT NULL,
-  `IDUtente` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
->>>>>>> e2c8ce5daa4a3ce3ab6407ed2f918cc6f3f34fcc
 
 -- --------------------------------------------------------
 
@@ -102,14 +94,9 @@ CREATE TABLE IF NOT EXISTS `misura` (
   `IDAllenamento` int NOT NULL,
   `numeroSalti` int NOT NULL CONSTRAINT numSalti_maggiore_zero CHECK(`numeroSalti`>=0),
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-HEAD
   PRIMARY KEY (`IDMisura`),
   KEY `IDAllenamento` (`IDAllenamento`)
 ) ;
-=======
-  `valore` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
->>>>>>> e2c8ce5daa4a3ce3ab6407ed2f918cc6f3f34fcc
 
 -- --------------------------------------------------------
 
@@ -117,7 +104,6 @@ HEAD
 -- Struttura della tabella `obiettivo`
 --
 
-HEAD
 CREATE TABLE IF NOT EXISTS `obiettivo` (
   `IDObiettivo` int NOT NULL AUTO_INCREMENT,
   `IDCategoria` int NOT NULL,
@@ -125,14 +111,6 @@ CREATE TABLE IF NOT EXISTS `obiettivo` (
   PRIMARY KEY (`IDObiettivo`),
   KEY `IDCategoria` (`IDCategoria`)
 ) ;
-=======
-CREATE TABLE `provaClassifica` (
-  `id` int NOT NULL,
-  `idutente` int NOT NULL,
-  `frequency` int NOT NULL,
-  `time` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
->>>>>>> e2c8ce5daa4a3ce3ab6407ed2f918cc6f3f34fcc
 
 -- --------------------------------------------------------
 
@@ -140,7 +118,6 @@ CREATE TABLE `provaClassifica` (
 -- Struttura della tabella `utente`
 --
 
-HEAD
 CREATE TABLE IF NOT EXISTS `utente` (
   `IDUtente` int NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
@@ -176,22 +153,6 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `cla
 
 --
 -- Limiti per le tabelle scaricate
-=======
-CREATE TABLE `utente` (
-  `IDUtente` int NOT NULL,
-  `username` varchar(30) UNIQUE NOT NULL,
-  `passwordhash` varchar(60) NOT NULL,
-  `peso` int NOT NULL,
-  `altezza` int NOT NULL,
-  `dataDiNascita` timestamp NOT NULL,
-  `idObiettivo` int,
-  `partecipazioneClassifica` boolean DEFAULT FALSE,
-  `sesso` ENUM('maschio','femmina')
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Indici per le tabelle scaricate
->>>>>>> e2c8ce5daa4a3ce3ab6407ed2f918cc6f3f34fcc
 --
 
 --
