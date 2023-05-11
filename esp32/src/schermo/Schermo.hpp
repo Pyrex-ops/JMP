@@ -1,19 +1,22 @@
 #ifndef SCHERMO
 #define SCHERMO
 
-#define lcdColumns 16
-#define lcdRows 2
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <Wire.h>
 
-#include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
+#define SCREEN_WIDTH 128  // pixel
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1	  // Reset pin (-1 se non presente)
+#define SCREEN_ADDRESS 0x3C
+#define SCHERMO_DEBUG 1
+
 
 /**
 	Classe per l'utilizzo dello schermo per comunicare messaggi all'utente
 */
 class Schermo {
   private:
-	//static LiquidCrystal_I2C lcd;
-
 
   public:
 	/**
@@ -22,51 +25,43 @@ class Schermo {
 	Schermo();
 	/**
 	 * Inizializzazione dello schermo
+	 *
+	 * @warning Fa uso di delay
 	 */
 	void begin();
 	/**
-	 * Sposta il cursore alla cella indicata
-	 * @param riga Riga (0,1)
-	 * @param colonna Colonna (0,15)
+	 * Mostra a schermo le informazioni sull'allenamento
+	 *
+	 * @param salti numeri di salti registrati
+	 * @param tempoAllenamento numero di secondi trascorsi dall'inizio
+	 * dell'allenamento
 	 */
-	void cursore(int riga, int colonna);
+	void informazioniAllenamento(uint16_t salti, uint32_t tempoAllenamento, uint16_t calorie);
 	/**
-	 * Sposta il cursore e scrive il carattere indicato
-	 * @param riga Riga (0,1)
-	 * @param colonna Colonna (0,15)
-	 * @param carattere Carattere
+	 * Mostra a schermo l'avviso di connessione persa
+	 *
+	 * @warning Fa uso di delay
 	 */
-	void scriviCarattere(int riga, int colonna, char carattere);
+	void connessionePersa();
 	/**
-	 * Scrivi una stringa di massimo 16 caratteri alla riga scelta.
-	 * I caratteri in eccedenza saranno ignorati.
-     * @warning Lo schermo viene pulito prima di ogni scrittura.
+	 * Mostra a schermo l'invito verso l'utente a fornire le credenziali di una
+	 * rete
 	 */
-	void scrivi(int riga, String messaggio);
+	void inserisciCredenziali();
 	/**
-	 * Scrive alla posizione del cursore il carattere salvato indicato.
-	 * @param id Numero di carattere salvato in precedenza.
-	 */
-	size_t scriviCarattereSalvato(uint8_t id);
-	/**
-	 * Salva un carattere personalizzato
-	 * @param id Numero da assegnare al carattere.
-	 * @param bytes Vettore di 8 byte che costituiscono il carattere
-	 * graficamente
-	 */
-	void salvaCarattere(uint8_t id, uint8_t* bytes);
-	/**
-	 * Accendi lo schermo
-	 */
-	void accendi();
-	/**
-	 * Spegni lo schermo
-	 */
-	void spegni();
-	/**
-	 * Pulisci lo schermo
+	 * Pulisci schermo (sembra spento)
 	 */
 	void pulisci();
+	/**
+	 * Mostra a schermo l'avviso di raggiungimento obiettivo
+	 */
+	void obiettivoRaggiunto(uint8_t tipo);
+	/**
+	 * Lampeggia schermo invertendo i colori
+	 * 
+	 * @warning Usa delay
+	*/
+	void lampeggia(uint8_t volte);
 };
 
 #endif
