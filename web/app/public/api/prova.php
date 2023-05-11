@@ -8,6 +8,6 @@
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
 </head>
 <body>
-    <?php echo "ciao"; ?>
+    <?php echo 'ciao'; ?>
 </body>
 </html>

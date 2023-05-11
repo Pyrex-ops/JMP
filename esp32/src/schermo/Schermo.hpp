@@ -40,7 +40,7 @@ class Schermo {
 	/**
 	 * Scrivi una stringa di massimo 16 caratteri alla riga scelta.
 	 * I caratteri in eccedenza saranno ignorati.
-     * @warning Lo schermo viene pulito prima di ogni scrittura.
+	 * @warning Lo schermo viene pulito prima di ogni scrittura.
 	 */
 	void scrivi(int riga, String messaggio);
 	/**
