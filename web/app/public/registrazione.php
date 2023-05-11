@@ -15,7 +15,7 @@ redirect_to_dashboard_if_logged_in(); ?>
 </head>
 
 <body>
-  <?php echo_navbar() ?>
+  <?php echo_navbar("registrazione") ?>
 
   <div class="container container-login">
     <h1 class="text-center"> Registrazione </h1>

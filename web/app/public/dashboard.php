@@ -14,7 +14,7 @@ redirect_to_login_if_not_logged_in()?>
 </head>
 
 <body>
-  <?php echo_navbar() ?>
+  <?php echo_navbar("dashboard") ?>
 
   <div class="container dashboard-container">
     <h1 class="text-center" style="margin-bottom:30px"> Dashboard </h1>
@@ -145,6 +145,7 @@ redirect_to_login_if_not_logged_in()?>
       trainingsContainer.appendChild(row);
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
