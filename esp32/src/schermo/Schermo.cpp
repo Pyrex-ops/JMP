@@ -11,7 +11,7 @@ void Schermo::begin() {
 	pulisci();
 	display.setCursor(0, 18);
 	display.setTextSize(4);
-	display.println(F("JMPit"));
+	display.println("JMPit");
 	display.display();
 	delay(3000);
 }
