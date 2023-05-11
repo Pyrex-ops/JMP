@@ -19,7 +19,6 @@ if (isset($database)) {
         } elseif ($_GET['tipo'] == 2) {
             //Durata allenamento
             $durataAllenamenti = $database->query("SELECT * FROM classificadurata");
-
             $arrayDurata = array();
             while ($riga = $durataAllenamenti->fetch_assoc()) {
                 $arrayDurata[] = $riga;
