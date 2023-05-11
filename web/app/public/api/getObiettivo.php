@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 if (isset($_GET["id"])) {
     if (isset($database)) {
         $queryDispositivo = $database->prepare("SELECT IDDispositivo FROM dispositivo WHERE IDDispositivo = (?)");
-        $queryDispositivo->bind_param("i", $_GET["id"]);
+        $queryDispositivo->bind_param("s", $_GET["id"]);
         $queryDispositivo->execute();
         if (!$queryDispositivo->get_result()->num_rows == 0) {
             //Se arriviamo qui allora il dispositivo è stato trovato
