@@ -29,6 +29,14 @@ function echo_username()
     echo $_SESSION["username"];
 }
 
+function get_profile_picture() {
+    return "https://api.multiavatar.com/".get_username().".png";
+}
+
+function echo_profile_picture() {
+    echo get_profile_picture();
+}
+
 function redirect_to_dashboard_if_logged_in()
 {
     if (check_login()) {

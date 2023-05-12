@@ -23,7 +23,7 @@ redirect_to_login_if_not_logged_in()?>
         <div class="card text-center username-card first-card">
           <div class="card-body">
             <div class="user-profile-picture">
-              <img src="https://api.multiavatar.com/<?php echo_username();?>.png" alt="User Picture" width="100" height="100">
+              <img src=<?php echo_profile_picture();?> alt="User Picture" width="100" height="100">
             </div>
             <h3 class="card-title"><?php echo_username();?></h5>
           </div>
