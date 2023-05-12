@@ -61,12 +61,12 @@ void handleDisconnected() {
 		|| !wifiManager.hasSavedCredentials()) {
 		wifiManager.deleteCredentials();
 		Serial.println("new credentials required");
-		schermo.scrivi(0, "new credentials required");
+		//schermo.scrivi(0, "new credentials required");
 		currentState = NEW_CREDENTIALS_REQUIRED;
 	}
 	if (wifiManager.checkConnection()) {
 		Serial.println("connected");
-		schermo.scrivi(0, "connected");
+		//schermo.scrivi(0, "connected");
 		encoder.reset();
 		currentState = IDLE;
 	}
@@ -84,7 +84,7 @@ void handleIdle() {
 		disconnected();
 	} else if (encoder.getRevolutions() != 0) {
 		Serial.println("training started");
-		schermo.scrivi(0, "training started");
+		//schermo.scrivi(0, "training started");
 		encoder.reset();
 		timestampLastRevolution = millis();
 		lastRevolutionNumber	= encoder.getRevolutions();
@@ -104,7 +104,7 @@ void handleTraining() {
 	trainingManager->storeData(encoder.getRevolutions());
 	if ((millis() - timestampLastRevolution) > TIMEOUT_STOP_TRAINING_MILLISECONDS) {
 		Serial.println("training ended");
-		schermo.scrivi(0, "training ended");
+		//schermo.scrivi(0, "training ended");
 		encoder.reset();
 		delete (trainingManager);
 		currentState = IDLE;
@@ -114,7 +114,7 @@ void handleTraining() {
 
 void disconnected() {
 	Serial.println("connection lost");
-	schermo.scrivi(0, "connection lost");
+	//schermo.scrivi(0, "connection lost");
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;
