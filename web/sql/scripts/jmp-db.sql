@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Creato il: Mag 08, 2023 alle 08:47
+-- Creato il: Mag 10, 2023 alle 09:50
 -- Versione del server: 8.0.33
 -- Versione PHP: 8.1.17
 
@@ -51,6 +51,28 @@ CREATE TABLE IF NOT EXISTS `categoriaObiettivo` (
 -- --------------------------------------------------------
 
 --
+-- Struttura stand-in per le viste `classificadurata`
+-- (Vedi sotto per la vista effettiva)
+--
+CREATE TABLE IF NOT EXISTS `classificadurata` (
+`durataAllenamento` bigint
+,`username` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura stand-in per le viste `classificanumsalti`
+-- (Vedi sotto per la vista effettiva)
+--
+CREATE TABLE IF NOT EXISTS `classificanumsalti` (
+`numSalti` decimal(32,0)
+,`username` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `dispositivo`
 --
 
@@ -71,10 +93,10 @@ CREATE TABLE IF NOT EXISTS `misura` (
   `IDMisura` int NOT NULL AUTO_INCREMENT,
   `IDAllenamento` int NOT NULL,
   `numeroSalti` int NOT NULL CONSTRAINT numSalti_maggiore_zero CHECK(`numeroSalti`>=0),
-  `timestamp` timestamp NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`IDMisura`),
-  KEY `IDAllenamento` (`IDAllenamento`) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `IDAllenamento` (`IDAllenamento`)
+) ;
 
 -- --------------------------------------------------------
 
@@ -88,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `obiettivo` (
   `parametro` int NOT NULL CONSTRAINT parametro_maggiore_zero CHECK(`parametro`>=0),
   PRIMARY KEY (`IDObiettivo`),
   KEY `IDCategoria` (`IDCategoria`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 -- --------------------------------------------------------
 
@@ -109,7 +131,25 @@ CREATE TABLE IF NOT EXISTS `utente` (
   PRIMARY KEY (`IDUtente`),
   UNIQUE KEY `username` (`username`),
   KEY `IDObiettivo` (`IDObiettivo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura per vista `classificadurata`
+--
+DROP TABLE IF EXISTS `classificadurata`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `classificadurata`  AS SELECT `utente`.`username` AS `username`, (unix_timestamp(max(`misura`.`timestamp`)) - unix_timestamp(min(`misura`.`timestamp`))) AS `durataAllenamento` FROM ((`misura` join `allenamento` on((`misura`.`IDAllenamento` = `allenamento`.`IDAllenamento`))) join `utente` on((`allenamento`.`IDUtente` = `utente`.`IDUtente`))) WHERE (`utente`.`partecipazioneClassifica` = 1) GROUP BY `misura`.`IDAllenamento` ORDER BY `durataAllenamento` DESC ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura per vista `classificanumsalti`
+--
+DROP TABLE IF EXISTS `classificanumsalti`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `classificanumsalti`  AS SELECT `utente`.`username` AS `username`, sum(`misura`.`numeroSalti`) AS `numSalti` FROM ((`misura` join `allenamento` on((`misura`.`IDAllenamento` = `allenamento`.`IDAllenamento`))) join `utente` on((`allenamento`.`IDUtente` = `utente`.`IDUtente`))) WHERE (`utente`.`partecipazioneClassifica` = 1) GROUP BY `allenamento`.`IDAllenamento` ORDER BY `numSalti` DESC ;
 
 --
 -- Limiti per le tabelle scaricate

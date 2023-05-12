@@ -6,14 +6,17 @@ services:
       - "80:80"
     build: './build/php'
     volumes:
-      - ./app:/var/www/html
+      - ./app/public:/var/www/html
+      - ./app/private:/php/private
     env_file:
       - ./.env
+    restart: unless-stopped
     depends_on:
       - mysql
   mysql:
     env_file:
       - ./.env
+    restart: unless-stopped
     container_name: mysql
     ports:
       - "3306:3306"
@@ -24,6 +27,7 @@ services:
   phpmyadmin:
     env_file:
       - ./.env
+    restart: unless-stopped
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
     ports:

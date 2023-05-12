@@ -15,7 +15,13 @@
 #define SCHERMO_PIN_SDA 21
 #define SCHERMO_PIN_SCL 22
 
+#define API_URL "https://jmpit.serveo.net/"
+#define SCHERMO_PIN_1 21
+#define SCHERMO_PIN_2 22
+#define TIMEOUT_NEW_CREDENTIALS_MILLISECONDS 20000
+
 #define TIMEOUT_STOP_TRAINING_MILLISECONDS 3000
+#define SAMPLE_SENDING_PERIOD_SECONDS 10
 
 // Wifi constants
 
