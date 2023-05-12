@@ -18,14 +18,14 @@ TrainingManager::TrainingManager(
 }
 
 void TrainingManager::storeData(uint32_t revolutions_in) {
-
+	revolutions = revolutions_in - INITIAL_REVOLUTIONS;
+	schermo->informazioniAllenamento(revolutions,(millis()-TIMESTAMP_START_TRAINING)*1e-3,0);
 	if (checkObiettivo()) {
 		for (int i = 0; i < 4; i++) {
 			motorino->vibraIntermittente(200, 100, 2);
 			motorino->vibra(400);
 		}
 	}
-	revolutions = revolutions_in - INITIAL_REVOLUTIONS;
 	if (millis() - lastSentTimestamp > SAMPLE_PERIOD_MILLISECONDS) {
 		uploadData();
 	}
