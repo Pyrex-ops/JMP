@@ -41,22 +41,6 @@ redirect_to_dashboard_if_logged_in(); ?>
         <label for="weight">Peso (kg)</label>
         <input type="number" class="form-control" id="weight" name="weight" required>
       </div>
-      <div class="form-group">
-        <label for="height">Altezza (cm)</label>
-        <input type="number" class="form-control" id="height" name="height" required>
-      </div>
-      <div class="form-group">
-        <label for="dob">Data di nascita</label>
-        <input type="date" class="form-control" id="dob" name="dob" required>
-      </div>
-      <div class="form-group">
-        <label for="gender">Sesso</label>
-        <select class="form-control" id="gender" name="gender" required>
-          <option value="">Seleziona</option>
-          <option value="maschio">maschio</option>
-          <option value="femmina">femmina</option>
-        </select>
-      </div>
       <button type="submit" class="btn button btn-primary">Registrati</button>
     </form>
   </div>

@@ -8,14 +8,25 @@ function check_login()
     return $_SESSION["auth"] == true;
 }
 
-function login()
+function login($username)
 {
     $_SESSION["auth"] = true;
+    $_SESSION["username"] = $username;
 }
 
 function logout()
 {
     $_SESSION["auth"] = false;
+}
+
+function get_username()
+{
+    return $_SESSION["username"];
+}
+
+function echo_username()
+{
+    echo $_SESSION["username"];
 }
 
 function redirect_to_dashboard_if_logged_in()

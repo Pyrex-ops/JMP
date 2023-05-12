@@ -21,21 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (strlen($password) == 0) {
     registration_error("Inserisci la password.");
   }
-  $height = $_POST["height"];
-  if (strlen($height) == 0) {
-    registration_error("Inserisci l'altezza.");
-  }
   $weight = $_POST["weight"];
   if (strlen($weight) == 0) {
     registration_error("Inserisci il peso.");
-  }
-  $dob = $_POST["dob"];
-  if (strlen($dob) == 0) {
-    registration_error("Inserisci la data di nascita.");
-  }
-  $gender = $_POST["gender"];
-  if (strlen($gender) == 0) {
-    registration_error("Inserisci il sesso.");
   }
   if (strlen($password) <= 6) {
     registration_error("La password deve essere più lunga di 6 caratteri.");
@@ -47,12 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     registration_error("Un utente con questo username è già registrato.");
   }
 
-  try {
-    add_user($_POST["username"], $_POST["password"], $_POST["weight"], $_POST["height"], $_POST["dob"], $_POST["gender"]);
+  // try {
+    add_user($_POST["username"], $_POST["password"], $_POST["weight"]);
     header("Location: /login.php");
-  } catch (exception $exception) {
-    registration_error("Dati non validi. Riprovare.");
-  }
+  // } catch (exception $exception) {
+  //   registration_error("Dati non validi. Riprovare.");
+  // }
   exit;
 } else {
   registration_error("errore generico");
