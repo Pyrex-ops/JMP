@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `classificanumsalti` (
 
 CREATE TABLE IF NOT EXISTS `dispositivo` (
   `IDDispositivo` char(17) NOT NULL,
-  `IDUtente` int NOT NULL,
+  `IDUtente` int DEFAULT NULL,
   PRIMARY KEY (`IDDispositivo`),
   KEY `IDUtente` (`IDUtente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='IDDispositivo è il MAC Address';
