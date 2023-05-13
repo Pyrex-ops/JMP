@@ -170,3 +170,21 @@ void Schermo::lampeggia(uint8_t volte) {
 		delay(1000);
 	}
 }
+
+void Schermo::mostraCredenziali(String SSID, String password) {
+	pulisci();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	display.setTextSize(1);
+	display.setCursor(60, 0);
+	display.print("SSID");
+	display.setCursor(0, 16);
+	display.setTextSize(2);
+	display.print(SSID);
+	display.setCursor(45, 36);
+	display.setTextSize(1);
+	display.print("PASSWORD");
+	display.setCursor(0, 46);
+	display.setTextSize(2);
+	display.print(password);
+	display.display();
+}

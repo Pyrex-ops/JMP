@@ -64,6 +64,16 @@ class Schermo {
 	 * @warning Usa delay
 	 */
 	void lampeggia(uint8_t volte);
+	/**
+	 * Mostra le credenziali della rete di configurazione
+	 *
+	 * @param SSID - SSID della rete (11 caratteri)
+	 * @param password - password della rete (11 caratteri)
+	 *
+	 * @warning Non rispettare i limiti porterà alla stampa di caratteri
+	 * sovrapposti
+	 */
+	void mostraCredenziali(String SSID, String password);
 };
 
 #endif
