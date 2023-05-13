@@ -29,11 +29,13 @@ function echo_username()
     echo $_SESSION["username"];
 }
 
-function get_profile_picture() {
-    return "https://api.multiavatar.com/".get_username().".png";
+function get_profile_picture()
+{
+    return "https://api.multiavatar.com/" . get_username() . ".png";
 }
 
-function echo_profile_picture() {
+function echo_profile_picture()
+{
     echo get_profile_picture();
 }
 
