@@ -1,7 +1,6 @@
 #include "WifiPasswordGetter.hpp"
 
 const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
-<!DOCTYPE html>
 <html>
 
 <head>
@@ -18,6 +17,8 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
         body {
             font-family: Arial, sans-serif;
             text-align: center;
+            background-color: #bb2323;
+
         }
 
         .container {
@@ -27,14 +28,17 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             justify-content: center;
             height: 100vh;
             padding: 20px;
+            background-color: #f1f1f1;
+
         }
 
         .form-container {
             max-width: 400px;
             width: 100%;
             margin-bottom: 20px;
-            background-color: #f5f5f5;
+            background-color: #fff;
             border-radius: 5px;
+            border: 1px solid #ccc;
             padding: 20px;
         }
 
@@ -169,11 +173,9 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
 
 <body>
     <div class="container">
+
         <h1 class="title">Configurazione WiFi</h1>
-
         <div id="formContainer" class="form-container">
-
-
             <select id="ssidSelect" disabled></select>
             <div style="display: flex; align-items: center; justify-content: center;">
                 <span style="margin-left: 5px;">Aggiorna reti WiFi</span>
