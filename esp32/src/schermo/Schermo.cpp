@@ -1,23 +1,37 @@
 #include "Schermo.hpp"
+#include <chrono>
+#include <iomanip>
+#include <sstream>
+#include <thread>
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 Schermo::Schermo() {}
 
 void Schermo::begin() {
+	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
 		Serial.println("SSD1306 allocation failed");
 	}
+	lock.unlock();
 	pulisci();
+	lock.lock();
 	display.setCursor(0, 18);
 	display.setTextSize(4);
 	display.println("JMPit");
 	display.display();
-	delay(3000);
-	pulisci();
+	lock.unlock();
+	std::thread t([this]() {
+		std::unique_lock<std::mutex> lock(this->mutexDisplay);
+		delay(3000);
+		lock.unlock();
+		pulisci();
+	});
+	t.detach();
 }
 
 void Schermo::pulisci() {
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.clearDisplay();
 	display.setTextColor(SSD1306_WHITE);
 	display.setTextSize(1);
@@ -27,6 +41,13 @@ void Schermo::pulisci() {
 
 void Schermo::informazioniAllenamento(
 	uint32_t salti, uint32_t tempoAllenamento, uint32_t calorie) {
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	//Convertiamo i secondi in ore:minuti:secondi
+	auto secondi = std::chrono::seconds(tempoAllenamento);
+	auto ore	 = std::chrono::duration_cast<std::chrono::hours>(secondi);
+	secondi -= ore;
+	auto minuti = std::chrono::duration_cast<std::chrono::minutes>(secondi);
+	secondi -= minuti;
 	display.fillRect(65, 40, 60, 23, SSD1306_BLACK);
 	display.fillRect(1, 40, 63, 23, SSD1306_BLACK);
 	display.fillRect(65, 4, 60, 8, SSD1306_BLACK);
@@ -47,12 +68,23 @@ void Schermo::informazioniAllenamento(
 	display.setCursor(66, 20);
 	display.print("TEMPO");
 	display.setCursor(66, 45);
-	display.print(tempoAllenamento);
+	std::stringstream ss;
+	//Se è trascorso meno di un minuto allora mostriamo mm:ss, altrimenti hh:mm
+	if (tempoAllenamento < 60) {
+		ss << std::setfill('0') << std::setw(2) << minuti.count() << ':'
+		   << std::setfill('0') << std::setw(2) << secondi.count() << '\n';
+	} else {
+		ss << std::setfill('0') << std::setw(2) << ore.count() << ':'
+		   << std::setfill('0') << std::setw(2) << minuti.count() << '\n';
+	}
+	//Convertiamo lo "stringstream" in std::string e poi in String
+	display.print(ss.str().c_str());
 	display.display();
 }
 
 void Schermo::connessionePersa() {
 	pulisci();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(30, 0);
 	display.print("LINK");
@@ -60,11 +92,15 @@ void Schermo::connessionePersa() {
 	display.setCursor(6, 32);
 	display.println("PERSO");
 	display.display();
-	lampeggia(3);
+	std::thread t([this]() {
+		lampeggia(3);
+	});
+	t.detach();
 }
 
 void Schermo::inserisciCredenziali() {
 	pulisci();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(20, 0);
 	display.print("CONNETTI");
@@ -81,6 +117,7 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 		(3, 'Tempo di allenamento in minuti.')
 	*/
 	pulisci();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	switch (tipo) {
 		case 1:
 			display.setTextSize(1);
@@ -124,6 +161,7 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 }
 
 void Schermo::lampeggia(uint8_t volte) {
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	for (uint8_t i = 0; i < volte; i++) {
 		delay(1000);
 		display.invertDisplay(true);

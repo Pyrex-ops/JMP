@@ -3,7 +3,9 @@
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <mutex>
 #include <Wire.h>
+
 
 #define SCREEN_WIDTH 128  // pixel
 #define SCREEN_HEIGHT 64
@@ -17,7 +19,7 @@
 */
 class Schermo {
   private:
-
+	std::mutex mutexDisplay;
   public:
 	/**
 	 * Costruttore della classe
@@ -58,9 +60,9 @@ class Schermo {
 	void obiettivoRaggiunto(uint8_t tipo);
 	/**
 	 * Lampeggia schermo invertendo i colori
-	 * 
+	 *
 	 * @warning Usa delay
-	*/
+	 */
 	void lampeggia(uint8_t volte);
 };
 
