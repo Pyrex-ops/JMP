@@ -42,6 +42,18 @@ redirect_to_login_if_not_logged_in() ?>
             // Unset the login error variable
             unset($_SESSION["cambio_password_error_message"]);
         } ?>
+        <? if (isset($_SESSION["aggiunta_nuova_corda"])) {
+            // Display error message in a Bootstrap alert
+            echo '<div class="alert alert-success" role="alert">' . "La corda è stata aggiunta con successo al tuo account." . '</div>';
+            // Unset the login error variable
+            unset($_SESSION["aggiunta_nuova_corda"]);
+        } ?>
+        <? if (isset($_SESSION["cambiata_password"])) {
+            // Display error message in a Bootstrap alert
+            echo '<div class="alert alert-success" role="alert">' . "Password cambiata con successo." . '</div>';
+            // Unset the login error variable
+            unset($_SESSION["cambiata_password"]);
+        } ?>
         <div class="row mt-4">
             <div class="col-md-4 mx-auto">
                 <div class="card text-center username-card first-card">
@@ -61,7 +73,7 @@ redirect_to_login_if_not_logged_in() ?>
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title text-center">Cambia password</h5>
-                        <form action="update_password.php" method="POST">
+                        <form action="/php/cambiapassword.php" method="POST">
                             <div class="form-group">
                                 <label for="current_password">Password attuale</label>
                                 <input type="password" class="form-control" id="current_password"
@@ -152,7 +164,7 @@ redirect_to_login_if_not_logged_in() ?>
                         <div class="alert alert-danger" role="alert" style="margin-top:20px">
                             Tutti i tuoi dati andranno persi per sempre.
                         </div>
-                        <form action="add_device.php" method="POST">
+                        <form action="/php/eliminaaccount.php" method="POST">
                             <div class="text-center">
                                 <button type="submit" style="margin-bottom:20px"
                                     class="btn btn-danger">Conferma</button>
@@ -167,8 +179,8 @@ redirect_to_login_if_not_logged_in() ?>
         </div>
     </div>
 
-    <div class="modal fade" id="rimuoviCordaModal" tabindex="-1" role="dialog"
-        aria-labelledby="rimuoviCordaModal" aria-hidden="true">
+    <div class="modal fade" id="rimuoviCordaModal" tabindex="-1" role="dialog" aria-labelledby="rimuoviCordaModal"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -196,37 +208,8 @@ redirect_to_login_if_not_logged_in() ?>
         </div>
     </div>
 
-
-    <!-- Success Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addDeviceModalLabel">Aggiunta completata</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>La corda è stata aggiunta con successo al tuo account.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Check if the device addition was successful
-            <?php if (isset($_SESSION["aggiunta_nuova_corda"])): ?>
-                $('#successModal').modal('show');
-                <?php unset($_SESSION["aggiunta_nuova_corda"]); ?>
-            <?php endif; ?>
-        });
-    </script>
 </body>
 
 </html>

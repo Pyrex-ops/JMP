@@ -9,7 +9,7 @@ if (isset($_GET['id'])) {
         $queryDispositivo = $database->prepare('SELECT IDDispositivo FROM dispositivo WHERE IDDispositivo = (?)');
         $queryDispositivo->bind_param('s', $_GET['id']);
         $queryDispositivo->execute();
-        if (! $queryDispositivo->get_result()->num_rows == 0) {
+        if (!$queryDispositivo->get_result()->num_rows == 0) {
             $queryDispositivo->close();
             $queryUtente = $database->prepare('SELECT utente.IDUtente FROM utente JOIN dispositivo ON utente.IDUtente = dispositivo.IDDispositivo WHERE IDDispositivo = (?) LIMIT 1');
             $queryUtente->bind_param('s', $_GET['id']);

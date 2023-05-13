@@ -20,15 +20,13 @@ function echo_navbar($active_page)
         <a class="nav-link" href="/impostazioni">Impostazioni</a>
         <a class="nav-link" href="/php/logout">Logout</a>
         ';
-    } 
-    else if($active_page == "impostazioni") {
+    } else if ($active_page == "impostazioni") {
       echo '
         <a class="nav-link" href="/dashboard">Dashboard</a>
         <a class="nav-link active" aria-current="page" href="/impostazioni">Impostazioni</a>
         <a class="nav-link" href="/php/logout">Logout</a>
         ';
-    }
-    else {
+    } else {
       echo '
       <a class="nav-link" href="/dashboard">Dashboard</a>
       <a class="nav-link" href="/impostazioni">Impostazioni</a>

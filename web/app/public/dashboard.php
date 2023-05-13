@@ -1,7 +1,7 @@
 <?php require_once "/php/private/model/auth/sessione.php";
-require_once "/php/private/view/navbar.php"; 
+require_once "/php/private/view/navbar.php";
 include_once "/php/private/model/auth/auth.php";
-redirect_to_login_if_not_logged_in()?>
+redirect_to_login_if_not_logged_in() ?>
 
 <!DOCTYPE html>
 <html>
@@ -19,16 +19,6 @@ redirect_to_login_if_not_logged_in()?>
   <div class="container dashboard-container">
     <h1 class="text-center" style="margin-bottom:30px"> Dashboard </h1>
     <div class="row">
-      <div class="col-md-6 mx-auto">
-        <div class="card text-center username-card first-card">
-          <div class="card-body">
-            <div class="user-profile-picture">
-              <img src=<?php echo_profile_picture();?> alt="User Picture" width="100" height="100">
-            </div>
-            <h3 class="card-title"><?php echo_username();?></h5>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="row">
       <div class="col-md-12">

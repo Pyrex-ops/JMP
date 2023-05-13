@@ -1,4 +1,4 @@
 <?php
-  header("location: /dashboard");
-  exit;
+header("location: /dashboard");
+exit;
 ?>
