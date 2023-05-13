@@ -12,7 +12,7 @@ function registration_error($error)
 
 redirect_to_dashboard_if_logged_in();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["weight"])) {
   $username = $_POST["username"];
   if (strlen($username) == 0) {
     registration_error("Inserisci l'username.");

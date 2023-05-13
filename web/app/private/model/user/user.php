@@ -21,4 +21,13 @@ function add_user($username,$password,$weight) {
     $query->close();
 }
 
+function get_id($username) {
+    global $database;
+    $query = $database->prepare("SELECT IDUtente FROM utente WHERE username = ?");
+    $query->bind_param("s",$username);
+    $query->execute();
+    $result = $query->get_result();
+    return $result->fetch_row()[0];
+}
+
 ?>
