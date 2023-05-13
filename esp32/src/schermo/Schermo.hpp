@@ -36,7 +36,7 @@ class Schermo {
 	 * @param tempoAllenamento numero di secondi trascorsi dall'inizio
 	 * dell'allenamento
 	 */
-	void informazioniAllenamento(uint16_t salti, uint32_t tempoAllenamento, uint16_t calorie);
+	void informazioniAllenamento(uint32_t salti, uint32_t tempoAllenamento, uint32_t calorie);
 	/**
 	 * Mostra a schermo l'avviso di connessione persa
 	 *

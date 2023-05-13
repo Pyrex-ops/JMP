@@ -14,6 +14,7 @@ void Schermo::begin() {
 	display.println("JMPit");
 	display.display();
 	delay(3000);
+	pulisci();
 }
 
 void Schermo::pulisci() {
@@ -25,24 +26,27 @@ void Schermo::pulisci() {
 }
 
 void Schermo::informazioniAllenamento(
-	uint16_t salti, uint32_t tempoAllenamento, uint16_t calorie) {
-	pulisci();
+	uint32_t salti, uint32_t tempoAllenamento, uint32_t calorie) {
+	display.fillRect(65, 40, 60, 23, SSD1306_BLACK);
+	display.fillRect(1, 40, 63, 23, SSD1306_BLACK);
+	display.fillRect(65, 4, 60, 8, SSD1306_BLACK);
+	//pulisci();
 	display.setTextSize(1);
 	display.drawRoundRect(0, 0, 128, 16, 0, SSD1306_WHITE);
 	display.drawRoundRect(0, 16, 64, 48, 0, SSD1306_WHITE);
 	display.drawRoundRect(64, 16, 64, 48, 0, SSD1306_WHITE);
 	display.setCursor(4, 4);
 	display.println("CALORIE:");
-	display.setCursor(84, 4);
+	display.setCursor(66, 4);
 	display.print(calorie);
 	display.setTextSize(2);
 	display.setCursor(2, 20);
 	display.print("SALTI");
-	display.setCursor(25, 45);
+	display.setCursor(2, 45);
 	display.print(salti);
 	display.setCursor(66, 20);
 	display.print("TEMPO");
-	display.setCursor(89, 45);
+	display.setCursor(66, 45);
 	display.print(tempoAllenamento);
 	display.display();
 }
