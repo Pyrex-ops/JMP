@@ -1,6 +1,7 @@
 #include "WifiPasswordGetter.hpp"
 
 const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
+<!DOCTYPE html>
 <html>
 
 <head>
