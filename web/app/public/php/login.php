@@ -20,7 +20,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         $arrayHash = $queryHash->get_result()->fetch_assoc();
         if (isset($arrayHash["passwordhash"])) {
             if (password_verify($_POST["password"], $arrayHash["passwordhash"])) {
-                login();
+                login($_POST["username"]);
                 header("location: /dashboard");
             } else {
                 logout();
