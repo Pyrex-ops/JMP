@@ -57,8 +57,16 @@ void WifiPasswordGetter::start_wifi() {
 	});
 
 	server.on("/api/refresh-ssids", HTTP_GET, [](AsyncWebServerRequest* request) {
-		numberOfWifiNetworks = WiFi.scanNetworks();
+		numberOfWifiNetworks = WiFi.scanNetworks(true);
 		request->send(200, "application/json", "{}");
+	});
+
+	server.on("/api/get-wifi-scan-status", HTTP_GET, [](AsyncWebServerRequest* request) {
+		if (WiFi.scanComplete() != -1 && WiFi.scanComplete() != -2) {
+			request->send(200, "application/json", "{\"status\": \"completed\"}");
+		} else {
+			request->send(200, "application/json", "{\"status\": \"uncompleted\"}");
+		}
 	});
 
 	AsyncCallbackJsonWebHandler* handler = new AsyncCallbackJsonWebHandler(
@@ -88,6 +96,7 @@ void WifiPasswordGetter::start_wifi() {
 				request->send(200, "application/json", "{\"status\": \"trying\"}");
 				break;
 			case WL_DISCONNECTED:
+				WiFi.disconnect();
 				request->send(200, "application/json", "{\"status\": \"wrong credentials\"}");
 				break;
 			case WL_CONNECTED:
@@ -99,9 +108,11 @@ void WifiPasswordGetter::start_wifi() {
 				request->send(200, "application/json", "{\"status\": \"connected\"}");
 				break;
 			case WL_CONNECT_FAILED:
+				WiFi.disconnect();
 				request->send(200, "application/json", "{\"status\": \"wrong credentials\"}");
 				break;
 			default:
+				WiFi.disconnect();
 				request->send(200, "application/json", "{\"status\": \"wrong credentials\"}");
 				break;
 		}
