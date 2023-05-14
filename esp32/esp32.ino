@@ -48,11 +48,6 @@ void setup() {
 }
 
 void loop() {
-	static state_t lastState = currentState;
-	if (lastState != currentState) {
-		lastState = currentState;
-		schermo.pulisci();
-	}
 	switch (currentState) {
 		case DISCONNECTED: handleDisconnected(); break;
 		case NEW_CREDENTIALS_REQUIRED: handleNewCredentialsRequired(); break;
@@ -84,6 +79,7 @@ void handleNewCredentialsRequired() {
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;
+	schermo.connessionePersa();
 }
 
 void handleIdle() {
@@ -98,6 +94,7 @@ void handleIdle() {
 		trainingManager			= new TrainingManager(
 			&backendServer, SAMPLE_SENDING_PERIOD_SECONDS, &schermo,
 			encoder.getRevolutions(), &motorino);
+		schermo.pulisci();
 		currentState = TRAINING;
 	}
 	//motorino.vibra(100);
