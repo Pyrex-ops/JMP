@@ -110,7 +110,7 @@ void Schermo::inserisciCredenziali() {
 	display.display();
 }
 
-void Schermo::obiettivoRaggiunto(uint8_t tipo) {
+void Schermo::obiettivoRaggiunto(tipologiaObiettivo_t tipo) {
 	/**
 	 * (1, 'Numero di salti eseguiti durante l'allenamento.'),
 		(2, 'Calorie spese durante l'allenamento.'),
@@ -119,7 +119,7 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 	pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	switch (tipo) {
-		case 1:
+		case NUMERO_SALTI:
 			display.setTextSize(1);
 			display.setCursor(35, 0);
 			display.print("OBIETTIVO");
@@ -131,7 +131,7 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 			display.drawRoundRect(0, 28, 128, 36, 10, SSD1306_WHITE);
 			display.display();
 			break;
-		case 2:
+		case CALORIE_SPESE:
 			display.setTextSize(1);
 			display.setCursor(35, 0);
 			display.print("OBIETTIVO");
@@ -143,7 +143,7 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 			display.drawRoundRect(0, 28, 128, 36, 10, SSD1306_WHITE);
 			display.display();
 			break;
-		case 3:
+		case TEMPO_ALLENAMENTO_MINUTI:
 			display.setTextSize(1);
 			display.setCursor(35, 0);
 			display.print("OBIETTIVO");

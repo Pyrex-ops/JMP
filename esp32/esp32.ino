@@ -44,9 +44,15 @@ void setup() {
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;
+	schermo.connessionePersa();
 }
 
 void loop() {
+	static state_t lastState = currentState;
+	if (lastState != currentState) {
+		lastState = currentState;
+		schermo.pulisci();
+	}
 	switch (currentState) {
 		case DISCONNECTED: handleDisconnected(); break;
 		case NEW_CREDENTIALS_REQUIRED: handleNewCredentialsRequired(); break;
@@ -62,6 +68,7 @@ void handleDisconnected() {
 		wifiManager.deleteCredentials();
 		Serial.println("new credentials required");
 		//schermo.scrivi(0, "new credentials required");
+		schermo.inserisciCredenziali();
 		currentState = NEW_CREDENTIALS_REQUIRED;
 	}
 	if (wifiManager.checkConnection()) {
@@ -113,6 +120,7 @@ void handleTraining() {
 }
 
 void disconnected() {
+	schermo.connessionePersa();
 	Serial.println("connection lost");
 	//schermo.scrivi(0, "connection lost");
 	lostConnectionTimestamp = millis();
