@@ -9,5 +9,5 @@ bool CaptiveRequestHandler::canHandle(AsyncWebServerRequest *request) {
 	return true;
 }
 void CaptiveRequestHandler::handleRequest(AsyncWebServerRequest *request) {
-	request->redirect("http://smart.rope/");
+	request->redirect("http://configurazione-JMPcorda/");
 }

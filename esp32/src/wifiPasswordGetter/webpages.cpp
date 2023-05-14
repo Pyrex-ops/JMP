@@ -104,6 +104,60 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             font-size: 14px;
         }
 
+        .linear-activity {
+            overflow: hidden;
+            width: 100%;
+            height: 4px;
+            background-color: #a8a8a8;
+            margin: 20px auto;
+        }
+
+        .indeterminate {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .indeterminate:before {
+            content: '';
+            position: absolute;
+            height: 100%;
+            background-color: #000000;
+            animation: indeterminate_first 1.5s infinite ease-out;
+        }
+
+        .indeterminate:after {
+            content: '';
+            position: absolute;
+            height: 100%;
+            background-color: #505050;
+            animation: indeterminate_second 1.5s infinite ease-in;
+        }
+
+        @keyframes indeterminate_first {
+            0% {
+                left: -100%;
+                width: 100%;
+            }
+
+            100% {
+                left: 100%;
+                width: 10%;
+            }
+        }
+
+        @keyframes indeterminate_second {
+            0% {
+                left: -150%;
+                width: 100%;
+            }
+
+            100% {
+                left: 100%;
+                width: 10%;
+            }
+        }
+
         .title {
             font-size: 24px;
             margin-bottom: 20px;
@@ -177,9 +231,12 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
 
         <h1 class="title">Configurazione WiFi</h1>
         <div id="formContainer" class="form-container">
+            <div class="linear-activity" id="ssidLoader">
+                <div class="indeterminate"></div>
+            </div>
             <select id="ssidSelect" disabled></select>
             <div style="display: flex; align-items: center; justify-content: center;">
-                <span style="margin-left: 5px;">Aggiorna reti WiFi</span>
+                <span style="margin-left: 5px;">Aggiorna reti WiFi:</span>
                 <button id="refreshButton" class="small-button"
                     style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: none; margin-left:20px;border-radius: 5px; background-color: #198754; color: #fff; margin-top: 10px;">
                     &#x21bb;
@@ -205,10 +262,12 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
             const loadingContainer = document.getElementById('loadingContainer');
             const statusMessage = document.getElementById('statusMessage');
             const alertContainer = document.getElementById('alertContainer');
+            const ssidLoader = document.getElementById('ssidLoader');
             var attemptNumber = 0;
 
             // Make a request to the api to get the list of SSIDs
-            getSsids();
+            fetch('api/refresh-ssids');
+            getScanStatus();
 
             // Function to display an alert message
             function displayAlert(type, message) {
@@ -225,6 +284,28 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
                 }, 3000);
             }
 
+            function getScanStatus() {
+                ssidLoader.style.display = 'block'
+                ssidSelect.style.display = 'none'
+                statusMessage.textContent = 'Scansionando...';
+
+                fetch('api/get-wifi-scan-status')
+                    .then(response => response.json())
+                    .then(data => {
+                        const status = data.status;
+                        if (status === 'completed') {
+                            statusMessage.textContent = '';
+                            getSsids(); // Fetch the list of SSIDs
+                        } else {
+                            setTimeout(getScanStatus, 500); // Retry after half a second
+                        }
+                    })
+                    .catch(error => {
+                        statusMessage.textContent = 'Error occurred while checking scan status.';
+                    });
+            }
+
+
 
             function getSsids() {
                 fetch('api/get-ssids')
@@ -233,10 +314,12 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
                         if (data.ssids && data.ssids.length > 0) {
                             // Populate the SSID select dropdown
                             data.ssids.forEach(ssid => {
-                                const option = document.createElement('option');
-                                option.value = ssid;
-                                option.textContent = ssid;
-                                ssidSelect.appendChild(option);
+                                if (ssid !== "") {
+                                    const option = document.createElement('option');
+                                    option.value = ssid;
+                                    option.textContent = ssid;
+                                    ssidSelect.appendChild(option);
+                                }
                             });
 
                             ssidSelect.disabled = false;
@@ -246,8 +329,12 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
                             loadingContainer.style.display = 'none';
                             displayAlert('error', 'Nessuna rete WiFi trovata.');
                         }
+                        ssidSelect.style.display = 'block'
+                        ssidLoader.style.display = 'none'
                     })
                     .catch(error => {
+                        ssidSelect.style.display = 'block'
+                        ssidLoader.style.display = 'none'
                         statusMessage.textContent = 'Error occurred while fetching SSIDs.';
                     });
             }
@@ -298,7 +385,7 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
                 fetch('api/refresh-ssids');
 
                 // Make a request to get the updated list of SSIDs
-                getSsids();
+                getScanStatus();
             });
 
 
