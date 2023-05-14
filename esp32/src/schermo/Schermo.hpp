@@ -3,7 +3,9 @@
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <mutex>
 #include <Wire.h>
+
 
 #define SCREEN_WIDTH 128  // pixel
 #define SCREEN_HEIGHT 64
@@ -17,7 +19,7 @@
 */
 class Schermo {
   private:
-
+	std::mutex mutexDisplay;
   public:
 	/**
 	 * Costruttore della classe
@@ -36,7 +38,7 @@ class Schermo {
 	 * @param tempoAllenamento numero di secondi trascorsi dall'inizio
 	 * dell'allenamento
 	 */
-	void informazioniAllenamento(uint16_t salti, uint32_t tempoAllenamento, uint16_t calorie);
+	void informazioniAllenamento(uint32_t salti, uint32_t tempoAllenamento, uint32_t calorie);
 	/**
 	 * Mostra a schermo l'avviso di connessione persa
 	 *
@@ -58,10 +60,20 @@ class Schermo {
 	void obiettivoRaggiunto(uint8_t tipo);
 	/**
 	 * Lampeggia schermo invertendo i colori
-	 * 
+	 *
 	 * @warning Usa delay
-	*/
+	 */
 	void lampeggia(uint8_t volte);
+	/**
+	 * Mostra le credenziali della rete di configurazione
+	 *
+	 * @param SSID - SSID della rete (11 caratteri)
+	 * @param password - password della rete (11 caratteri)
+	 *
+	 * @warning Non rispettare i limiti porterà alla stampa di caratteri
+	 * sovrapposti
+	 */
+	void mostraCredenziali(String SSID, String password);
 };
 
 #endif
