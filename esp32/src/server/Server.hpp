@@ -25,18 +25,39 @@ typedef struct {
 	bool creatoAllenamento;
 } upload_data_t;
 
+typedef struct {
+	String serverName;
+	bool* creatoAllenamento;
+} start_training_data_t;
+
+typedef struct {
+	String serverName;
+	obiettivo_t* obiettivo;
+} get_obiettivo_data_t;
+
+typedef struct {
+	String serverName;
+	obiettivo_t* obiettivo;
+} get_moltiplicatore_calorie_data_t;
+
 class BackendServer {
   private:
 	bool creatoAllenamento;
 	String SERVER_NAME;
-	static void sendDataThreaded(void* revolutions);
+	static void sendDataThreaded(void* uploadData);
+	static void startTrainingThreaded(void* startTrainingData);
+	static void getObiettivoThreaded(void* getObiettivoData);
+	static void getMoltiplicatoreCalorieThreaded(void* getMoltiplicatoreCalorieData);
 	static TaskHandle_t taskSendData;
+	static TaskHandle_t taskStartTraining;
+	static TaskHandle_t taskGetObiettivo;
+	static TaskHandle_t taskGetMoltiplicatoreCalorie;
   public:
 	BackendServer(const char* serverName);
 	void startTraining();
 	void sendData(uint32_t revolutions);
-	obiettivo_t getObiettivo();
-	float getMoltiplicatoreCalorie();
+	void getObiettivo(obiettivo_t* obiettivo);
+	void getMoltiplicatoreCalorie(float* moltiplicatore);
 };
 
 #endif
