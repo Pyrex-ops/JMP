@@ -5,7 +5,6 @@
 #include <WiFi.h>
 
 TaskHandle_t BackendServer::taskSendData;
-String BackendServer::SERVER_NAME;
 
 BackendServer::BackendServer(const char* serverName) {
 	SERVER_NAME = String(serverName);
@@ -19,28 +18,33 @@ void BackendServer::startTraining() {
 	Serial.println(serverPath);
 	http.begin(serverPath.c_str());
 	http.GET();
+	creatoAllenamento = true;
 	return;
 }
 
 void BackendServer::sendData(uint32_t revolutions) {
-	uint32_t* revolutionsHeap = new uint32_t(revolutions);
+	upload_data_t* uploadData = new upload_data_t();
+	uploadData->creatoAllenamento = creatoAllenamento;
+	uploadData->revolutions = revolutions;
+	uploadData->serverName = SERVER_NAME;
 	xTaskCreatePinnedToCore(sendDataThreaded, "vibrazioneIntermittente", 4096,
-							(void*)revolutionsHeap, 0, &taskSendData, 0);
+							(void*)revolutions, 0, &taskSendData, 0);
 	return;
 }
 
-void BackendServer::sendDataThreaded(void* revolutions) {
+void BackendServer::sendDataThreaded(void* upload_data_in) {
 	HTTPClient http;
-	String serverPath(BackendServer::SERVER_NAME.c_str());
+	upload_data_t* upload_data = static_cast<upload_data_t*>(upload_data_in);
+	String serverPath(upload_data->serverName.c_str());
 	serverPath.concat("api/uploadData?id=");
 	serverPath.concat(WiFi.macAddress());
 	serverPath.concat("&valore=");
-	serverPath.concat(*((int*)revolutions));
+	serverPath.concat(upload_data->revolutions);
 	Serial.println(serverPath);
 	http.begin(serverPath.c_str());
 	http.GET();
 	Serial.println(http.getString());
-	delete ((int*)revolutions);
+	delete (upload_data);
 	vTaskDelete(NULL);
 }
 

@@ -19,9 +19,16 @@ typedef struct {
 	uint32_t valore;
 } obiettivo_t;
 
+typedef struct {
+	String serverName;
+	uint32_t revolutions;
+	bool creatoAllenamento;
+} upload_data_t;
+
 class BackendServer {
   private:
-	static String SERVER_NAME;
+	bool creatoAllenamento;
+	String SERVER_NAME;
 	static void sendDataThreaded(void* revolutions);
 	static TaskHandle_t taskSendData;
   public:

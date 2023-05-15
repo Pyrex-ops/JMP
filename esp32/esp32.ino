@@ -48,6 +48,11 @@ void setup() {
 }
 
 void loop() {
+	static state_t lastState = currentState;
+	if (lastState != currentState) {
+		lastState = currentState;
+		schermo.pulisci();
+	}
 	switch (currentState) {
 		case DISCONNECTED: handleDisconnected(); break;
 		case NEW_CREDENTIALS_REQUIRED: handleNewCredentialsRequired(); break;
@@ -88,14 +93,12 @@ void handleIdle() {
 	} else if (encoder.getRevolutions() != 0) {
 		Serial.println("training started");
 		//schermo.scrivi(0, "training started");
-		encoder.reset();
+		trainingManager = new TrainingManager(
+			&backendServer, SAMPLE_SENDING_PERIOD_SECONDS, &schermo, 0, &motorino);
 		timestampLastRevolution = millis();
-		lastRevolutionNumber	= encoder.getRevolutions();
-		trainingManager			= new TrainingManager(
-			&backendServer, SAMPLE_SENDING_PERIOD_SECONDS, &schermo,
-			encoder.getRevolutions(), &motorino);
-		schermo.pulisci();
-		currentState = TRAINING;
+		encoder.reset();
+		lastRevolutionNumber = encoder.getRevolutions();
+		currentState		 = TRAINING;
 	}
 	//motorino.vibra(100);
 }
