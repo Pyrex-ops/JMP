@@ -27,7 +27,15 @@ WHERE misura.IDAllenamento IN (SELECT MAX(allenamento.IDAllenamento)
                                 ORDER BY allenamento.IDAllenamento DESC);");
             $risultatoQueryControllo = $queryControllo->fetch_assoc();
             $risultatoQueryAllenamentoVuoto = $queryControlloAllenamentoVuoto->fetch_assoc();
-
+            //Alternativa: inserire allenamento alla creazione dell'utente
+            //Se l'utente non ha allenamenti, facciamo inserire un allenamento.
+            $queryAllenamentiVuoti = $database->query("SELECT allenamento.IDAllenamento FROM allenamento JOIN utente ON allenamento.IDUtente = utente.IDUtente WHERE allenamento.IDUtente = $userID ORDER BY allenamento.IDAllenamento DESC LIMIT 1;");
+            if ($queryAllenamentiVuoti->num_rows == 0) {
+                $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente) VALUE ('$userID')");
+                http_response_code(200);
+                echo json_encode(['stato' => 'ok']);
+                exit;
+            }
             if (!isset($risultatoQueryControllo["timestamp"]) && $risultatoQueryAllenamentoVuoto["c"] != 0) {
                 $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente) VALUE ('$userID')");
                 http_response_code(200);
