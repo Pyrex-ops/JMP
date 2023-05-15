@@ -37,6 +37,8 @@ class Schermo {
 	 * @param salti numeri di salti registrati
 	 * @param tempoAllenamento numero di secondi trascorsi dall'inizio
 	 * dell'allenamento
+	 *
+	 * @warning Richiamare la pulizia() prima di invocare questo metodo.
 	 */
 	void informazioniAllenamento(uint32_t salti, uint32_t tempoAllenamento, uint32_t calorie);
 	/**
@@ -74,6 +76,10 @@ class Schermo {
 	 * sovrapposti
 	 */
 	void mostraCredenziali(String SSID, String password);
+	/**
+	 * Invita l'utente ad associare la corda ad un account
+	*/
+	void associaAccount();
 };
 
 #endif

@@ -188,3 +188,17 @@ void Schermo::mostraCredenziali(String SSID, String password) {
 	display.print(password);
 	display.display();
 }
+
+void Schermo::associaAccount(){
+	//Da testare perché non ho la scheda
+	pulisci();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	display.setTextSize(2);
+	display.setCursor(20, 0);
+	display.print("ASSOCIA");
+	display.setTextSize(3);
+	display.setCursor(6, 32);
+	display.println("ACCOUNT");
+	display.display();
+
+}
