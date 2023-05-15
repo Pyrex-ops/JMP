@@ -17,11 +17,11 @@ if (isset($_GET["id"])) {
             $risultatoQueryAssociazione = $queryAssociazione->get_result()->num_rows;
             if ($risultatoQueryAssociazione != 0) {
                 http_response_code(200);
-                echo json_encode(["stato" => "ok", "associato" => "si"]);
+                echo json_encode(["stato" => "ok", "associato" => true]);
                 exit;
             } else {
                 http_response_code(401);
-                echo json_encode(["stato" => "errore", "associato" => "no"]);
+                echo json_encode(["stato" => "errore", "associato" => false]);
                 exit;
             }
         }
