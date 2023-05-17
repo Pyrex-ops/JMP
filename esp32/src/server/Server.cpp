@@ -19,7 +19,7 @@ void BackendServer::startTraining() {
 	startTrainingData->creatoAllenamento	 = &creatoAllenamento;
 	startTrainingData->serverName			 = SERVER_NAME;
 	xTaskCreatePinnedToCore(startTrainingThreaded, "startTraining", 4096,
-							(void*)startTrainingData, 0, &taskStartTraining, 0);
+							(void*)startTrainingData, 0, &taskStartTraining, 1);
 	return;
 }
 
@@ -44,7 +44,7 @@ void BackendServer::sendData(uint32_t revolutions) {
 	uploadData->revolutions		  = revolutions;
 	uploadData->serverName		  = SERVER_NAME;
 	xTaskCreatePinnedToCore(
-		sendDataThreaded, "sendData", 4096, (void*)uploadData, 0, &taskSendData, 0);
+		sendDataThreaded, "sendData", 4096, (void*)uploadData, 0, &taskSendData, 1);
 	return;
 }
 
@@ -66,11 +66,10 @@ void BackendServer::sendDataThreaded(void* upload_data_in) {
 	vTaskDelete(NULL);
 }
 
-static void getObiettivoThreaded(void* getObiettivoData) {}
-
-void BackendServer::getObiettivo(obiettivo_t* obiettivo_in) {
+void BackendServer::getObiettivoThreaded(void* getObiettivoData_in) {
 	HTTPClient http;
-	String serverPath(SERVER_NAME.c_str());
+	get_obiettivo_data_t* getObiettivoData = static_cast<get_obiettivo_data_t*>(getObiettivoData_in);
+	String serverPath(getObiettivoData->serverName.c_str());
 	obiettivo_t obiettivo = { NESSUNO, 0 };
 	serverPath.concat("api/getObiettivo?id=");
 	serverPath.concat(WiFi.macAddress());
@@ -107,7 +106,18 @@ void BackendServer::getObiettivo(obiettivo_t* obiettivo_in) {
 			}
 		}
 	}
-	*obiettivo_in = obiettivo;
+	*(getObiettivoData->obiettivo) = obiettivo;
+	delete (getObiettivoData_in);
+	vTaskDelete(NULL);
+}
+
+void BackendServer::getObiettivo(obiettivo_t* obiettivo_in) {
+	get_obiettivo_data_t* getObiettivoData = new get_obiettivo_data_t();
+	getObiettivoData->obiettivo			   = obiettivo_in;
+	getObiettivoData->serverName		   = SERVER_NAME;
+	xTaskCreatePinnedToCore(getObiettivoThreaded, "getObiettivo", 4096,
+							(void*)getObiettivoData, 0, &taskGetObiettivo, 1);
+	return;
 }
 
 void BackendServer::getMoltiplicatoreCalorie(float* moltiplicatore_in) {
