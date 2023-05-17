@@ -9,6 +9,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Schermo::Schermo() {}
 
 void Schermo::begin() {
+	this->interrompiEsecuzione = false;
 	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
 		Serial.println("SSD1306 allocation failed");
@@ -158,6 +159,10 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 
 		default: break;
 	}
+	std::thread t([this]() {
+		lampeggia(1);
+	});
+	t.detach();
 }
 
 void Schermo::lampeggia(uint8_t volte) {
@@ -168,12 +173,16 @@ void Schermo::lampeggia(uint8_t volte) {
 		delay(1000);
 		display.invertDisplay(false);
 		delay(1000);
+		if (this->interrompiEsecuzione) {
+			this->interrompiEsecuzione = !this->interrompiEsecuzione;
+			return;
+		}
 	}
 }
 
 void Schermo::mostraCredenziali(String SSID, String password) {
 	pulisci();
-	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(1);
 	display.setCursor(60, 0);
 	display.print("SSID");
@@ -187,18 +196,45 @@ void Schermo::mostraCredenziali(String SSID, String password) {
 	display.setTextSize(2);
 	display.print(password);
 	display.display();
+	lock.unlock();
+	std::thread t([this]() {
+		std::lock_guard<std::mutex> lock(this->mutexDisplay);
+		delay(1000);
+	});
+	t.detach();
 }
 
-void Schermo::associaAccount(){
-	//Da testare perché non ho la scheda
+void Schermo::associaAccount() {
 	pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(20, 0);
 	display.print("ASSOCIA");
 	display.setTextSize(3);
-	display.setCursor(6, 32);
+	display.setCursor(0, 32);
 	display.println("ACCOUNT");
 	display.display();
+	std::thread t([this]() {
+		lampeggia(1);
+	});
+	t.detach();
+}
 
+void Schermo::interrompi() {
+	if (!this->interrompiEsecuzione) {
+		this->interrompiEsecuzione = !this->interrompiEsecuzione;
+	}
+}
+
+void Schermo::mostraMAC(String MAC) {
+	pulisci();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	display.setTextSize(2);
+	display.setCursor(0, 0);
+	display.print("COD. CORDA");
+	display.setTextSize(2);
+	display.setCursor(0, 32);
+	display.println(MAC.substring(0,9));
+	display.println(MAC.substring(9));
+	display.display();
 }

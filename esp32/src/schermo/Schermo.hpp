@@ -20,6 +20,7 @@
 class Schermo {
   private:
 	std::mutex mutexDisplay;
+	bool interrompiEsecuzione; //true = interrompi esecuzione
   public:
 	/**
 	 * Costruttore della classe
@@ -80,6 +81,16 @@ class Schermo {
 	 * Invita l'utente ad associare la corda ad un account
 	*/
 	void associaAccount();
+	/**
+	 * Interrompi tutte le operazioni
+	 * 
+	 * @warning Non interrompe il metodo begin()
+	*/
+	void interrompi();
+	/**
+	 * Mostra MAC address
+	*/
+	void mostraMAC(String MAC);
 };
 
 #endif
