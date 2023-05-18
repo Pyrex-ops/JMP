@@ -57,7 +57,8 @@ redirect_to_login_if_not_logged_in() ?>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
   <script>
     // API response with selected days (example)
-    const selectedDays = ['Lunedì', 'Mercoledì'];
+    //const selectedDays = ['Lunedì', 'Mercoledì'];
+    <?php successful_days_of_week(); ?>
 
     // Generate circles for last 7 days
     const daysContainer = document.getElementById('daysContainer');

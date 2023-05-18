@@ -67,8 +67,8 @@ GROUP BY allenamento.IDAllenamento;");
 
 function last_trainings(): void
 {
-   global $database;
-   //Prendiamo gli ultimi 3 allenamenti dell'utente e il relativo superamento dell'obiettivo fissato
+    global $database;
+    //Prendiamo gli ultimi 3 allenamenti (che hanno un obiettivo associato) dell'utente e il relativo superamento dell'obiettivo fissato
     $idUtente = get_id(get_username());
     $query = $database->prepare("SELECT DATE(MIN(misura.timestamp)) AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp))) AS `durataAllenamento`,allenamento.IDAllenamento AS 'IdAllenam', obiettivo.IDCategoria,
 (
@@ -105,12 +105,68 @@ WHERE utente.IDUtente=?
 GROUP BY allenamento.IDAllenamento
 ORDER BY durataAllenamento DESC
 LIMIT 3;");
-    $query->bind_param("i",$idUtente);
+    $query->bind_param("i", $idUtente);
     $query->execute();
     $risultato = $query->get_result();
     $arrayDati3allenamenti = [];
-    while($riga = $risultato->fetch_assoc()){
-        $arrayDati3allenamenti[]=["name" => $riga["dataAllenamento"], "duration"=>(int)($riga["durataAllenamento"]/60) ." min", "goalReached"=>(bool)$riga["superamento"]];
+    while ($riga = $risultato->fetch_assoc()) {
+        $arrayDati3allenamenti[] = ["name" => $riga["dataAllenamento"], "duration" => (int)($riga["durataAllenamento"] / 60) . " min", "goalReached" => (bool)$riga["superamento"]];
     }
     echo json_encode($arrayDati3allenamenti);
+}
+
+function successful_days_of_week(): void
+{
+    global $database;
+    $idUtente = get_id(get_username());
+    //TODO: Evitare di rifare questa query dato che già la facciamo sopra
+    //Forse il mapping alla stringa (Es. lunedì ecc) dovremmo farlo in php
+    //In ottica futura di gestione di altre lingue ecc
+    $query = $database->prepare("SELECT ELT(WEEKDAY(DATE(MIN(misura.timestamp)))+1,'Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica') AS 'giorno', DATE(MIN(misura.timestamp)) AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp))) AS `durataAllenamento`,allenamento.IDAllenamento AS 'IdAllenam', obiettivo.IDCategoria,
+(
+    CASE
+    	WHEN obiettivo.IDCategoria = 1 THEN (
+        	SELECT IF(SUM(misura.numeroSalti)>obiettivo.parametro, 1, 0)
+            FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
+            JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
+            JOIN utente ON allenamento.IDUtente = utente.IDUtente
+            WHERE allenamento.IDAllenamento = IdAllenam
+            GROUP BY allenamento.IDAllenamento
+        	)
+    	WHEN obiettivo.IDCategoria = 2 THEN (
+        	SELECT IF(SUM(misura.numeroSalti)*utente.peso*0.1*2.205>obiettivo.parametro, 1, 0)
+            FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
+            JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
+            JOIN utente ON allenamento.IDUtente = utente.IDUtente
+            WHERE allenamento.IDAllenamento = IdAllenam
+            GROUP BY allenamento.IDAllenamento
+        	)
+    	WHEN obiettivo.IDCategoria = 3 THEN (
+        	SELECT IF((unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp)))/60>obiettivo.parametro, 1, 0)
+            FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
+            JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
+            JOIN utente ON allenamento.IDUtente = utente.IDUtente
+            WHERE allenamento.IDAllenamento = IdAllenam
+            GROUP BY allenamento.IDAllenamento)
+    END
+) AS superamento
+FROM allenamento JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
+JOIN utente ON utente.IDUtente = allenamento.IDUtente
+JOIN misura ON misura.IDAllenamento = allenamento.IDAllenamento
+WHERE utente.IDUtente=?
+GROUP BY allenamento.IDAllenamento
+HAVING dataAllenamento >= NOW() + INTERVAL -7 DAY AND dataAllenamento < NOW() + INTERVAL 0 DAY
+ORDER BY durataAllenamento DESC
+LIMIT 3;");
+    $query->bind_param("i",$idUtente);
+    $query->execute();
+    $risultato = $query->get_result();
+    $arraySettimana = [];
+    while ($riga = $risultato->fetch_assoc()) {
+        //TODO fallo nella query (where)
+        if ($riga["superamento"] == 1) {
+            $arraySettimana[] = $riga["giorno"];
+        }
+    }
+    echo "const selectedDays = ".json_encode($arraySettimana) .";";
 }
