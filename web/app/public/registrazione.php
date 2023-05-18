@@ -35,7 +35,7 @@ redirect_to_dashboard_if_logged_in(); ?>
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" class="form-control" id="password" name="password" required>
-        <small class="text-muted">La password deve essere lunga 6 caratteri e contenere una lettera maiuscola.</small>
+        <small class="text-muted">La password deve essere più lunga di 6 caratteri e contenere una lettera maiuscola.</small>
       </div>
       <div class="form-group">
         <label for="weight">Peso (kg)</label>
@@ -52,7 +52,7 @@ redirect_to_dashboard_if_logged_in(); ?>
       $('#password').keyup(function () {
         var password = $(this).val();
         var uppercaseRegex = /[A-Z]/;
-        var isValid = password.length >= 6 && uppercaseRegex.test(password);
+        var isValid = password.length > 6 && uppercaseRegex.test(password);
         if (isValid) {
           $(this).removeClass('is-invalid').addClass('is-valid');
         } else {
