@@ -1,6 +1,7 @@
 <?php require_once "/php/private/model/auth/sessione.php";
 require_once "/php/private/view/navbar.php";
 include_once "/php/private/model/auth/auth.php";
+include_once "/php/private/model/user/user.php";
 redirect_to_login_if_not_logged_in() ?>
 
 <!DOCTYPE html>
@@ -74,13 +75,16 @@ redirect_to_login_if_not_logged_in() ?>
     }
     // Chart.js code for the activity time trend
     var ctx = document.getElementById('activityChart').getContext('2d');
+    <?php duration_graph(); ?>
     var activityChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ['23/04', '30/04', '06/05', '13/05'],
+        //labels: ['23/04', '30/04', '06/05', '13/05'],
+        labels: arrayDate,
         datasets: [{
           label: 'Tempo di attività',
-          data: [30, 45, 60, 50],
+          //data: [30, 45, 60, 50],
+          data: arrayDurata,
           backgroundColor: '#198754',
           borderColor: '#198754',
           borderWidth: 1
@@ -100,11 +104,12 @@ redirect_to_login_if_not_logged_in() ?>
 
     // Generate training boxes
     const trainingsContainer = document.getElementById('trainingsContainer');
-    const trainingsData = [
+    const trainingsData = /*[
       { name: '03/05', duration: '45 min', goalReached: false },
       { name: '07/05', duration: '70 min', goalReached: true },
-      { name: '10/05', duration: '30 min', goalReached: false }
-    ];
+      { name: '10/05', duration: '30 min', goalReached: false }]*/
+      <?php last_trainings(); ?>
+    ;
 
     trainingsData.forEach(training => {
       const row = document.createElement('tr');
