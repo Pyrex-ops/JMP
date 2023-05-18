@@ -103,14 +103,14 @@ JOIN utente ON utente.IDUtente = allenamento.IDUtente
 JOIN misura ON misura.IDAllenamento = allenamento.IDAllenamento
 WHERE utente.IDUtente=?
 GROUP BY allenamento.IDAllenamento
-ORDER BY obiettivo.IDCategoria ASC
+ORDER BY durataAllenamento DESC
 LIMIT 3;");
     $query->bind_param("i",$idUtente);
     $query->execute();
     $risultato = $query->get_result();
     $arrayDati3allenamenti = [];
     while($riga = $risultato->fetch_assoc()){
-        $arrayDati3allenamenti[]=["name" => $riga["dataAllenamento"], "duration"=>$riga["durataAllenamento"]/60 ." min", "goalReached"=>(bool)$riga["superamento"]];
+        $arrayDati3allenamenti[]=["name" => $riga["dataAllenamento"], "duration"=>(int)($riga["durataAllenamento"]/60) ." min", "goalReached"=>(bool)$riga["superamento"]];
     }
     echo json_encode($arrayDati3allenamenti);
 }
