@@ -2,7 +2,8 @@
 require_once("../../private/model/db/dbconnessione.php"); //
 header("Content-Type: application/json");
 
-
+//Endpoint per conoscere lo stato dell'associazione di una corda, dato il suo id
+//ID case insensitive
 if (isset($_GET["id"])) {
     if (isset($database)) {
         $queryDispositivo = $database->prepare("SELECT IDDispositivo FROM dispositivo WHERE IDDispositivo = (?)");
@@ -20,8 +21,8 @@ if (isset($_GET["id"])) {
                 echo json_encode(["stato" => "ok", "associato" => true]);
                 exit;
             } else {
-                http_response_code(401);
-                echo json_encode(["stato" => "errore", "associato" => false]);
+                http_response_code(200);
+                echo json_encode(["stato" => "ok", "associato" => false]);
                 exit;
             }
         }
