@@ -2,7 +2,7 @@
 
 include_once "/php/private/model/auth/auth.php";
 
-function echo_navbar($active_page)
+function echo_navbar($active_page): void
 {
 
   echo '<nav class="navbar navbar-expand-md bg-primary bg-body-tertiary navbar-dark">

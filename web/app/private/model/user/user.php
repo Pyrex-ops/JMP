@@ -3,7 +3,7 @@
 include_once "/php/private/model/db/dbconnessione.php";
 
 
-function does_user_exist($username)
+function does_user_exist($username): bool
 {
     global $database;
     $query = $database->prepare("SELECT IDUtente FROM utente WHERE username = ?");
@@ -13,7 +13,7 @@ function does_user_exist($username)
     return $result->num_rows != 0;
 }
 
-function add_user($username, $password, $weight)
+function add_user($username, $password, $weight): void
 {
     global $database;
     $query = $database->prepare("INSERT INTO utente(username, passwordhash,peso) VALUES (?,?,?)");
@@ -33,7 +33,7 @@ function get_id($username)
     return $result->fetch_row()[0];
 }
 
-function remove_user()
+function remove_user(): void
 {
     global $database;
     $query = $database->prepare("DELETE FROM utente WHERE username = ?");
@@ -42,4 +42,3 @@ function remove_user()
     $query->execute();
 }
 
-?>

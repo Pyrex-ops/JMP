@@ -39,4 +39,3 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 } else {
     login_error("Compilare tutti i campi.");
 }
-?>
