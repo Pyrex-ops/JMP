@@ -1,6 +1,6 @@
 <?php
 
-require_once '../db/dbconnessione.php';
+require_once "/php/private/model/db/dbconnessione.php";
 header('Content-Type: application/json');
 
 if (isset($database)) {
