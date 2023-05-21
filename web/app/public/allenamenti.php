@@ -68,8 +68,8 @@ redirect_to_login_if_not_logged_in() ?>
                     <div class="form-group">
                         <label for="goalValue">Valore:</label>
                         <div class="d-flex align-items-center">
-                        <input type="range" class=" form-range flex-grow-1" id="goalValueSlider" min="1"
-                                max="300" value="50" style="width:420%;margin-right:40px">
+                            <input type="range" class=" form-range flex-grow-1" id="goalValueSlider" min="1" max="300"
+                                value="50" style="width:420%;margin-right:40px">
                             <input type="text" class="form-control" id="goalValueInput" value="50">
 
                         </div>
@@ -92,50 +92,50 @@ redirect_to_login_if_not_logged_in() ?>
     <script>
         // Function to update the goal value display
 
-// Event listener for goal value input
-document.getElementById('goalValueInput').addEventListener('input', function () {
-  var value = parseInt(this.value);
-  if (!isNaN(value)) {
-    document.getElementById('goalValueSlider').value = value;
-  }
-});
+        // Event listener for goal value input
+        document.getElementById('goalValueInput').addEventListener('input', function () {
+            var value = parseInt(this.value);
+            if (!isNaN(value)) {
+                document.getElementById('goalValueSlider').value = value;
+            }
+        });
 
-// Event listener for goal value slider
-document.getElementById('goalValueSlider').addEventListener('input', function () {
-  var value = parseInt(this.value);
-  if (!isNaN(value)) {
-    document.getElementById('goalValueInput').value = value;
-  }
-});
+        // Event listener for goal value slider
+        document.getElementById('goalValueSlider').addEventListener('input', function () {
+            var value = parseInt(this.value);
+            if (!isNaN(value)) {
+                document.getElementById('goalValueInput').value = value;
+            }
+        });
 
         // Event listener for confirm goal button
         document.getElementById('confirmGoalBtn').addEventListener('click', function () {
-    // Get selected goal type and value
-    var goalType = document.getElementById('goalType').value;
-    var goalValue = document.getElementById('goalValueSlider').value;
+            // Get selected goal type and value
+            var goalType = document.getElementById('goalType').value;
+            var goalValue = document.getElementById('goalValueSlider').value;
 
-    // Create a new form element
-    var form = document.createElement('form');
-    form.method = 'post';
-    form.action = 'process_goal.php'; // Replace with the actual URL or file path of the PHP page
+            // Create a new form element
+            var form = document.createElement('form');
+            form.method = 'post';
+            form.action = 'process_goal.php'; // Replace with the actual URL or file path of the PHP page
 
-    // Create hidden input fields for the goal type and value
-    var goalTypeInput = document.createElement('input');
-    goalTypeInput.type = 'hidden';
-    goalTypeInput.name = 'goalType';
-    goalTypeInput.value = goalType;
-    form.appendChild(goalTypeInput);
+            // Create hidden input fields for the goal type and value
+            var goalTypeInput = document.createElement('input');
+            goalTypeInput.type = 'hidden';
+            goalTypeInput.name = 'goalType';
+            goalTypeInput.value = goalType;
+            form.appendChild(goalTypeInput);
 
-    var goalValueInput = document.createElement('input');
-    goalValueInput.type = 'hidden';
-    goalValueInput.name = 'goalValue';
-    goalValueInput.value = goalValue;
-    form.appendChild(goalValueInput);
+            var goalValueInput = document.createElement('input');
+            goalValueInput.type = 'hidden';
+            goalValueInput.name = 'goalValue';
+            goalValueInput.value = goalValue;
+            form.appendChild(goalValueInput);
 
-    // Append the form to the document and submit it
-    document.body.appendChild(form);
-    form.submit();
-  });
+            // Append the form to the document and submit it
+            document.body.appendChild(form);
+            form.submit();
+        });
 
 
         // Function to add a workout to the list
@@ -157,12 +157,12 @@ document.getElementById('goalValueSlider').addEventListener('input', function ()
             progressBar.classList.add('progress');
             progressBar.style.height = '20px';
             maxTrainingTime = parseInt(trainingsData.sort(
-        function (a, b) {
-          return parseInt(b['duration']) - parseInt(a['duration']);
-        }
-      )[0]['duration'])
-      progressBar.innerHTML = `
-    <div class="progress-bar" role="progressbar" style="width: ${100*parseInt(training.duration)/maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
+                function (a, b) {
+                    return parseInt(b['duration']) - parseInt(a['duration']);
+                }
+            )[0]['duration'])
+            progressBar.innerHTML = `
+    <div class="progress-bar" role="progressbar" style="width: ${100 * parseInt(training.duration) / maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
   `;
             progressCell.appendChild(progressBar);
             row.appendChild(progressCell);
