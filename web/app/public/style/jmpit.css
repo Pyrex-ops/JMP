@@ -113,6 +113,12 @@ body {
   margin-bottom: 20px;
 }
 
+.obiettivo-card {
+  width: 400px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+
 .first-card {
   margin-bottom: 20px;
 }
@@ -130,12 +136,40 @@ body {
   width: 20%;
 }
 
+.allenamenti-table-member {
+  vertical-align:middle;
+}
+
 .table-column-width td:nth-child(2) {
   width: 60%;
 }
 
+.table-trainings {
+  table-layout: fixed;
+}
+
+.table-trainings td:first-child {
+  width: 25%;
+}
+.table-trainings td:last-child {
+  width: 15%;
+}
+
+.table-trainings td:nth-child(2) {
+  width: 40%;
+}
+
+.table-trainings td:nth-child(3) {
+  width: 10%;
+}
+
 .dashboard-container {
   max-width: 800px;
+}
+
+.goal-card {
+  width: fit-content;
+  margin: 20px auto;
 }
 
 .user-image-navbar {

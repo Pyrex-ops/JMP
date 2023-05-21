@@ -47,7 +47,7 @@ redirect_to_login_if_not_logged_in() ?>
             <table class="table table-borderless table-column-width">
               <tbody id="trainingsContainer"></tbody>
             </table>
-            <button class="btn btn-primary">Vedi tutti</button>
+            <button onclick="location.href = '/allenamenti';" class="btn btn-primary">Vedi tutti</button>
           </div>
         </div>
       </div>
