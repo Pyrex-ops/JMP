@@ -96,9 +96,10 @@ function last_trainings(): void
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
             WHERE allenamento.IDAllenamento = IdAllenam
             GROUP BY allenamento.IDAllenamento)
+        ELSE 0
     END
 ) AS superamento
-FROM allenamento JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
+FROM allenamento LEFT OUTER JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
 JOIN utente ON utente.IDUtente = allenamento.IDUtente
 JOIN misura ON misura.IDAllenamento = allenamento.IDAllenamento
 WHERE utente.IDUtente=?
@@ -110,19 +111,17 @@ LIMIT 3;");
     $risultato = $query->get_result();
     $arrayDati3allenamenti = [];
     while ($riga = $risultato->fetch_assoc()) {
-        $arrayDati3allenamenti[] = ["name" => $riga["dataAllenamento"], "duration" => (int)($riga["durataAllenamento"] / 60) . " min", "goalReached" => (bool)$riga["superamento"]];
+        $arrayDati3allenamenti[] = ["name" => substr($riga["dataAllenamento"], 5), "duration" => (int) ($riga["durataAllenamento"] / 60) . "m", "goalReached" => (bool) $riga["superamento"]];
     }
     echo json_encode($arrayDati3allenamenti);
 }
 
-function successful_days_of_week(): void
+function all_trainings(): void
 {
     global $database;
+    //Prendiamo gli ultimi 3 allenamenti (che hanno un obiettivo associato) dell'utente e il relativo superamento dell'obiettivo fissato
     $idUtente = get_id(get_username());
-    //TODO: Evitare di rifare questa query dato che già la facciamo sopra
-    //Forse il mapping alla stringa (Es. lunedì ecc) dovremmo farlo in php
-    //In ottica futura di gestione di altre lingue ecc
-    $query = $database->prepare("SELECT ELT(WEEKDAY(DATE(MIN(misura.timestamp)))+1,'Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica') AS 'giorno', DATE(MIN(misura.timestamp)) AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp))) AS `durataAllenamento`,allenamento.IDAllenamento AS 'IdAllenam', obiettivo.IDCategoria,
+    $query = $database->prepare("SELECT DATE(MIN(misura.timestamp)) AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp))) AS `durataAllenamento`,allenamento.IDAllenamento AS 'IdAllenam', obiettivo.IDCategoria,
 (
     CASE
     	WHEN obiettivo.IDCategoria = 1 THEN (
@@ -148,25 +147,46 @@ function successful_days_of_week(): void
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
             WHERE allenamento.IDAllenamento = IdAllenam
             GROUP BY allenamento.IDAllenamento)
+        ELSE 0
     END
 ) AS superamento
-FROM allenamento JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
+FROM allenamento LEFT OUTER JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
 JOIN utente ON utente.IDUtente = allenamento.IDUtente
 JOIN misura ON misura.IDAllenamento = allenamento.IDAllenamento
 WHERE utente.IDUtente=?
 GROUP BY allenamento.IDAllenamento
-HAVING dataAllenamento >= NOW() + INTERVAL -7 DAY AND dataAllenamento < NOW() + INTERVAL 0 DAY
-ORDER BY durataAllenamento DESC
-LIMIT 3;");
-    $query->bind_param("i",$idUtente);
+ORDER BY durataAllenamento DESC;");
+    $query->bind_param("i", $idUtente);
+    $query->execute();
+    $risultato = $query->get_result();
+    $arrayDatiallenamenti = [];
+    while ($riga = $risultato->fetch_assoc()) {
+        $arrayDatiallenamenti[] = ["id" => $riga["IdAllenam"], "name" => substr($riga["dataAllenamento"], 5), "duration" => (int) ($riga["durataAllenamento"] / 60) . "m", "goalReached" => (bool) $riga["superamento"]];
+    }
+    echo json_encode($arrayDatiallenamenti);
+}
+
+function successful_days_of_week(): void
+{
+    global $database;
+    $idUtente = get_id(get_username());
+    //TODO: Evitare di rifare questa query dato che già la facciamo sopra
+    //Forse il mapping alla stringa (Es. lunedì ecc) dovremmo farlo in php
+    //In ottica futura di gestione di altre lingue ecc
+    $query = $database->prepare("SELECT ELT(WEEKDAY(DATE(MIN(misura.timestamp)))+1,'Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica') AS 'giorno',
+     DATE(MIN(misura.timestamp)) AS 'dataAllenamento' FROM allenamento LEFT OUTER JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
+JOIN utente ON utente.IDUtente = allenamento.IDUtente
+JOIN misura ON misura.IDAllenamento = allenamento.IDAllenamento
+WHERE utente.IDUtente=?
+GROUP BY allenamento.IDAllenamento
+HAVING dataAllenamento >= NOW() + INTERVAL -7 DAY AND dataAllenamento < NOW() + INTERVAL 0 DAY");
+    $query->bind_param("i", $idUtente);
     $query->execute();
     $risultato = $query->get_result();
     $arraySettimana = [];
     while ($riga = $risultato->fetch_assoc()) {
         //TODO fallo nella query (where)
-        if ($riga["superamento"] == 1) {
-            $arraySettimana[] = $riga["giorno"];
-        }
+        $arraySettimana[] = $riga["giorno"];
     }
-    echo "const selectedDays = ".json_encode($arraySettimana) .";";
+    echo "const selectedDays = " . json_encode($arraySettimana) . ";";
 }
