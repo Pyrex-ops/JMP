@@ -110,7 +110,7 @@ redirect_to_login_if_not_logged_in() ?>
       { name: '07/05', duration: '70 min', goalReached: true },
       { name: '10/05', duration: '30 min', goalReached: false }]*/
       <?php last_trainings(); ?>
-    ;
+      ;
 
     trainingsData.forEach(training => {
       const row = document.createElement('tr');
@@ -123,8 +123,13 @@ redirect_to_login_if_not_logged_in() ?>
       const progressBar = document.createElement('div');
       progressBar.classList.add('progress');
       progressBar.style.height = '20px';
+      maxTrainingTime = parseInt(trainingsData.sort(
+        function (a, b) {
+          return parseInt(b['duration']) - parseInt(a['duration']);
+        }
+      )[0]['duration'])
       progressBar.innerHTML = `
-    <div class="progress-bar" role="progressbar" style="width: ${parseInt(training.duration)}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="100">${training.duration}</div>
+    <div class="progress-bar" role="progressbar" style="width: ${100*parseInt(training.duration)/maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
   `;
       progressCell.appendChild(progressBar);
       row.appendChild(progressCell);

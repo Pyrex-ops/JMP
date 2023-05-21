@@ -1,6 +1,7 @@
 <?php require_once "/php/private/model/auth/sessione.php";
 require_once "/php/private/view/navbar.php";
 include_once "/php/private/model/auth/auth.php";
+include_once "/php/private/model/user/user.php";
 redirect_to_login_if_not_logged_in() ?>
 
 <!DOCTYPE html>
@@ -139,12 +140,7 @@ document.getElementById('goalValueSlider').addEventListener('input', function ()
 
         // Function to add a workout to the list
         const trainingsContainer = document.getElementById('trainingsContainer');
-        const trainingsData = [
-            { id: 1, name: '03/05', duration: '45 min', goalReached: false },
-            { id: 2, name: '07/05', duration: '70 min', goalReached: true },
-            { id: 3, name: '10/05', duration: '30 min', goalReached: false },
-            // Add more workout sessions as needed...
-        ];
+        const trainingsData = <?php all_trainings() ?>
 
         trainingsData.forEach(training => {
             const row = document.createElement('tr');
@@ -160,8 +156,13 @@ document.getElementById('goalValueSlider').addEventListener('input', function ()
             const progressBar = document.createElement('div');
             progressBar.classList.add('progress');
             progressBar.style.height = '20px';
-            progressBar.innerHTML = `
-    <div class="progress-bar" role="progressbar" style="width: ${parseInt(training.duration)}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="100">${training.duration}</div>
+            maxTrainingTime = parseInt(trainingsData.sort(
+        function (a, b) {
+          return parseInt(b['duration']) - parseInt(a['duration']);
+        }
+      )[0]['duration'])
+      progressBar.innerHTML = `
+    <div class="progress-bar" role="progressbar" style="width: ${100*parseInt(training.duration)/maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
   `;
             progressCell.appendChild(progressBar);
             row.appendChild(progressCell);
