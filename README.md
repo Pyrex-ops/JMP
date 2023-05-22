@@ -84,4 +84,3 @@ I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita eti
 ```
 ## Schema circuitale
 
-![Circuito pittorico](../../Downloads/Circuito2.svg)
