@@ -2,6 +2,7 @@
 require_once "/php/private/view/navbar.php";
 include_once "/php/private/model/auth/auth.php";
 include_once "/php/private/model/user/user.php";
+include_once "/php/private/model/allenamenti/allenamenti.php";
 redirect_to_login_if_not_logged_in() ?>
 
 <!DOCTYPE html>
@@ -10,7 +11,7 @@ redirect_to_login_if_not_logged_in() ?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workout Tracker</title>
+    <title>Allenamenti</title>
     <link rel="stylesheet" href="/style/bootstrap.css">
     <link rel="stylesheet" href="/style/jmpit.css">
 </head>
@@ -40,9 +41,9 @@ redirect_to_login_if_not_logged_in() ?>
             <div class="card">
                 <div class="card-body text-center">
                     <table class="table table-borderless table-column-width table-trainings">
-                    <thead>
+                        <thead>
                             <tr>
-                                <th ><i class='fa fa-calendar'></i> </th>
+                                <th><i class='fa fa-calendar'></i> </th>
                                 <th><i class="fa fa-clock"></i></th>
                                 <th><i class="fas fa-star"></i></th>
                                 <th><i class="fa-solid fa-magnifying-glass"></i></th>
@@ -69,9 +70,7 @@ redirect_to_login_if_not_logged_in() ?>
                     <div class="form-group">
                         <label for="goalType">Tipologia:</label>
                         <select class="form-control" id="goalType">
-                            <option value="duration">Tempo di allenamento</option>
-                            <option value="calories">Numero di calorie bruciate</option>
-                            <option value="skips">Numero di salti</option>
+                            <option value="">Seleziona</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -100,21 +99,29 @@ redirect_to_login_if_not_logged_in() ?>
 
     <script>
 
-        const tipologieAllenamento = [
-            { name: 'Numero Mogus Catturati', icon: 'fa-times', max: '50' },
-            { name: 'Numero Mogus intervistati', icon: 'fa-dumbbell', max: '100' }
-        ];
+        const tipologieAllenamento = <?php echo_tipologie_obiettivo() ?>;
 
-        const obiettivoCorrente = { name: 'Numero Mogus intervistati', value: '30' };
+        const obiettivoCorrente = <?php echo_obiettivo(get_username()) ?>;
+
+        const goalTypeSelect = document.getElementById('goalType');
+            goalTypeSelect.innerHTML = ''; // Clear existing options
+
+        tipologieAllenamento.forEach(tipo => {
+                const option = document.createElement('option');
+                option.value = tipo.name;
+                option.textContent = tipo.name;
+                goalTypeSelect.appendChild(option);
+            });
 
         function updateCurrentGoal() {
+
             const goalIcon = document.getElementById("training-icon-box");
             const selectedGoal = tipologieAllenamento.find(goal => goal.name === obiettivoCorrente.name);
             if (selectedGoal) {
                 goalIcon.classList.add("fas", selectedGoal.icon); // Add the appropriate class to the icon element
-                document.getElementById('goalValueSlider').max = 10;
+                document.getElementById('goalValueSlider').max = selectedGoal.max;
                 document.getElementById('goalValueSlider').value = document.getElementById('goalValueSlider').max / 2;
-                document.getElementById('goalValueInput').max = 10;
+                document.getElementById('goalValueInput').max = selectedGoal.max;
                 document.getElementById('goalValueInput').value = document.getElementById('goalValueSlider').max / 2;
                 document.getElementById('goalDescription').textContent = selectedGoal.name;
                 document.getElementById('goalValue').textContent = obiettivoCorrente.value;
@@ -140,6 +147,16 @@ redirect_to_login_if_not_logged_in() ?>
                 document.getElementById('goalValueInput').value = value;
             }
         });
+        
+        document.getElementById("goalType").addEventListener('change',function () {
+            const goalSelect = document.getElementById("goalType");
+            const goal = goalSelect.value;
+            const selectedGoal = tipologieAllenamento.find(goalType => goalType.name === goal);
+            if (selectedGoal) {
+                document.getElementById('goalValueSlider').max = selectedGoal.max;
+                document.getElementById('goalValueInput').max = selectedGoal.max;
+            }
+        })
 
         // Event listener for confirm goal button
         document.getElementById('confirmGoalBtn').addEventListener('click', function () {
@@ -169,39 +186,25 @@ redirect_to_login_if_not_logged_in() ?>
             document.body.appendChild(form);
             form.submit();
         });
-        // Function to update the goal value display
-
-        // Event listener for goal value input
-        document.getElementById('goalValueInput').addEventListener('input', function () {
-            var value = parseInt(this.value);
-            if (!isNaN(value)) {
-                document.getElementById('goalValueSlider').value = value;
-            }
-        });
-
-        // Event listener for goal value slider
-        document.getElementById('goalValueSlider').addEventListener('input', function () {
-            var value = parseInt(this.value);
-            if (!isNaN(value)) {
-                document.getElementById('goalValueInput').value = value;
-            }
-        });
 
 
         // Function to add a workout to the list
         const trainingsContainer = document.getElementById('trainingsContainer');
         const trainingsData = <?php all_trainings() ?>;
         const maxTrainingTime = parseInt(trainingsData.sort(
-                function (a, b) {
-                    return parseInt(b['duration']) - parseInt(a['duration']);
-                }
-            )[0]['duration']);
+            function (a, b) {
+                return parseInt(b['duration']) - parseInt(a['duration']);
+            }
+        )[0]['duration']);
 
-            trainingsData.sort(
-                function (a, b) {
-                    return parseInt(b['id']) - parseInt(a['id']);
-                }
-            );
+        trainingsData.sort(
+            function (a, b) {
+                return parseInt(b['id']) - parseInt(a['id']);
+            }
+        );
+        if (maxTrainingTime === 0) {
+            maxTrainingTime = 1;
+        }
 
         trainingsData.forEach(training => {
             const row = document.createElement('tr');
@@ -227,7 +230,7 @@ redirect_to_login_if_not_logged_in() ?>
             goalCell.classList.add('align-middle');
             if (training.goalReached) {
                 const starIcon = document.createElement('i');
-                starIcon.classList.add('fas' ,'fa-star');
+                starIcon.classList.add('fas', 'fa-star');
                 starIcon.style = "color: #f8e45c;"
                 goalCell.appendChild(starIcon);
             }

@@ -8,7 +8,7 @@ redirect_to_login_if_not_logged_in() ?>
 <html>
 
 <head>
-  <title>User Dashboard</title>
+  <title>Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/style/bootstrap.css">
   <link rel="stylesheet" href="/style/jmpit.css">
@@ -125,6 +125,10 @@ redirect_to_login_if_not_logged_in() ?>
         return parseInt(b['duration']) - parseInt(a['duration']);
       }
     )[0]['duration'])
+
+    if(maxTrainingTime===0) {
+            maxTrainingTime = 1;
+        }
 
     trainingsData.sort(
       function (a, b) {
