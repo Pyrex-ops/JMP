@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `utente` (
 --
 DROP TABLE IF EXISTS `classificadurata`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `classificadurata`  AS SELECT `utente`.`username` AS `username`, (unix_timestamp(max(`misura`.`timestamp`)) - unix_timestamp(min(`misura`.`timestamp`))) AS `durataAllenamento` FROM ((`misura` join `allenamento` on((`misura`.`IDAllenamento` = `allenamento`.`IDAllenamento`))) join `utente` on((`allenamento`.`IDUtente` = `utente`.`IDUtente`))) WHERE (`utente`.`partecipazioneClassifica` = 1) GROUP BY `misura`.`IDAllenamento` ORDER BY `durataAllenamento` DESC ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `classificadurata`  AS SELECT `t`.`username` AS `username`, max(`t`.`durataAllenamento`) AS `durataAllenamento` FROM (select distinct `utente`.`username` AS `username`,(unix_timestamp(max(`misura`.`timestamp`)) - unix_timestamp(min(`misura`.`timestamp`))) AS `durataAllenamento` from ((`misura` join `allenamento` on((`misura`.`IDAllenamento` = `allenamento`.`IDAllenamento`))) join `utente` on((`utente`.`IDUtente` = `allenamento`.`IDUtente`))) where (`utente`.`partecipazioneClassifica` = 1) group by `allenamento`.`IDAllenamento` order by `durataAllenamento` desc) AS `t` GROUP BY `t`.`username` ;
 
 -- --------------------------------------------------------
 
@@ -146,7 +146,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `cla
 --
 DROP TABLE IF EXISTS `classificanumsalti`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `classificanumsalti`  AS SELECT `utente`.`username` AS `username`, sum(`misura`.`numeroSalti`) AS `numSalti` FROM ((`misura` join `allenamento` on((`misura`.`IDAllenamento` = `allenamento`.`IDAllenamento`))) join `utente` on((`allenamento`.`IDUtente` = `utente`.`IDUtente`))) WHERE (`utente`.`partecipazioneClassifica` = 1) GROUP BY `allenamento`.`IDAllenamento` ORDER BY `numSalti` DESC ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`jmp-user`@`%` SQL SECURITY DEFINER VIEW `classificanumsalti`  AS SELECT `t`.`username` AS `username`, max(`t`.`numSalti`) AS `numSalti` FROM (select `utente`.`username` AS `username`,sum(`misura`.`numeroSalti`) AS `numSalti` from ((`misura` join `allenamento` on((`misura`.`IDAllenamento` = `allenamento`.`IDAllenamento`))) join `utente` on((`allenamento`.`IDUtente` = `utente`.`IDUtente`))) where (`utente`.`partecipazioneClassifica` = 1) group by `allenamento`.`IDAllenamento` order by `numSalti` desc) AS `t` GROUP BY `t`.`username` ;
 
 --
 -- Limiti per le tabelle scaricate

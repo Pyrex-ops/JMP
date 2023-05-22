@@ -1,6 +1,7 @@
 <?php require_once "/php/private/model/auth/sessione.php";
 require_once "/php/private/view/navbar.php";
 include_once "/php/private/model/auth/auth.php";
+include_once "/php/private/model/user/user.php";
 redirect_to_login_if_not_logged_in() ?>
 
 <!DOCTYPE html>
@@ -46,7 +47,7 @@ redirect_to_login_if_not_logged_in() ?>
             <table class="table table-borderless table-column-width">
               <tbody id="trainingsContainer"></tbody>
             </table>
-            <button class="btn btn-primary">Vedi tutti</button>
+            <button onclick="location.href = '/allenamenti';" class="btn btn-primary">Vedi tutti</button>
           </div>
         </div>
       </div>
@@ -56,7 +57,8 @@ redirect_to_login_if_not_logged_in() ?>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
   <script>
     // API response with selected days (example)
-    const selectedDays = ['Lunedì', 'Mercoledì'];
+    //const selectedDays = ['Lunedì', 'Mercoledì'];
+    <?php successful_days_of_week(); ?>
 
     // Generate circles for last 7 days
     const daysContainer = document.getElementById('daysContainer');
@@ -74,13 +76,16 @@ redirect_to_login_if_not_logged_in() ?>
     }
     // Chart.js code for the activity time trend
     var ctx = document.getElementById('activityChart').getContext('2d');
+    <?php duration_graph(); ?>
     var activityChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ['23/04', '30/04', '06/05', '13/05'],
+        //labels: ['23/04', '30/04', '06/05', '13/05'],
+        labels: arrayDate,
         datasets: [{
           label: 'Tempo di attività',
-          data: [30, 45, 60, 50],
+          //data: [30, 45, 60, 50],
+          data: arrayDurata,
           backgroundColor: '#198754',
           borderColor: '#198754',
           borderWidth: 1
@@ -100,11 +105,12 @@ redirect_to_login_if_not_logged_in() ?>
 
     // Generate training boxes
     const trainingsContainer = document.getElementById('trainingsContainer');
-    const trainingsData = [
+    const trainingsData = /*[
       { name: '03/05', duration: '45 min', goalReached: false },
       { name: '07/05', duration: '70 min', goalReached: true },
-      { name: '10/05', duration: '30 min', goalReached: false }
-    ];
+      { name: '10/05', duration: '30 min', goalReached: false }]*/
+      <?php last_trainings(); ?>
+      ;
 
     trainingsData.forEach(training => {
       const row = document.createElement('tr');
@@ -117,8 +123,13 @@ redirect_to_login_if_not_logged_in() ?>
       const progressBar = document.createElement('div');
       progressBar.classList.add('progress');
       progressBar.style.height = '20px';
+      maxTrainingTime = parseInt(trainingsData.sort(
+        function (a, b) {
+          return parseInt(b['duration']) - parseInt(a['duration']);
+        }
+      )[0]['duration'])
       progressBar.innerHTML = `
-    <div class="progress-bar" role="progressbar" style="width: ${parseInt(training.duration)}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="100">${training.duration}</div>
+    <div class="progress-bar" role="progressbar" style="width: ${100*parseInt(training.duration)/maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
   `;
       progressCell.appendChild(progressBar);
       row.appendChild(progressCell);

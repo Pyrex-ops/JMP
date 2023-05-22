@@ -2,7 +2,7 @@
 
 include_once "/php/private/model/auth/auth.php";
 
-function echo_navbar($active_page)
+function echo_navbar($active_page): void
 {
 
   echo '<nav class="navbar navbar-expand-md bg-primary bg-body-tertiary navbar-dark">
@@ -17,18 +17,30 @@ function echo_navbar($active_page)
     if ($active_page == "dashboard") {
       echo '
         <a class="nav-link active" aria-current="page" href="/dashboard">Dashboard</a>
+        <a class="nav-link" href="/allenamenti">Allenamenti</a>
         <a class="nav-link" href="/impostazioni">Impostazioni</a>
         <a class="nav-link" href="/php/logout">Logout</a>
         ';
     } else if ($active_page == "impostazioni") {
       echo '
         <a class="nav-link" href="/dashboard">Dashboard</a>
+        <a class="nav-link" href="/allenamenti">Allenamenti</a>
         <a class="nav-link active" aria-current="page" href="/impostazioni">Impostazioni</a>
         <a class="nav-link" href="/php/logout">Logout</a>
         ';
-    } else {
+    } else if ($active_page == "allenamenti") {
+      echo '
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+        <a class="nav-link active" href="/allenamenti">Allenamenti</a>
+        <a class="nav-link" href="/impostazioni">Impostazioni</a>
+        <a class="nav-link" href="/php/logout">Logout</a>
+        ';
+    }
+    
+    else {
       echo '
       <a class="nav-link" href="/dashboard">Dashboard</a>
+      <a class="nav-link" href="/allenamenti">Allenamenti</a>
       <a class="nav-link" href="/impostazioni">Impostazioni</a>
       <a class="nav-link" href="/php/logout">Logout</a>
         ';
