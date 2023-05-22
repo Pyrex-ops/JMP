@@ -17,16 +17,17 @@ redirect_to_login_if_not_logged_in() ?>
 
 <body>
     <?php echo_navbar("allenamenti") ?>
+    <h1 class="text-center" style="margin-bottom:10px"> Obiettivo corrente </h1>
     <div class="container mt-5 dashboard-container">
         <div class="card goal-card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-5 text-center my-auto">
-                        <i class="fas fa-dumbbell fa-5x"></i>
+                        <i class="fas fa-5x" id="training-icon-box"></i>
                     </div>
                     <div class="col-7 text-center">
-                        <h5 class="card-title">Obiettivo corrente</h5>
-                        <p class="card-text">50 salti</p>
+                        <h5 class="card-title" id="goalDescription"></h5>
+                        <p class="card-text" id="goalValue"></p>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#changeGoalModal">Modifica</button>
                     </div>
@@ -34,10 +35,10 @@ redirect_to_login_if_not_logged_in() ?>
             </div>
         </div>
 
+        <h1 class="text-center" style="margin-bottom:55px"> Allenamenti </h1>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Allenamenti</h5>
                     <table class="table table-borderless table-column-width table-trainings">
                         <tbody id="trainingsContainer"></tbody>
                     </table>
@@ -90,7 +91,31 @@ redirect_to_login_if_not_logged_in() ?>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 
     <script>
-        // Function to update the goal value display
+
+        const tipologieAllenamento = [
+            { name: 'Numero Mogus Catturati', icon: 'fa-times', max: '50' },
+            { name: 'Numero Mogus intervistati', icon: 'fa-dumbbell', max: '100' }
+        ];
+
+        const obiettivoCorrente = { name: 'Numero Mogus intervistati', value: '30' };
+
+        function updateCurrentGoal() {
+            const goalIcon = document.getElementById("training-icon-box");
+            const selectedGoal = tipologieAllenamento.find(goal => goal.name === obiettivoCorrente.name);
+            if (selectedGoal) {
+                goalIcon.classList.add("fas", selectedGoal.icon); // Add the appropriate class to the icon element
+                document.getElementById('goalValueSlider').max = 10;
+                document.getElementById('goalValueSlider').value = document.getElementById('goalValueSlider').max / 2;
+                document.getElementById('goalValueInput').max = 10;
+                document.getElementById('goalValueInput').value = document.getElementById('goalValueSlider').max / 2;
+                document.getElementById('goalDescription').textContent = selectedGoal.name;
+                document.getElementById('goalValue').textContent = obiettivoCorrente.value;
+            }
+        }
+
+        updateCurrentGoal();
+
+        // Event listener for goal type select
 
         // Event listener for goal value input
         document.getElementById('goalValueInput').addEventListener('input', function () {
@@ -136,11 +161,39 @@ redirect_to_login_if_not_logged_in() ?>
             document.body.appendChild(form);
             form.submit();
         });
+        // Function to update the goal value display
+
+        // Event listener for goal value input
+        document.getElementById('goalValueInput').addEventListener('input', function () {
+            var value = parseInt(this.value);
+            if (!isNaN(value)) {
+                document.getElementById('goalValueSlider').value = value;
+            }
+        });
+
+        // Event listener for goal value slider
+        document.getElementById('goalValueSlider').addEventListener('input', function () {
+            var value = parseInt(this.value);
+            if (!isNaN(value)) {
+                document.getElementById('goalValueInput').value = value;
+            }
+        });
 
 
         // Function to add a workout to the list
         const trainingsContainer = document.getElementById('trainingsContainer');
-        const trainingsData = <?php all_trainings() ?>
+        const trainingsData = <?php all_trainings() ?>;
+        const maxTrainingTime = parseInt(trainingsData.sort(
+                function (a, b) {
+                    return parseInt(b['duration']) - parseInt(a['duration']);
+                }
+            )[0]['duration']);
+
+            trainingsData.sort(
+                function (a, b) {
+                    return parseInt(b['id']) - parseInt(a['id']);
+                }
+            );
 
         trainingsData.forEach(training => {
             const row = document.createElement('tr');
@@ -156,11 +209,6 @@ redirect_to_login_if_not_logged_in() ?>
             const progressBar = document.createElement('div');
             progressBar.classList.add('progress');
             progressBar.style.height = '20px';
-            maxTrainingTime = parseInt(trainingsData.sort(
-                function (a, b) {
-                    return parseInt(b['duration']) - parseInt(a['duration']);
-                }
-            )[0]['duration'])
             progressBar.innerHTML = `
     <div class="progress-bar" role="progressbar" style="width: ${100 * parseInt(training.duration) / maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
   `;
@@ -190,6 +238,7 @@ redirect_to_login_if_not_logged_in() ?>
 
             trainingsContainer.appendChild(row);
         });
+
     </script>
 </body>
 
