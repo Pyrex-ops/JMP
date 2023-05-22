@@ -87,11 +87,11 @@ void Schermo::connessionePersa() {
 	pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
-	display.setCursor(30, 0);
-	display.print("LINK");
-	display.setTextSize(4);
+	display.setCursor(10, 0);
+	display.print("CONNES.");
+	display.setTextSize(2);
 	display.setCursor(6, 32);
-	display.println("PERSO");
+	display.println("IN CORSO");
 	display.display();
 	std::thread t([this]() {
 		lampeggia(3);
@@ -168,15 +168,15 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 void Schermo::lampeggia(uint8_t volte) {
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	for (uint8_t i = 0; i < volte; i++) {
+		if (this->interrompiEsecuzione) {
+			this->interrompiEsecuzione = !this->interrompiEsecuzione;
+			return;
+		}
 		delay(1000);
 		display.invertDisplay(true);
 		delay(1000);
 		display.invertDisplay(false);
 		delay(1000);
-		if (this->interrompiEsecuzione) {
-			this->interrompiEsecuzione = !this->interrompiEsecuzione;
-			return;
-		}
 	}
 }
 
