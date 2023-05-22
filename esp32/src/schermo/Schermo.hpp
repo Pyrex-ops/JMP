@@ -5,6 +5,7 @@
 #include <Adafruit_SSD1306.h>
 #include <mutex>
 #include <Wire.h>
+#include "../server/Server.hpp"
 
 
 #define SCREEN_WIDTH 128  // pixel
@@ -57,7 +58,7 @@ class Schermo {
 	/**
 	 * Mostra a schermo l'avviso di raggiungimento obiettivo
 	 */
-	void obiettivoRaggiunto(uint8_t tipo);
+	void obiettivoRaggiunto(tipologiaObiettivo_t tipo);
 	/**
 	 * Lampeggia schermo invertendo i colori
 	 *
