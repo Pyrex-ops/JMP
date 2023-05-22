@@ -40,6 +40,14 @@ redirect_to_login_if_not_logged_in() ?>
             <div class="card">
                 <div class="card-body text-center">
                     <table class="table table-borderless table-column-width table-trainings">
+                    <thead>
+                            <tr>
+                                <th ><i class='fa fa-calendar'></i> </th>
+                                <th><i class="fa fa-clock"></i></th>
+                                <th><i class="fas fa-star"></i></th>
+                                <th><i class="fa-solid fa-magnifying-glass"></i></th>
+                            </tr>
+                        </thead>
                         <tbody id="trainingsContainer"></tbody>
                     </table>
                 </div>
@@ -219,8 +227,8 @@ redirect_to_login_if_not_logged_in() ?>
             goalCell.classList.add('align-middle');
             if (training.goalReached) {
                 const starIcon = document.createElement('i');
-                starIcon.classList.add('star', 'goal-reached');
-                starIcon.textContent = '★';
+                starIcon.classList.add('fas' ,'fa-star');
+                starIcon.style = "color: #f8e45c;"
                 goalCell.appendChild(starIcon);
             }
             row.appendChild(goalCell);
