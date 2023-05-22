@@ -42,6 +42,12 @@ redirect_to_login_if_not_logged_in() ?>
             // Unset the login error variable
             unset($_SESSION["cambio_password_error_message"]);
         } ?>
+        <? if (isset($_SESSION["cambio_peso_error_message"])) {
+            // Display error message in a Bootstrap alert
+            echo '<div class="alert alert-danger" role="alert">' . $_SESSION["cambio_peso_error_message"] . '</div>';
+            // Unset the login error variable
+            unset($_SESSION["cambio_peso_error_message"]);
+        } ?>
         <? if (isset($_SESSION["aggiunta_nuova_corda"])) {
             // Display error message in a Bootstrap alert
             echo '<div class="alert alert-success" role="alert">' . "La corda è stata aggiunta con successo al tuo account." . '</div>';
@@ -53,6 +59,12 @@ redirect_to_login_if_not_logged_in() ?>
             echo '<div class="alert alert-success" role="alert">' . "Password cambiata con successo." . '</div>';
             // Unset the login error variable
             unset($_SESSION["cambiata_password"]);
+        } ?>
+        <? if (isset($_SESSION["cambiato_peso"])) {
+            // Display error message in a Bootstrap alert
+            echo '<div class="alert alert-success" role="alert">' . "Peso cambiato con successo." . '</div>';
+            // Unset the login error variable
+            unset($_SESSION["cambiato_peso"]);
         } ?>
         <div class="row mt-4">
             <div class="col-md-4 mx-auto">
