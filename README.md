@@ -84,3 +84,5 @@ I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita eti
 ```
 ## Schema circuitale
 
+![Circuito2](https://github.com/Pyrex-ops/JMP/assets/60523265/64de4bfe-8dbd-4a44-ad53-9c42c1aa7872)
+
