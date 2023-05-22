@@ -8,6 +8,7 @@ Smart Jumping Rope - IoT
     - [Requisiti funzionali](#requisiti-funzionali)
     - [Requisiti non funzionali](#requisiti-non-funzionali)
   - [Struttura cartelle](#struttura-cartelle)
+  - [Schema circuitale](#schema-circuitale)
 
 
 ## Descrizione
@@ -18,9 +19,9 @@ L’applicazione fornisce due funzioni principali:
 1. Collezione e visualizzazione di statistiche sugli allenamenti quali: il numero di salti, la durata dell’allenamento, il numero di calorie consumate. 
 2. Feedback durante l’allenamento, fornito da un motorino vibrante e da un piccolo schermo disposto sul manico, ovvero, l'utente può impostare un obiettivo da raggiungere durante il prossimo allenamento con il fine di migliorare le proprie prestazioni e riceverà un feedback al raggiungimento di quest'ultimo.  
 
-Dal piccolo schermo montato sul manico, l'utente ha una visualizzazione compatta delle informazioni relative all'allenamento in corso. Per visualizzare le statistiche complete l’utente dovrà registrare un profilo, sul portale web dedicato, a cui il dispositivo invierà i dati, fornendo una serie di dati personali quali l’altezza, il sesso e l’età che saranno utilizzati per il calcolo, da parte del server, delle calorie consumate.  
-Ogni corda per saltare è identificata da un codice univoco che sarà utilizzato in fase di registrazione per associare la corda ad un solo profilo e per distinguere le corde nel sistema. Il codice verrà fornito insieme alla corda.  
-L'utente, opzionalmente, può partecipare alla classifica globale, stilata in base al numero di salti medio e tempo di allenamento.
+Dal piccolo schermo montato sul manico, l'utente ha una visualizzazione compatta delle informazioni relative all'allenamento in corso. Per visualizzare le statistiche complete l’utente dovrà registrare un profilo, sul portale web dedicato, a cui il dispositivo invierà i dati, fornendo la propria massa che sarà utilizzata per il calcolo, da parte del server, delle calorie consumate.  
+Ogni corda per saltare è identificata da un codice univoco che sarà utilizzato per associare la corda ad un solo profilo e per distinguere le corde nel sistema. Il codice verrà fornito insieme alla corda.  
+L'utente, opzionalmente, può partecipare alla classifica globale, stilata in base al numero di salti e tempo di allenamento.
 
 ## Requisiti
 
@@ -49,22 +50,13 @@ I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita eti
 * Il sistema consente all'utente di rimuovere un dispositivo dal proprio account.
 * Il sistema consente all'utente di visualizzare i dati raccolti.
 * Il sistema elabora le seguenti statistiche:
-  * Numero di salti medio eseguito durante gli allenamenti.
-  * Calorie spese in media negli allenamenti.
+  * Numero di salti medio eseguito durante gli allenamenti (salti/min).
+  * Calorie spese in media negli allenamenti (calorie/min).
 * Il sistema consente all'utente di visualizzare le statistiche elaborate.
-* Il sistema stila una classifica degli utenti che vi vorranno partecipare, in base al numero di salti medio e tempo di allenamento.
-  * Query d'esempio:
-    ```SQL
-      SELECT idutente, AVG(frequency) as frequenza, AVG(time) as tempo
-      FROM `provaClassifica`
-      GROUP BY idutente
-      ORDER BY frequenza DESC, tempo DESC;
-    ```
+* Il sistema stila una classifica degli utenti che vi vorranno partecipare, in base al numero di salti e tempo di allenamento.
 * L'utente può ritirare la partecipazione alla classifica.
 * Il sistema permette all'utente di indicare i parametri necessari al calcolo delle calorie spese:
   * Peso
-  * Età
-  * Sesso
 * Il sistema consente all'utente di modificare i parametri personali forniti in precedenza.
 
 ### Requisiti non funzionali
@@ -90,3 +82,6 @@ I casi d'uso saranno quindi racchiusi in un grande *riquadro* con l'apposita eti
     ├── asset/ (png, svg, ecc.)
     └── README.md
 ```
+## Schema circuitale
+
+![Circuito pittorico](../../Downloads/Circuito2.svg)
