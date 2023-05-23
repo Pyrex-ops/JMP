@@ -54,7 +54,7 @@ redirect_to_login_if_not_logged_in() ?>
             // Unset the login error variable
             unset($_SESSION["cambiata_password"]);
         } ?>
-        <div class="row mt-4">
+        <div class="row mt-5">
             <div class="col-md-4 mx-auto">
                 <div class="card text-center username-card first-card">
                     <div class="card-body">
@@ -69,7 +69,7 @@ redirect_to_login_if_not_logged_in() ?>
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title text-center">Cambia password</h5>
