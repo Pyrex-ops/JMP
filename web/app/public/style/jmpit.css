@@ -185,6 +185,7 @@ body {
 
 .goal-card {
   width: fit-content;
+  min-width: 250px;
   margin: 20px auto;
 }
 
