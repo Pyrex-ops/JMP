@@ -7,11 +7,12 @@ function echo_tipologie_obiettivo(): void
     global $database;
     $queryObiettivi = $database->query("SELECT IDCategoria,Descrizione FROM categoriaObiettivo ORDER BY IDCategoria ASC;");
     $arrayObiettivi = [];
-    $arrayIcone = ['fa-dumbbell', 'fa-times', 'fa-dumbbell'];
+    $arrayIcone = ['fa-dumbbell', 'fa-fire', 'fa-clock'];
     //1000 salti, 20000 calorie, 1440 minuti
     //ATTENZIONE: Ricorda che il database tratta le durate in SECONDI!
     $arrayLimiti = [1000, 20000, 1440];
     $index = 0;
+    $arrayObiettivi[] = ["name" => "Nessuno", "icon" => "fa-times", "max" => 0];
     while ($riga = $queryObiettivi->fetch_assoc()) {
         $arrayObiettivi[] = ["name" => $riga["Descrizione"], "icon" => $arrayIcone[$index], "max" => $arrayLimiti[$index]];
         $index++;
@@ -26,7 +27,7 @@ function echo_tipologie_obiettivo(): void
 
 function echo_obiettivo($user)
 {
-    echo "{ name: 'Numero salti', value: '30' }";
+    echo "{ name: 'Nessuno', value: '30' }";
 }
 
 function dettagli_allenamento($id) {
