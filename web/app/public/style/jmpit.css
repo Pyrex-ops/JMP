@@ -170,6 +170,15 @@ body {
   width: 10%;
 }
 
+.table-classifica td:first-child,
+.table-classifica th:first-child {
+  width: 30%;
+}
+.table-classifica td:last-child,
+.table-classifica th:last-child {
+  width: 30%;
+}
+
 .dashboard-container {
   max-width: 800px;
 }

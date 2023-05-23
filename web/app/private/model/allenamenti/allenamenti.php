@@ -56,3 +56,19 @@ function echo_detail_card($categoria,$parametro,$icona) {
     </div>
   </div>');
 }
+
+function echo_classifica_durata() {
+  echo "[
+           { name: 'Joecom', durata : 900 },
+           { name: 'Marco', durata : 400 },
+           { name: 'Giuseppe', durata : 200 }
+       ]";
+}
+
+function echo_classifica_salti() {
+  echo "[
+           { name: 'Marco', salti : 11000 },
+           { name: 'Giuseppe', salti : 3000 },
+           { name: 'Joecom', salti : 2000 }
+       ]";
+}

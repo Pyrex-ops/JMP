@@ -14,26 +14,73 @@ redirect_to_login_if_not_logged_in() ?>
     <title>Classifica</title>
     <link rel="stylesheet" href="/style/bootstrap.css">
     <link rel="stylesheet" href="/style/jmpit.css">
+    <style>
+        .checkbox {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .label {
+            background-color: #198754;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px;
+            position: relative;
+            height: 26px;
+            width: 50px;
+            transform: scale(1.5);
+        }
+
+        .label .ball {
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            height: 22px;
+            width: 22px;
+            transform: translateX(0px);
+            transition: transform 0.2s linear;
+        }
+
+        .checkbox:checked+.label .ball {
+            transform: translateX(24px);
+        }
+    </style>
 </head>
 
 <body>
     <?php echo_navbar("classifica") ?>
     <div class="container mt-5 dashboard-container">
 
-        <h1 class="text-center" style="margin-bottom:55px"> Classifica </h1>
+        <div class="col-m-12" style="padding-bottom:40px">
+            <div class="container d-flex justify-content-center align-items-center">
+                <div class="one-quarter" id="switch">
+                    <input type="checkbox" class="checkbox" id="chk" />
+                    <label class="label" for="chk">
+                        <i class="fas fa-person-running" style="color: #fff;"></i>
+                        <i class="fas fa-clock" style="color: #fff;"></i>
+                        <div class="ball"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <h1 class="text-center" style="margin-bottom:30px"> Classifica durata</h1>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body text-center">
-                    <table class="table table-borderless table-trainings">
+                    <table class="table table-borderless table-classifica">
                         <thead>
                             <tr>
-                                <th><i class='fa fa-calendar'></i> </th>
-                                <th><i class="fa fa-clock"></i></th>
-                                <th><i class="fas fa-star"></i></th>
-                                <th><i class="fa-solid fa-magnifying-glass"></i></th>
+                                <th><i class='fa fa-user'></i> </th>
+                                <th><i class="fa fa-chart-simple"></i></th>
+                                <th><i class="fas fa-clock"></i></th>
                             </tr>
                         </thead>
-                        <tbody id="trainingsContainer"></tbody>
+                        <tbody id="classificaDurataContainer"></tbody>
                     </table>
                 </div>
             </div>
@@ -41,53 +88,16 @@ redirect_to_login_if_not_logged_in() ?>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body text-center">
-                    <table class="table table-borderless table-column-width table-trainings">
+                    <table class="table table-borderless table-classifica">
                         <thead>
                             <tr>
-                                <th><i class='fa fa-calendar'></i> </th>
-                                <th><i class="fa fa-clock"></i></th>
-                                <th><i class="fas fa-star"></i></th>
-                                <th><i class="fa-solid fa-magnifying-glass"></i></th>
+                                <th><i class='fa fa-user'></i> </th>
+                                <th><i class="fa fa-chart-simple"></i></th>
+                                <th><i class="fas fa-person-running"></i></th>
                             </tr>
                         </thead>
-                        <tbody id="trainingsContainer"></tbody>
+                        <tbody id="classificaSaltiContainer"></tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-
-    <!-- Change Goal Modal -->
-    <div class="modal fade" id="changeGoalModal" tabindex="-1" role="dialog" aria-labelledby="changeGoalModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changeGoalModalLabel">Modifica obiettivo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="goalType">Tipologia:</label>
-                        <select class="form-control" id="goalType">
-                            <option value="">Seleziona</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="goalValue">Valore:</label>
-                        <div class="d-flex align-items-center">
-                            <input type="range" class=" form-range flex-grow-1" id="goalValueSlider" min="1" max="300"
-                                value="50" style="width:420%;margin-right:40px">
-                            <input type="text" class="form-control" id="goalValueInput" value="50">
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                    <button id="confirmGoalBtn" type="button" class="btn btn-primary">Conferma</button>
                 </div>
             </div>
         </div>
@@ -97,7 +107,96 @@ redirect_to_login_if_not_logged_in() ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script>
+        let trainingsContainer = document.getElementById('classificaDurataContainer');
+        let trainingsData = <?php echo_classifica_durata() ?>;
+        let maxTrainingTime = parseInt(trainingsData.sort(
+            function (a, b) {
+                return parseInt(b['durata']) - parseInt(a['durata']);
+            }
+        )[0]['durata']);
 
+        trainingsData.sort(
+            function (a, b) {
+                return parseInt(b['durata']) - parseInt(a['durata']);
+            }
+        );
+        if (maxTrainingTime === 0) {
+            maxTrainingTime = 1;
+        }
+
+        trainingsData.forEach(training => {
+            const row = document.createElement('tr');
+            row.classList.add('my-auto');
+
+            const titleCell = document.createElement('td');
+            titleCell.classList.add('align-middle');
+            titleCell.textContent = training.name;
+            row.appendChild(titleCell);
+
+            const progressCell = document.createElement('td');
+            progressCell.classList.add('align-middle');
+            const progressBar = document.createElement('div');
+            progressBar.classList.add('progress');
+            progressBar.style.height = '20px';
+            progressBar.innerHTML = `
+    <div class="progress-bar" role="progressbar" style="width: ${100 * parseInt(training.durata) / maxTrainingTime}%;" aria-valuenow="${parseInt(training.durata)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}"></div>
+  `;
+            progressCell.appendChild(progressBar);
+            row.appendChild(progressCell);
+
+            const valueCell = document.createElement('td');
+            valueCell.classList.add('align-middle');
+            valueCell.textContent = `${training.durata} min`;
+            row.appendChild(valueCell);
+
+            trainingsContainer.appendChild(row);
+        });
+        trainingsContainer = document.getElementById('classificaSaltiContainer');
+        trainingsData = <?php echo_classifica_salti() ?>;
+        maxTrainingTime = parseInt(trainingsData.sort(
+            function (a, b) {
+                return parseInt(b['salti']) - parseInt(a['salti']);
+            }
+        )[0]['salti']);
+
+        trainingsData.sort(
+            function (a, b) {
+                return parseInt(b['salti']) - parseInt(a['salti']);
+            }
+        );
+        if (maxTrainingTime === 0) {
+            maxTrainingTime = 1;
+        }
+
+        trainingsData.forEach(training => {
+            const row = document.createElement('tr');
+            row.classList.add('my-auto');
+
+            const titleCell = document.createElement('td');
+            titleCell.classList.add('align-middle');
+            titleCell.textContent = training.name;
+            row.appendChild(titleCell);
+
+            const progressCell = document.createElement('td');
+            progressCell.classList.add('align-middle');
+            const progressBar = document.createElement('div');
+            progressBar.classList.add('progress');
+            progressBar.style.height = '20px';
+            progressBar.innerHTML = `
+    <div class="progress-bar" role="progressbar" style="width: ${100 * parseInt(training.salti) / maxTrainingTime}%;" aria-valuenow="${parseInt(training.salti)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}"></div>
+  `;
+            progressCell.appendChild(progressBar);
+            row.appendChild(progressCell);
+
+            const valueCell = document.createElement('td');
+            valueCell.classList.add('align-middle');
+            valueCell.textContent = `${training.salti}`;
+            row.appendChild(valueCell);
+
+            trainingsContainer.appendChild(row);
+        });
+    </script>
 
 </body>
 
