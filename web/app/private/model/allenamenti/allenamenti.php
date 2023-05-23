@@ -16,9 +16,9 @@ function echo_obiettivo($user) {
 }
 
 function dettagli_allenamento($id) {
-    $details = ["data" => "25/04/1999","durata" => 50, "salti" => 701,"calorie" => 120, 
-    "percentualeObiettivo" => 70, "reachedObiettivo" => false,"tipoObiettivo" => "Numero di salti",
-    "parametroObiettivo" => 800];
+    $details = ["data" => "25/04/1999","durata" => 50, "salti" => 801,"calorie" => 120, 
+    "percentualeObiettivo" => 70,"tipoObiettivo" => "Calorie bruciate",
+    "parametroObiettivo" => 800 , "valoreRaggiunto" => 700];
     return $details;
 }
 
