@@ -53,15 +53,15 @@ $allenamento = dettagli_allenamento($id);
             </div>
             <div class="row" style="padding-top:20px">
               <div class="col-12 text-center">
-                <?php if($allenamento["valoreRaggiunto"] >= $allenamento["parametroObiettivo"] ):?>
-                <div class="alert alert-success" role="alert">
-                  Obiettivo raggiunto. Congratulazioni!
-                </div>
+                <?php if ($allenamento["valoreRaggiunto"] >= $allenamento["parametroObiettivo"]): ?>
+                  <div class="alert alert-success" role="alert">
+                    Obiettivo raggiunto. Congratulazioni!
+                  </div>
                 <?php else: ?>
-                <div class="alert alert-danger" role="alert">
-                  Obiettivo non raggiunto. Non mollare.
-                </div>
-               <?php endif?> 
+                  <div class="alert alert-danger" role="alert">
+                    Obiettivo non raggiunto. Non mollare!
+                  </div>
+                <?php endif ?>
               </div>
             </div>
           </div>
@@ -98,6 +98,12 @@ $allenamento = dettagli_allenamento($id);
       <div class="col-md-6">
         <?php echo_detail_card("Calorie per minuto", $allenamento["calorie"] / $allenamento["durata"], "fa-chart-simple") ?>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-center" style="padding-top:40px;padding-bottom:60px">
+        <button onclick="location.href = '/allenamenti';"  class="btn btn-primary" style="width:300px;padding-top:10px;padding-bottom:10px" >Indietro</button>
+      </div>
+
     </div>
   </div>
   </div>
