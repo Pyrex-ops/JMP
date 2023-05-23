@@ -157,7 +157,6 @@ redirect_to_login_if_not_logged_in() ?>
       if (training.goalReached) {
         const starIcon = document.createElement('i');
         starIcon.classList.add('fas', 'fa-star');
-        starIcon.style = "color: #f8e45c;"
         goalCell.appendChild(starIcon);
         goalCell.appendChild(starIcon);
       }
