@@ -40,7 +40,7 @@ redirect_to_login_if_not_logged_in() ?>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body text-center">
-                    <table class="table table-borderless table-column-width table-trainings">
+                    <table class="table table-borderless table-trainings">
                         <thead>
                             <tr>
                                 <th><i class='fa fa-calendar'></i> </th>

@@ -18,6 +18,7 @@ function echo_navbar($active_page): void
       echo '
         <a class="nav-link active" aria-current="page" href="/dashboard">Dashboard</a>
         <a class="nav-link" href="/allenamenti">Allenamenti</a>
+        <a class="nav-link" href="/classifica">Classifica</a>
         <a class="nav-link" href="/impostazioni">Impostazioni</a>
         <a class="nav-link" href="/php/logout">Logout</a>
         ';
@@ -25,13 +26,23 @@ function echo_navbar($active_page): void
       echo '
         <a class="nav-link" href="/dashboard">Dashboard</a>
         <a class="nav-link" href="/allenamenti">Allenamenti</a>
+        <a class="nav-link" href="/classifica">Classifica</a>
         <a class="nav-link active" aria-current="page" href="/impostazioni">Impostazioni</a>
         <a class="nav-link" href="/php/logout">Logout</a>
         ';
     } else if ($active_page == "allenamenti") {
       echo '
         <a class="nav-link" href="/dashboard">Dashboard</a>
-        <a class="nav-link active" href="/allenamenti">Allenamenti</a>
+        <a class="nav-link active" aria-current="page" href="/allenamenti">Allenamenti</a>
+        <a class="nav-link" href="/classifica">Classifica</a>
+        <a class="nav-link" href="/impostazioni">Impostazioni</a>
+        <a class="nav-link" href="/php/logout">Logout</a>
+        ';
+    } else if($active_page == "classifica") {
+      echo '
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+        <a class="nav-link" href="/allenamenti">Allenamenti</a>
+        <a class="nav-link active"aria-current="page" href="/classifica">Classifica</a>
         <a class="nav-link" href="/impostazioni">Impostazioni</a>
         <a class="nav-link" href="/php/logout">Logout</a>
         ';
@@ -41,6 +52,7 @@ function echo_navbar($active_page): void
       echo '
       <a class="nav-link" href="/dashboard">Dashboard</a>
       <a class="nav-link" href="/allenamenti">Allenamenti</a>
+      <a class="nav-link" href="/classifica">Classifica</a>
       <a class="nav-link" href="/impostazioni">Impostazioni</a>
       <a class="nav-link" href="/php/logout">Logout</a>
         ';
