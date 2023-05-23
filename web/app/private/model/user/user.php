@@ -48,7 +48,8 @@ function duration_graph(): void
     //Prendiamo il vettore con le durate degli allenamenti e data d'inizio
     //(data allenamento, durata)
     $idUtente = get_id(get_username());
-    $query = $database->prepare("SELECT DATE(MIN(misura.timestamp)) AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp)))/60 AS `durataAllenamento`
+    //TODO Limita la query agli ultimi 12 mesi
+    $query = $database->prepare("SELECT DATE_FORMAT(MIN(misura.timestamp),'%d-%m') AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp)))/60 AS `durataAllenamento`
 FROM allenamento JOIN misura ON allenamento.IDAllenamento = misura.IDAllenamento JOIN utente ON allenamento.IDUtente = utente.IDUtente
 WHERE utente.IDUtente = ?
 GROUP BY allenamento.IDAllenamento;");

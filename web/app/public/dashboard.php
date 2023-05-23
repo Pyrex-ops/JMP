@@ -101,7 +101,7 @@ redirect_to_login_if_not_logged_in() ?>
           xAxes: [{
             ticks: {
               autoSkip: true,
-              maxTicksLimit: 20
+              maxTicksLimit: 5
             },
             gridLines: {
               display:false,
