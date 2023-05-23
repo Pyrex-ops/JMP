@@ -109,7 +109,8 @@ redirect_to_login_if_not_logged_in() ?>
           }],
           yAxes: [{
             ticks: {
-              beginAtZero: true
+              beginAtZero: true,
+              stepSize: 30
             },
             gridLines: {
               display:false,
