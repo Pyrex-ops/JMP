@@ -242,7 +242,7 @@ redirect_to_login_if_not_logged_in() ?>
             detailsButton.classList.add('btn', 'btn-primary');
             detailsButton.addEventListener('click', function () {
                 // Redirect to the details page with the training session ID as a GET parameter
-                window.location.href = 'details.php?id=' + training.id;
+                window.location.href = 'dettagliallenamento?id=' + training.id;
             });
             detailsCell.appendChild(detailsButton);
             row.appendChild(detailsCell);
