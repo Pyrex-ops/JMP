@@ -30,12 +30,12 @@ function echo_obiettivo($user): void
     global $database;
     $userID = get_id($user);
     $queryObiettivo = $database->prepare("SELECT categoriaObiettivo.Descrizione AS 'name', obiettivo.parametro AS 'value' FROM obiettivo JOIN categoriaObiettivo ON obiettivo.IDCategoria = categoriaObiettivo.IDCategoria RIGHT JOIN utente ON obiettivo.IDObiettivo = utente.IDObiettivo WHERE utente.IDUtente = ?");
-    $queryObiettivo->bind_param("i",$userID);
+    $queryObiettivo->bind_param("i", $userID);
     $queryObiettivo->execute();
     $obiettivo = $queryObiettivo->get_result()->fetch_assoc();
-    if(!isset($obiettivo["name"])){
-        $obiettivo["name"]="Nessuno";
-        $obiettivo["value"]="";
+    if (!isset($obiettivo["name"])) {
+        $obiettivo["name"] = "Nessuno";
+        $obiettivo["value"] = "";
     }
     echo json_encode($obiettivo);
     //echo "{ name: 'Nessuno', value: '30' }";
@@ -160,18 +160,33 @@ function echo_detail_card($categoria, $parametro, $icona)
 
 function echo_classifica_durata()
 {
-    echo "[
-           { name: 'Joecom', durata : 900 },
-           { name: 'Marco', durata : 400 },
-           { name: 'Giuseppe', durata : 200 }
-       ]";
+    global $database;
+    $queryClassifica = $database->query("SELECT username AS 'name', durataAllenamento AS 'durata' FROM classificadurata;");
+    $arrayClassifica = [];
+    for ($i = 0; $i < $queryClassifica->num_rows; $i++) {
+        $arrayClassifica[] = $queryClassifica->fetch_assoc();
+        $arrayClassifica[$i]["durata"] = round($arrayClassifica[$i]["durata"]/60,1,PHP_ROUND_HALF_EVEN);
+    }
+    echo json_encode($arrayClassifica);
+    //    echo "[
+//           { name: 'Joecom', durata : 900 },
+//           { name: 'Marco', durata : 400 },
+//           { name: 'Giuseppe', durata : 200 }
+//       ]";
 }
 
 function echo_classifica_salti()
 {
-    echo "[
-           { name: 'Marco', salti : 11000 },
-           { name: 'Giuseppe', salti : 3000 },
-           { name: 'Joecom', salti : 2000 }
-       ]";
+    global $database;
+    $queryClassifica = $database->query("SELECT username AS 'name', numSalti AS 'salti' FROM classificanumsalti;");
+    $arrayClassifica = [];
+    for ($i = 0; $i < $queryClassifica->num_rows; $i++) {
+        $arrayClassifica[] = $queryClassifica->fetch_assoc();
+    }
+    echo json_encode($arrayClassifica);
+//    echo "[
+//           { name: 'Marco', salti : 11000 },
+//           { name: 'Giuseppe', salti : 3000 },
+//           { name: 'Joecom', salti : 2000 }
+//       ]";
 }
