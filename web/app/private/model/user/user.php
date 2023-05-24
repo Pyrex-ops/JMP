@@ -111,7 +111,7 @@ LIMIT 3;");
     $risultato = $query->get_result();
     $arrayDati3allenamenti = [];
     while ($riga = $risultato->fetch_assoc()) {
-        $arrayDati3allenamenti[] = ["id" => $riga["IdAllenam"],"name" => substr($riga["dataAllenamento"], 5), "duration" => (int) ($riga["durataAllenamento"] / 60) . "m", "goalReached" => (bool) $riga["superamento"]];
+        $arrayDati3allenamenti[] = ["id" => $riga["IdAllenam"], "name" => substr($riga["dataAllenamento"], 5), "duration" => (int) ($riga["durataAllenamento"] / 60) . "m", "goalReached" => (bool) $riga["superamento"]];
     }
     echo json_encode($arrayDati3allenamenti);
 }
@@ -191,6 +191,13 @@ HAVING dataAllenamento >= NOW() + INTERVAL -7 DAY AND dataAllenamento < NOW() + 
     echo "const selectedDays = " . json_encode($arraySettimana) . ";";
 }
 
-function echo_impostazioni($user) {
-    echo "{'peso' : 80, 'consensoClassifica' : false}";
+function echo_impostazioni($user)
+{
+    global $database;
+    $username = get_username();
+    $query = $database->prepare("SELECT peso,partecipazioneClassifica AS consensoClassifica FROM utente WHERE username = ?");
+    $query->bind_param("s", $username);
+    $query->execute();
+    $result = $query->get_result();
+    echo(json_encode($result->fetch_assoc()));
 }

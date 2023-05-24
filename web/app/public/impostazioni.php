@@ -79,11 +79,11 @@ redirect_to_login_if_not_logged_in() ?>
             // Unset the login error variable
             unset($_SESSION["cambio_password_error_message"]);
         } ?>
-        <? if (isset($_SESSION["cambio_peso_error_message"])) {
+        <? if (isset($_SESSION["modifica_impostazioni_error_message"])) {
             // Display error message in a Bootstrap alert
-            echo '<div class="alert alert-danger" role="alert">' . $_SESSION["cambio_peso_error_message"] . '</div>';
+            echo '<div class="alert alert-danger" role="alert">' . $_SESSION["modifica_impostazioni_error_message"] . '</div>';
             // Unset the login error variable
-            unset($_SESSION["cambio_peso_error_message"]);
+            unset($_SESSION["modifica_impostazioni_error_message"]);
         } ?>
         <? if (isset($_SESSION["aggiunta_nuova_corda"])) {
             // Display error message in a Bootstrap alert
@@ -97,11 +97,11 @@ redirect_to_login_if_not_logged_in() ?>
             // Unset the login error variable
             unset($_SESSION["cambiata_password"]);
         } ?>
-        <? if (isset($_SESSION["cambiato_peso"])) {
+        <? if (isset($_SESSION["cambiate_impostazioni"])) {
             // Display error message in a Bootstrap alert
-            echo '<div class="alert alert-success" role="alert">' . "Peso cambiato con successo." . '</div>';
+            echo '<div class="alert alert-success" role="alert">' . "Impostazioni modificate con successo." . '</div>';
             // Unset the login error variable
-            unset($_SESSION["cambiato_peso"]);
+            unset($_SESSION["cambiate_impostazioni"]);
         } ?>
         <div class="row mt-5">
             <div class="col-md-4 mx-auto">
@@ -116,39 +116,39 @@ redirect_to_login_if_not_logged_in() ?>
                         <button type="button" class="btn btn-danger mt-3" data-bs-toggle="modal"
                             data-bs-target="#eliminaAccountModal">Elimina account</button>
                     </div>
-                    
+
                 </div>
                 <div class="card text-center username-card first-card">
                     <div class="card-body">
-                    <h5 class="card-title text-center">Impostazioni account</h5>
-                    <hr/>
-                        <form action="/php/aggiornaimpostazioni.php" method="POST">
+                        <h5 class="card-title text-center">Impostazioni account</h5>
+                        <hr />
+                        <form action="/php/modificaimpostazioni.php" method="POST">
                             <div class="form-group">
-                                <label for="new_password" style="margin-bottom:40px;">Consenso alla partecipazione alla classifica</label>
-                             
+                                <label for="new_password" style="margin-bottom:40px;">Consenso alla partecipazione alla
+                                    classifica</label>
+
                                 <div class="container d-flex justify-content-center align-items-center">
-                <div class="one-quarter" id="switch">
-                    <input type="checkbox" name="consenso_classifica" class="checkbox" id="chk"/>
-                    <label class="label" for="chk" id="classificaLabel">
-                        <i class="fas fa-check" style="color: #fff;"></i>
-                        <i class="fas fa-ban" style="color: #fff;"></i>
-                        <div class="ball"></div>
-                    </label>
-                </div>
-            </div>
+                                    <div class="one-quarter" id="switch">
+                                        <input type="checkbox" name="consenso_classifica" class="checkbox" id="chk" />
+                                        <label class="label" for="chk" id="classificaLabel">
+                                            <i class="fas fa-check" style="color: #fff;"></i>
+                                            <i class="fas fa-ban" style="color: #fff;"></i>
+                                            <div class="ball"></div>
+                                        </label>
+                                    </div>
+                                </div>
 
                             </div>
                             <div class="form-group">
                                 <label for="confirm_password">Peso (kg)</label>
-                                <input type="number" class="form-control" id="pesoInput"
-                                    name="input_peso" required>
+                                <input type="number" class="form-control" id="pesoInput" name="peso" required>
                             </div>
                             <div class="text-center"> <!-- Wrap buttons in a div with 'text-center' class -->
                                 <button type="submit" class="btn btn-primary">Salva impostazioni</button>
                             </div>
                         </form>
                     </div>
-                    
+
                 </div>
             </div>
             <div class="col-md-8">
@@ -296,7 +296,7 @@ redirect_to_login_if_not_logged_in() ?>
     <script>
         const impostazioniUtente = <?php echo_impostazioni(get_username()); ?>;
         document.getElementById("pesoInput").value = impostazioniUtente.peso;
-        if(impostazioniUtente.consensoClassifica) {
+        if (impostazioniUtente.consensoClassifica) {
             document.getElementById("classificaLabel").style.setProperty('background-color', "#198754");
             document.getElementById("chk").checked = true;
         }
@@ -304,14 +304,14 @@ redirect_to_login_if_not_logged_in() ?>
             document.getElementById("classificaLabel").style.setProperty('background-color', "#dc3545");
             document.getElementById("chk").checked = false;
         }
-        $('#chk').change(function(){
-    if(this.checked) {
-        document.getElementById("classificaLabel").style.setProperty('background-color', "#198754");
-    }
-    else {
-        document.getElementById("classificaLabel").style.setProperty('background-color', "#dc3545");
-    }
-});
+        $('#chk').change(function () {
+            if (this.checked) {
+                document.getElementById("classificaLabel").style.setProperty('background-color', "#198754");
+            }
+            else {
+                document.getElementById("classificaLabel").style.setProperty('background-color', "#dc3545");
+            }
+        });
     </script>
 </body>
 
