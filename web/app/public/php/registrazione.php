@@ -37,6 +37,7 @@ if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["weig
 
   // try {
   add_user($_POST["username"], $_POST["password"], $_POST["weight"]);
+  $_SESSION["login_success_message"] = "Registrazione completata con successo. Ora puoi effettuare il login.";
   header("Location: /login.php");
   // } catch (exception $exception) {
   //   registration_error("Dati non validi. Riprovare.");

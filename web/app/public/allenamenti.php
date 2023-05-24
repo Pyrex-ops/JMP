@@ -2,6 +2,7 @@
 require_once "/php/private/view/navbar.php";
 include_once "/php/private/model/auth/auth.php";
 include_once "/php/private/model/user/user.php";
+include_once "/php/private/model/allenamenti/allenamenti.php";
 redirect_to_login_if_not_logged_in() ?>
 
 <!DOCTYPE html>
@@ -10,23 +11,24 @@ redirect_to_login_if_not_logged_in() ?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workout Tracker</title>
+    <title>Allenamenti</title>
     <link rel="stylesheet" href="/style/bootstrap.css">
     <link rel="stylesheet" href="/style/jmpit.css">
 </head>
 
 <body>
     <?php echo_navbar("allenamenti") ?>
+    <h1 class="text-center" style="margin-bottom:10px"> Obiettivo corrente </h1>
     <div class="container mt-5 dashboard-container">
         <div class="card goal-card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-5 text-center my-auto">
-                        <i class="fas fa-dumbbell fa-5x"></i>
+                        <i class="fas fa-5x" id="training-icon-box" style="padding-left:20px;padding-right:20px;"></i>
                     </div>
                     <div class="col-7 text-center">
-                        <h5 class="card-title">Obiettivo corrente</h5>
-                        <p class="card-text">50 salti</p>
+                        <h5 class="card-title" id="goalDescription"></h5>
+                        <p class="card-text" id="goalValue"></p>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#changeGoalModal">Modifica</button>
                     </div>
@@ -34,11 +36,19 @@ redirect_to_login_if_not_logged_in() ?>
             </div>
         </div>
 
+        <h1 class="text-center" style="margin-bottom:55px"> Allenamenti </h1>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Allenamenti</h5>
-                    <table class="table table-borderless table-column-width table-trainings">
+                    <table class="table table-borderless table-trainings">
+                        <thead>
+                            <tr>
+                                <th><i class='fa fa-calendar'></i> </th>
+                                <th><i class="fa fa-clock"></i></th>
+                                <th><i class="fas fa-star"></i></th>
+                                <th><i class="fa-solid fa-magnifying-glass"></i></th>
+                            </tr>
+                        </thead>
                         <tbody id="trainingsContainer"></tbody>
                     </table>
                 </div>
@@ -60,17 +70,15 @@ redirect_to_login_if_not_logged_in() ?>
                     <div class="form-group">
                         <label for="goalType">Tipologia:</label>
                         <select class="form-control" id="goalType">
-                            <option value="duration">Tempo di allenamento</option>
-                            <option value="calories">Numero di calorie bruciate</option>
-                            <option value="skips">Numero di salti</option>
+                            <option value="">Seleziona</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group collapse" id="boxSelezioneValoriObiettivo">
                         <label for="goalValue">Valore:</label>
                         <div class="d-flex align-items-center">
-                        <input type="range" class=" form-range flex-grow-1" id="goalValueSlider" min="1"
-                                max="300" value="50" style="width:420%;margin-right:40px">
-                            <input type="text" class="form-control" id="goalValueInput" value="50">
+                            <input type="range" class=" form-range flex-grow-1" id="goalValueSlider" min="1" max="300"
+                                value="1" style="width:420%;margin-right:40px">
+                            <input type="text" class="form-control" id="goalValueInput" value="1">
 
                         </div>
                     </div>
@@ -90,57 +98,120 @@ redirect_to_login_if_not_logged_in() ?>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 
     <script>
-        // Function to update the goal value display
 
-// Event listener for goal value input
-document.getElementById('goalValueInput').addEventListener('input', function () {
-  var value = parseInt(this.value);
-  if (!isNaN(value)) {
-    document.getElementById('goalValueSlider').value = value;
-  }
-});
+        const tipologieAllenamento = <?php echo_tipologie_obiettivo() ?>;
 
-// Event listener for goal value slider
-document.getElementById('goalValueSlider').addEventListener('input', function () {
-  var value = parseInt(this.value);
-  if (!isNaN(value)) {
-    document.getElementById('goalValueInput').value = value;
-  }
-});
+        const obiettivoCorrente = <?php echo_obiettivo(get_username()) ?>;
+
+        const goalTypeSelect = document.getElementById('goalType');
+            goalTypeSelect.innerHTML = ''; // Clear existing options
+
+        tipologieAllenamento.forEach(tipo => {
+                const option = document.createElement('option');
+                option.value = tipo.name;
+                option.textContent = tipo.name;
+                goalTypeSelect.appendChild(option);
+            });
+
+        function updateCurrentGoal() {
+
+            const goalIcon = document.getElementById("training-icon-box");
+            const selectedGoal = tipologieAllenamento.find(goal => goal.name === obiettivoCorrente.name);
+            if (selectedGoal) {
+                goalIcon.classList.add("fas", selectedGoal.icon); // Add the appropriate class to the icon element
+                document.getElementById('goalValueSlider').max = selectedGoal.max;
+                document.getElementById('goalValueSlider').value = 1;
+                document.getElementById('goalValueInput').max = selectedGoal.max;
+                document.getElementById('goalValueInput').value = 1;
+                document.getElementById('goalDescription').textContent = selectedGoal.name;
+                document.getElementById('goalValue').textContent = obiettivoCorrente.value;
+            }
+        }
+
+        updateCurrentGoal();
+
+        // Event listener for goal type select
+
+        // Event listener for goal value input
+        document.getElementById('goalValueInput').addEventListener('input', function () {
+            var value = parseInt(this.value);
+            if (!isNaN(value)) {
+                document.getElementById('goalValueSlider').value = value;
+            }
+        });
+
+        // Event listener for goal value slider
+        document.getElementById('goalValueSlider').addEventListener('input', function () {
+            var value = parseInt(this.value);
+            if (!isNaN(value)) {
+                document.getElementById('goalValueInput').value = value;
+            }
+        });
+        
+        document.getElementById("goalType").addEventListener('change',function () {
+            const goalSelect = document.getElementById("goalType");
+            const goal = goalSelect.value;
+            const selectedGoal = tipologieAllenamento.find(goalType => goalType.name === goal);
+            if (selectedGoal) {
+                document.getElementById('goalValueSlider').max = selectedGoal.max;
+                document.getElementById('goalValueInput').max = selectedGoal.max;
+            }
+            const boxSelezioneValoriObiettivo =document.getElementById("boxSelezioneValoriObiettivo");
+            if(goal === "Nessuno") {
+                boxSelezioneValoriObiettivo.classList.add("collapse");
+            }
+            else {
+                boxSelezioneValoriObiettivo.classList.remove("collapse");
+            }
+        })
 
         // Event listener for confirm goal button
         document.getElementById('confirmGoalBtn').addEventListener('click', function () {
-    // Get selected goal type and value
-    var goalType = document.getElementById('goalType').value;
-    var goalValue = document.getElementById('goalValueSlider').value;
+            // Get selected goal type and value
+            var goalType = document.getElementById('goalType').value;
+            var goalValue = document.getElementById('goalValueSlider').value;
 
-    // Create a new form element
-    var form = document.createElement('form');
-    form.method = 'post';
-    form.action = 'process_goal.php'; // Replace with the actual URL or file path of the PHP page
+            // Create a new form element
+            var form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/php/setobiettivo.php'; // Replace with the actual URL or file path of the PHP page
 
-    // Create hidden input fields for the goal type and value
-    var goalTypeInput = document.createElement('input');
-    goalTypeInput.type = 'hidden';
-    goalTypeInput.name = 'goalType';
-    goalTypeInput.value = goalType;
-    form.appendChild(goalTypeInput);
+            // Create hidden input fields for the goal type and value
+            var goalTypeInput = document.createElement('input');
+            goalTypeInput.type = 'hidden';
+            goalTypeInput.name = 'goalType';
+            goalTypeInput.value = goalType;
+            form.appendChild(goalTypeInput);
 
-    var goalValueInput = document.createElement('input');
-    goalValueInput.type = 'hidden';
-    goalValueInput.name = 'goalValue';
-    goalValueInput.value = goalValue;
-    form.appendChild(goalValueInput);
+            var goalValueInput = document.createElement('input');
+            goalValueInput.type = 'hidden';
+            goalValueInput.name = 'goalValue';
+            goalValueInput.value = goalValue;
+            form.appendChild(goalValueInput);
 
-    // Append the form to the document and submit it
-    document.body.appendChild(form);
-    form.submit();
-  });
+            // Append the form to the document and submit it
+            document.body.appendChild(form);
+            form.submit();
+        });
 
 
         // Function to add a workout to the list
         const trainingsContainer = document.getElementById('trainingsContainer');
-        const trainingsData = <?php all_trainings() ?>
+        const trainingsData = <?php all_trainings() ?>;
+        const maxTrainingTime = parseInt(trainingsData.sort(
+            function (a, b) {
+                return parseInt(b['duration']) - parseInt(a['duration']);
+            }
+        )[0]['duration']);
+
+        trainingsData.sort(
+            function (a, b) {
+                return parseInt(b['id']) - parseInt(a['id']);
+            }
+        );
+        if (maxTrainingTime === 0) {
+            maxTrainingTime = 1;
+        }
 
         trainingsData.forEach(training => {
             const row = document.createElement('tr');
@@ -156,13 +227,8 @@ document.getElementById('goalValueSlider').addEventListener('input', function ()
             const progressBar = document.createElement('div');
             progressBar.classList.add('progress');
             progressBar.style.height = '20px';
-            maxTrainingTime = parseInt(trainingsData.sort(
-        function (a, b) {
-          return parseInt(b['duration']) - parseInt(a['duration']);
-        }
-      )[0]['duration'])
-      progressBar.innerHTML = `
-    <div class="progress-bar" role="progressbar" style="width: ${100*parseInt(training.duration)/maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
+            progressBar.innerHTML = `
+    <div class="progress-bar" role="progressbar" style="width: ${100 * parseInt(training.duration) / maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
   `;
             progressCell.appendChild(progressBar);
             row.appendChild(progressCell);
@@ -171,8 +237,7 @@ document.getElementById('goalValueSlider').addEventListener('input', function ()
             goalCell.classList.add('align-middle');
             if (training.goalReached) {
                 const starIcon = document.createElement('i');
-                starIcon.classList.add('star', 'goal-reached');
-                starIcon.textContent = '★';
+                starIcon.classList.add('fas', 'fa-star');
                 goalCell.appendChild(starIcon);
             }
             row.appendChild(goalCell);
@@ -183,13 +248,14 @@ document.getElementById('goalValueSlider').addEventListener('input', function ()
             detailsButton.classList.add('btn', 'btn-primary');
             detailsButton.addEventListener('click', function () {
                 // Redirect to the details page with the training session ID as a GET parameter
-                window.location.href = 'details.php?id=' + training.id;
+                window.location.href = 'dettagliallenamento?id=' + training.id;
             });
             detailsCell.appendChild(detailsButton);
             row.appendChild(detailsCell);
 
             trainingsContainer.appendChild(row);
         });
+
     </script>
 </body>
 

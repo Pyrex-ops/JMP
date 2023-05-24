@@ -132,35 +132,53 @@ body {
 }
 
 .table-column-width td:first-child,
-.table-column-width td:last-child {
-  width: 20%;
+.table-column-width td:last-child,
+.table-column-width th:first-child,
+.table-column-width th:last-child {
+  width: 10%;
 }
 
 .allenamenti-table-member {
-  vertical-align:middle;
+  vertical-align: middle;
 }
 
-.table-column-width td:nth-child(2) {
-  width: 60%;
+.table-column-width td:nth-child(2),
+.table-column-width th:nth-child(2) {
+  width: 20%;
 }
 
 .table-trainings {
   table-layout: fixed;
 }
 
-.table-trainings td:first-child {
-  width: 25%;
-}
-.table-trainings td:last-child {
+.table-trainings td:first-child,
+.table-trainings th:first-child {
   width: 15%;
 }
 
-.table-trainings td:nth-child(2) {
-  width: 40%;
+.table-trainings td:last-child,
+.table-trainings th:last-child {
+  width: 12%;
 }
 
-.table-trainings td:nth-child(3) {
+.table-trainings td:nth-child(2),
+.table-trainings th:nth-child(2) {
+  width: 28%;
+}
+
+.table-trainings td:nth-child(3),
+.table-trainings th:nth-child(3) {
   width: 10%;
+}
+
+.table-classifica td:first-child,
+.table-classifica th:first-child {
+  width: 30%;
+}
+
+.table-classifica td:last-child,
+.table-classifica th:last-child {
+  width: 30%;
 }
 
 .dashboard-container {
@@ -169,6 +187,12 @@ body {
 
 .goal-card {
   width: fit-content;
+  min-width: 250px;
+  margin: 20px auto;
+}
+
+.allenamento-detail-card {
+  width: 300px;
   margin: 20px auto;
 }
 
