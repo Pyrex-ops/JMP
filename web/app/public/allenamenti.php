@@ -24,7 +24,7 @@ redirect_to_login_if_not_logged_in() ?>
             <div class="card-body">
                 <div class="row">
                     <div class="col-5 text-center my-auto">
-                        <i class="fas fa-5x" id="training-icon-box"></i>
+                        <i class="fas fa-5x" id="training-icon-box" style="padding-left:20px;padding-right:20px;"></i>
                     </div>
                     <div class="col-7 text-center">
                         <h5 class="card-title" id="goalDescription"></h5>
@@ -73,12 +73,12 @@ redirect_to_login_if_not_logged_in() ?>
                             <option value="">Seleziona</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group collapse" id="boxSelezioneValoriObiettivo">
                         <label for="goalValue">Valore:</label>
                         <div class="d-flex align-items-center">
                             <input type="range" class=" form-range flex-grow-1" id="goalValueSlider" min="1" max="300"
-                                value="50" style="width:420%;margin-right:40px">
-                            <input type="text" class="form-control" id="goalValueInput" value="50">
+                                value="1" style="width:420%;margin-right:40px">
+                            <input type="text" class="form-control" id="goalValueInput" value="1">
 
                         </div>
                     </div>
@@ -120,9 +120,9 @@ redirect_to_login_if_not_logged_in() ?>
             if (selectedGoal) {
                 goalIcon.classList.add("fas", selectedGoal.icon); // Add the appropriate class to the icon element
                 document.getElementById('goalValueSlider').max = selectedGoal.max;
-                document.getElementById('goalValueSlider').value = document.getElementById('goalValueSlider').max / 2;
+                document.getElementById('goalValueSlider').value = 1;
                 document.getElementById('goalValueInput').max = selectedGoal.max;
-                document.getElementById('goalValueInput').value = document.getElementById('goalValueSlider').max / 2;
+                document.getElementById('goalValueInput').value = 1;
                 document.getElementById('goalDescription').textContent = selectedGoal.name;
                 document.getElementById('goalValue').textContent = obiettivoCorrente.value;
             }
@@ -156,6 +156,13 @@ redirect_to_login_if_not_logged_in() ?>
                 document.getElementById('goalValueSlider').max = selectedGoal.max;
                 document.getElementById('goalValueInput').max = selectedGoal.max;
             }
+            const boxSelezioneValoriObiettivo =document.getElementById("boxSelezioneValoriObiettivo");
+            if(goal === "Nessuno") {
+                boxSelezioneValoriObiettivo.classList.add("collapse");
+            }
+            else {
+                boxSelezioneValoriObiettivo.classList.remove("collapse");
+            }
         })
 
         // Event listener for confirm goal button
@@ -167,7 +174,7 @@ redirect_to_login_if_not_logged_in() ?>
             // Create a new form element
             var form = document.createElement('form');
             form.method = 'post';
-            form.action = 'process_goal.php'; // Replace with the actual URL or file path of the PHP page
+            form.action = '/php/setobiettivo.php'; // Replace with the actual URL or file path of the PHP page
 
             // Create hidden input fields for the goal type and value
             var goalTypeInput = document.createElement('input');
