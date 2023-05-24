@@ -13,6 +13,76 @@ redirect_to_login_if_not_logged_in() ?>
     <link rel="stylesheet" href="/style/bootstrap.css">
     <link rel="stylesheet" href="/style/jmpit.css">
     <title>Impostazioni Utente</title>
+    <style>
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.toggle-switch input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-switch-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 2px #f0f0f0;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.toggle-switch-handle {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 30px;
+  height: 30px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+.toggle-switch::before {
+  content: "";
+  position: absolute;
+  top: -25px;
+  right: -35px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #aaa;
+  text-shadow: 1px 1px #fff;
+  transition: color 0.3s ease-in-out;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch-handle {
+  transform: translateX(45px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 3px #05c46b;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch-background {
+  background-color: #05c46b;
+  box-shadow: inset 0 0 0 2px #04b360;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch:before {
+  content: "On";
+  color: #05c46b;
+  right: -15px;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch-background .toggle-switch-handle {
+  transform: translateX(40px);
+}
+
+    </style>
 </head>
 
 <body>
@@ -55,7 +125,7 @@ redirect_to_login_if_not_logged_in() ?>
             unset($_SESSION["cambiata_password"]);
         } ?>
         <div class="row mt-5">
-            <div class="col-md-4 mx-auto">
+            <div class="col-md-6 mx-auto">
                 <div class="card text-center username-card first-card">
                     <div class="card-body">
                         <div class="user-profile-picture">
@@ -64,12 +134,34 @@ redirect_to_login_if_not_logged_in() ?>
                         <h3 class="card-title">
                             <?php echo_username(); ?>
                         </h3>
+                        <hr/>
+                        <form action="/php/aggiornaimpostazioni.php" method="POST">
+                            <div class="form-group">
+                                <label for="new_password">Partecipazione classifica:</label>
+                                <label class="toggle-switch">
+  <input type="checkbox">
+  <div class="toggle-switch-background">
+    <div class="toggle-switch-handle"></div>
+  </div>
+</label>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_password">Peso (kg)</label>
+                                <input type="password" class="form-control" id="confirm_password"
+                                    name="confirm_password" required>
+                            </div>
+                            <div class="text-center"> <!-- Wrap buttons in a div with 'text-center' class -->
+                                <button type="submit" class="btn btn-primary">Salva impostazioni</button>
+                            </div>
+                        </form>
+                        <hr/>
                         <button type="button" class="btn btn-danger mt-3" data-bs-toggle="modal"
                             data-bs-target="#eliminaAccountModal">Elimina account</button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title text-center">Cambia password</h5>

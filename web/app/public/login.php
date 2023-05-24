@@ -28,6 +28,12 @@ redirect_to_dashboard_if_logged_in(); ?>
       // Unset the login error variable
       unset($_SESSION["login_error_message"]);
     }
+    if (isset($_SESSION["login_success_message"])) {
+      // Display success message in a Bootstrap alert
+      echo '<div class="alert alert-success" role="alert">' . $_SESSION["login_success_message"] . '</div>';
+      // Unset the login success variable
+      unset($_SESSION["login_success_message"]);
+    }
     ?>
     <form method="POST" action="php/login.php">
       <div class="mb-3 form-group">
