@@ -25,9 +25,20 @@ function echo_tipologie_obiettivo(): void
 //    ]";
 }
 
-function echo_obiettivo($user)
+function echo_obiettivo($user): void
 {
-    echo "{ name: 'Numero di salti', value: '30' }";
+    global $database;
+    $userID = get_id($user);
+    $queryObiettivo = $database->prepare("SELECT categoriaObiettivo.Descrizione AS 'name', obiettivo.parametro AS 'value' FROM obiettivo JOIN categoriaObiettivo ON obiettivo.IDCategoria = categoriaObiettivo.IDCategoria RIGHT JOIN utente ON obiettivo.IDObiettivo = utente.IDObiettivo WHERE utente.IDUtente = ?");
+    $queryObiettivo->bind_param("i", $userID);
+    $queryObiettivo->execute();
+    $obiettivo = $queryObiettivo->get_result()->fetch_assoc();
+    if (!isset($obiettivo["name"])) {
+        $obiettivo["name"] = "Nessuno";
+        $obiettivo["value"] = "";
+    }
+    echo json_encode($obiettivo);
+    //echo "{ name: 'Nessuno', value: '30' }";
 }
 
 function dettagli_allenamento($id): ?array
@@ -124,9 +135,16 @@ DESC;");
     return $dettagli;
 }
 
-function check_ownership($idAllenamento, $username)
+function check_ownership($idAllenamento, $username): bool
 {
-    return true;
+    global $database;
+    $queryAssociazione = $database->prepare("SELECT allenamento.IDAllenamento FROM allenamento JOIN utente ON allenamento.IDUtente = utente.IDUtente WHERE IDAllenamento = ? AND utente.username = ?");
+    $queryAssociazione->bind_param("is", $idAllenamento, $username);
+    $queryAssociazione->execute();
+    if ($queryAssociazione->get_result()->num_rows != 0) {
+        return true;
+    }
+    return false;
 }
 
 function echo_detail_card($categoria, $parametro, $icona)
@@ -155,18 +173,35 @@ function echo_detail_card($categoria, $parametro, $icona)
   </div>');
 }
 
-function echo_classifica_durata() {
-  echo "[
-           { name: 'Alex', durata : 900 },
-           { name: 'Marco', durata : 400 },
-           { name: 'Giuseppe', durata : 200 }
-       ]";
+function echo_classifica_durata()
+{
+    global $database;
+    $queryClassifica = $database->query("SELECT username AS 'name', durataAllenamento AS 'durata' FROM classificadurata;");
+    $arrayClassifica = [];
+    for ($i = 0; $i < $queryClassifica->num_rows; $i++) {
+        $arrayClassifica[] = $queryClassifica->fetch_assoc();
+        $arrayClassifica[$i]["durata"] = round($arrayClassifica[$i]["durata"]/60,1,PHP_ROUND_HALF_EVEN);
+    }
+    echo json_encode($arrayClassifica);
+    //    echo "[
+//           { name: 'Joecom', durata : 900 },
+//           { name: 'Marco', durata : 400 },
+//           { name: 'Giuseppe', durata : 200 }
+//       ]";
 }
 
-function echo_classifica_salti() {
-  echo "[
-           { name: 'Marco', salti : 11000 },
-           { name: 'Giuseppe', salti : 3000 },
-           { name: 'Alex', salti : 2000 }
-       ]";
+function echo_classifica_salti()
+{
+    global $database;
+    $queryClassifica = $database->query("SELECT username AS 'name', numSalti AS 'salti' FROM classificanumsalti;");
+    $arrayClassifica = [];
+    for ($i = 0; $i < $queryClassifica->num_rows; $i++) {
+        $arrayClassifica[] = $queryClassifica->fetch_assoc();
+    }
+    echo json_encode($arrayClassifica);
+//    echo "[
+//           { name: 'Marco', salti : 11000 },
+//           { name: 'Giuseppe', salti : 3000 },
+//           { name: 'Joecom', salti : 2000 }
+//       ]";
 }
