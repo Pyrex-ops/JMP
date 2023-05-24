@@ -25,9 +25,20 @@ function echo_tipologie_obiettivo(): void
 //    ]";
 }
 
-function echo_obiettivo($user)
+function echo_obiettivo($user): void
 {
-    echo "{ name: 'Nessuno', value: '30' }";
+    global $database;
+    $userID = get_id($user);
+    $queryObiettivo = $database->prepare("SELECT categoriaObiettivo.Descrizione AS 'name', obiettivo.parametro AS 'value' FROM obiettivo JOIN categoriaObiettivo ON obiettivo.IDCategoria = categoriaObiettivo.IDCategoria RIGHT JOIN utente ON obiettivo.IDObiettivo = utente.IDObiettivo WHERE utente.IDUtente = ?");
+    $queryObiettivo->bind_param("i",$userID);
+    $queryObiettivo->execute();
+    $obiettivo = $queryObiettivo->get_result()->fetch_assoc();
+    if(!isset($obiettivo["name"])){
+        $obiettivo["name"]="Nessuno";
+        $obiettivo["value"]="";
+    }
+    echo json_encode($obiettivo);
+    //echo "{ name: 'Nessuno', value: '30' }";
 }
 
 function dettagli_allenamento($id): ?array
@@ -102,7 +113,7 @@ DESC;");
             default => "Nessuno",
         };
         if (isset($riga["parametroObiettivo"])) {
-            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"]/60, "salti" => $riga["salti"],
+            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"] / 60, "salti" => $riga["salti"],
                 "calorie" => $riga["calorie"], "percentualeObiettivo" => (int)($riga["valoreRaggiunto"] / $riga["parametroObiettivo"]) * 100,
                 "tipoObiettivo" => $tipo, "parametroObiettivo" => $riga["parametroObiettivo"], "valoreRaggiunto" => $riga["valoreRaggiunto"]];
         } else {
@@ -122,9 +133,9 @@ function check_ownership($idAllenamento, $username): bool
 {
     global $database;
     $queryAssociazione = $database->prepare("SELECT allenamento.IDAllenamento FROM allenamento JOIN utente ON allenamento.IDUtente = utente.IDUtente WHERE IDAllenamento = ? AND utente.username = ?");
-    $queryAssociazione->bind_param("is",$idAllenamento,$username);
+    $queryAssociazione->bind_param("is", $idAllenamento, $username);
     $queryAssociazione->execute();
-    if($queryAssociazione->get_result()->num_rows!=0){
+    if ($queryAssociazione->get_result()->num_rows != 0) {
         return true;
     }
     return false;
@@ -147,16 +158,18 @@ function echo_detail_card($categoria, $parametro, $icona)
   </div>');
 }
 
-function echo_classifica_durata() {
-  echo "[
+function echo_classifica_durata()
+{
+    echo "[
            { name: 'Joecom', durata : 900 },
            { name: 'Marco', durata : 400 },
            { name: 'Giuseppe', durata : 200 }
        ]";
 }
 
-function echo_classifica_salti() {
-  echo "[
+function echo_classifica_salti()
+{
+    echo "[
            { name: 'Marco', salti : 11000 },
            { name: 'Giuseppe', salti : 3000 },
            { name: 'Joecom', salti : 2000 }
