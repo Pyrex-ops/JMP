@@ -190,3 +190,7 @@ HAVING dataAllenamento >= NOW() + INTERVAL -7 DAY AND dataAllenamento < NOW() + 
     }
     echo "const selectedDays = " . json_encode($arraySettimana) . ";";
 }
+
+function echo_impostazioni($user) {
+    echo "{'peso' : 80, 'consensoClassifica' : false}";
+}

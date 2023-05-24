@@ -7,7 +7,7 @@ function echo_tipologie_obiettivo(): void
     global $database;
     $queryObiettivi = $database->query("SELECT IDCategoria,Descrizione FROM categoriaObiettivo ORDER BY IDCategoria ASC;");
     $arrayObiettivi = [];
-    $arrayIcone = ['fa-dumbbell', 'fa-fire', 'fa-clock'];
+    $arrayIcone = ['fa-person-running', 'fa-fire', 'fa-clock'];
     //1000 salti, 20000 calorie, 1440 minuti
     //ATTENZIONE: Ricorda che il database tratta le durate in SECONDI!
     $arrayLimiti = [1000, 20000, 1440];
@@ -108,17 +108,23 @@ DESC;");
     while ($riga = $ris->fetch_assoc()) {
         $tipo = match ($riga["tipoObiettivo"]) {
             1 => "Numero salti",
-            2 => "Calorie spese",
-            3 => "Durata",
+            2 => "Calorie bruciate",
+            3 => "Durata allenamento",
             default => "Nessuno",
         };
+        if($riga["durata"] <= 60  ) {
+            $riga["durata"] = 60;
+        }
         if (isset($riga["parametroObiettivo"])) {
-            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"] / 60, "salti" => $riga["salti"],
+            if(($riga["tipoObiettivo"] == 3) && ($riga["valoreRaggiunto"] <= 1)) {
+                $riga["valoreRaggiunto"] = 1;
+            }
+            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"]/60, "salti" => $riga["salti"],
                 "calorie" => $riga["calorie"], "percentualeObiettivo" => (int)($riga["valoreRaggiunto"] / $riga["parametroObiettivo"]) * 100,
                 "tipoObiettivo" => $tipo, "parametroObiettivo" => $riga["parametroObiettivo"], "valoreRaggiunto" => $riga["valoreRaggiunto"]];
         } else {
 
-            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"], "salti" => $riga["salti"],
+            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"]/60, "salti" => $riga["salti"],
                 "calorie" => $riga["calorie"], "percentualeObiettivo" => 0,
                 "tipoObiettivo" => $tipo, "parametroObiettivo" => 0, "valoreRaggiunto" => $riga["valoreRaggiunto"]];
         }
@@ -143,6 +149,15 @@ function check_ownership($idAllenamento, $username): bool
 
 function echo_detail_card($categoria, $parametro, $icona)
 {
+    if($categoria === "Data") {
+        $parametroFormattato = $parametro;
+    } 
+    else if($categoria === "Durata") {
+        $parametroFormattato = round(floatval($parametro),1)." min";
+    }
+    else {
+        $parametroFormattato = round(floatval($parametro),1);
+    }
     echo('<div class="card allenamento-detail-card">
     <div class="card-body">
       <div class="row">
@@ -151,7 +166,7 @@ function echo_detail_card($categoria, $parametro, $icona)
         </div>
         <div class="col-7 text-center">
           <h4 class="card-title"">' . $categoria . '</h4>
-          <h5 class="card-text">' . $parametro . '</h5>
+          <h5 class="card-text">' . $parametroFormattato . '</h5>
         </div>
       </div>
     </div>

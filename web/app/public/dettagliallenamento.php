@@ -31,43 +31,49 @@ $allenamento = dettagli_allenamento($id);
 <body>
   <?php echo_navbar("allenamenti") ?>
   <div class="container mt-5 dashboard-container">
-    <div class="row">
-      <div class"col-md-12">
-        <div class="card allenamento-detail-card">
-          <div class="card-body">
-            <h2 class="card-title text-center">Obiettivo</h2>
-            <hr />
-            <h3 class="card-title text-center">
-              <?php echo $allenamento["tipoObiettivo"] ?>
-            </h3>
-            <div class="row" style="padding-top:20px">
-              <div class="col-6 text-center my-auto">
-                <div id="goalBarContainer"></div>
+    <?php if (!($allenamento["tipoObiettivo"] === "Nessuno")): ?>
+      <div class="row">
+        <div class"col-md-12">
+          <div class="card allenamento-detail-card">
+            <div class="card-body">
+              <h2 class="card-title text-center">Obiettivo</h2>
+              <hr />
+              <h3 class="card-title text-center">
+                <?php echo $allenamento["tipoObiettivo"] ?>
+              </h3>
+              <div class="row" style="padding-top:20px">
+                <div class="col-6 text-center my-auto">
+                  <div id="goalBarContainer"></div>
+                </div>
+                <?php $valore_raggiunto = round(floatval($allenamento["valoreRaggiunto"]),1); ?>
+                <div class="col-6 text-center" style="padding-top:40px">
+                  <h5 class="card-text">
+                    <?php echo $valore_raggiunto ?>/
+                    <?php echo $allenamento["parametroObiettivo"] ?>
+                    <?php if($allenamento["tipoObiettivo"] === "Durata allenamento") {
+                      echo(" min");
+                    } ?>
+                  </h5>
+                </div>
               </div>
-              <div class="col-6 text-center" style="padding-top:40px">
-                <h5 class="card-text">
-                  <?php echo $allenamento["valoreRaggiunto"] ?>/
-                  <?php echo $allenamento["parametroObiettivo"] ?>
-                </h5>
-              </div>
-            </div>
-            <div class="row" style="padding-top:20px">
-              <div class="col-12 text-center">
-                <?php if ($allenamento["valoreRaggiunto"] >= $allenamento["parametroObiettivo"]): ?>
-                  <div class="alert alert-success" role="alert">
-                    Obiettivo raggiunto. Congratulazioni!
-                  </div>
-                <?php else: ?>
-                  <div class="alert alert-danger" role="alert">
-                    Obiettivo non raggiunto. Non mollare!
-                  </div>
-                <?php endif ?>
+              <div class="row" style="padding-top:20px">
+                <div class="col-12 text-center">
+                  <?php if ($valore_raggiunto >= $allenamento["parametroObiettivo"]): ?>
+                    <div class="alert alert-success" role="alert">
+                      Obiettivo raggiunto. Congratulazioni!
+                    </div>
+                  <?php else: ?>
+                    <div class="alert alert-danger" role="alert">
+                      Obiettivo non raggiunto. Non mollare!
+                    </div>
+                  <?php endif ?>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    <?php endif; ?>
     <div class="row">
       <div class="col-md-6">
         <?php echo_detail_card("Data", $allenamento["data"], "fa-calendar") ?>
@@ -80,7 +86,7 @@ $allenamento = dettagli_allenamento($id);
     </div>
     <div class="row">
       <div class="col-md-6">
-        <?php echo_detail_card("Numero di salti", $allenamento["salti"], "fa-dumbbell") ?>
+        <?php echo_detail_card("Numero di salti", $allenamento["salti"], "fa-person-running") ?>
       </div>
 
 
@@ -101,7 +107,8 @@ $allenamento = dettagli_allenamento($id);
     </div>
     <div class="row">
       <div class="col-md-12 text-center" style="padding-top:40px;padding-bottom:60px">
-        <button onclick="location.href = '/allenamenti';"  class="btn btn-primary" style="width:300px;padding-top:10px;padding-bottom:10px" >Indietro</button>
+        <button onclick="location.href = '/allenamenti';" class="btn btn-primary"
+          style="width:300px;padding-top:10px;padding-bottom:10px">Indietro</button>
       </div>
 
     </div>
@@ -115,33 +122,35 @@ $allenamento = dettagli_allenamento($id);
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="/script/progressbar.js"></script>
-  <script>
+  <?php if (!($allenamento["tipoObiettivo"] === "Nessuno")): ?>
+    <script>
 
-    // Assuming we have an empty <div id="container"></div> in
-    // HTML
-    let percentualeRaggiungimento = <?php echo $allenamento["valoreRaggiunto"] / $allenamento["parametroObiettivo"] ?>;
-    if (percentualeRaggiungimento > 1) {
-      percentualeRaggiungimento = 1;
-    }
-    var bar = new ProgressBar.Circle('#goalBarContainer', {
-      strokeWidth: 10,
-      easing: 'easeInOut',
-      duration: 1400,
-      color: '#198754',
-      trailColor: '#eee',
-      trailWidth: 1,
-      svgStyle: null,
-      text: {
-        value: `${Math.trunc(percentualeRaggiungimento * 100)}%`,
-        alignToBottom: false
-      },
-    });
+      // Assuming we have an empty <div id="container"></div> in
+      // HTML
+      let percentualeRaggiungimento = <?php echo $allenamento["valoreRaggiunto"] / $allenamento["parametroObiettivo"] ?>;
+      if (percentualeRaggiungimento > 1) {
+        percentualeRaggiungimento = 1;
+      }
+      var bar = new ProgressBar.Circle('#goalBarContainer', {
+        strokeWidth: 10,
+        easing: 'easeInOut',
+        duration: 1400,
+        color: '#198754',
+        trailColor: '#eee',
+        trailWidth: 1,
+        svgStyle: null,
+        text: {
+          value: `${Math.trunc(percentualeRaggiungimento * 100)}%`,
+          alignToBottom: false
+        },
+      });
 
-    bar.text.style.color = '#000';
-    bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-    bar.text.style.fontSize = '2rem';
-    bar.animate(percentualeRaggiungimento);  // Number from 0.0 to 1.0
-  </script>
+      bar.text.style.color = '#000';
+      bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+      bar.text.style.fontSize = '2rem';
+      bar.animate(percentualeRaggiungimento);  // Number from 0.0 to 1.0
+    </script>
+  <?php endif; ?>
 </body>
 
 </html>

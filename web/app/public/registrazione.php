@@ -35,7 +35,8 @@ redirect_to_dashboard_if_logged_in(); ?>
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" class="form-control" id="password" name="password" required>
-        <small class="text-muted">La password deve essere più lunga di 6 caratteri e contenere una lettera maiuscola.</small>
+        <small class="text-muted">La password deve essere più lunga di 6 caratteri e contenere una lettera
+          maiuscola.</small>
       </div>
       <div class="form-group">
         <label for="weight">Peso (kg)</label>
@@ -43,6 +44,7 @@ redirect_to_dashboard_if_logged_in(); ?>
       </div>
       <button type="submit" class="btn button btn-primary">Registrati</button>
     </form>
+    <p class="mt-5 text-center">Sei già registrato? Effettua il login cliccando <a href="/login">qui</a></p>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

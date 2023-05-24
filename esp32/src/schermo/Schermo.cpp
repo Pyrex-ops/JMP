@@ -9,6 +9,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Schermo::Schermo() {}
 
 void Schermo::begin() {
+	this->interrompiEsecuzione = false;
 	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
 		Serial.println("SSD1306 allocation failed");
@@ -86,11 +87,11 @@ void Schermo::connessionePersa() {
 	pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
-	display.setCursor(30, 0);
-	display.print("LINK");
-	display.setTextSize(4);
+	display.setCursor(10, 0);
+	display.print("CONNES.");
+	display.setTextSize(2);
 	display.setCursor(6, 32);
-	display.println("PERSO");
+	display.println("IN CORSO");
 	display.display();
 	std::thread t([this]() {
 		lampeggia(3);
@@ -110,7 +111,7 @@ void Schermo::inserisciCredenziali() {
 	display.display();
 }
 
-void Schermo::obiettivoRaggiunto(uint8_t tipo) {
+void Schermo::obiettivoRaggiunto(tipologiaObiettivo_t tipo) {
 	/**
 	 * (1, 'Numero di salti eseguiti durante l'allenamento.'),
 		(2, 'Calorie spese durante l'allenamento.'),
@@ -119,7 +120,7 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 	pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	switch (tipo) {
-		case 1:
+		case NUMERO_SALTI:
 			display.setTextSize(1);
 			display.setCursor(35, 0);
 			display.print("OBIETTIVO");
@@ -131,7 +132,7 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 			display.drawRoundRect(0, 28, 128, 36, 10, SSD1306_WHITE);
 			display.display();
 			break;
-		case 2:
+		case CALORIE_SPESE:
 			display.setTextSize(1);
 			display.setCursor(35, 0);
 			display.print("OBIETTIVO");
@@ -143,7 +144,7 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 			display.drawRoundRect(0, 28, 128, 36, 10, SSD1306_WHITE);
 			display.display();
 			break;
-		case 3:
+		case TEMPO_ALLENAMENTO_MINUTI:
 			display.setTextSize(1);
 			display.setCursor(35, 0);
 			display.print("OBIETTIVO");
@@ -158,11 +159,19 @@ void Schermo::obiettivoRaggiunto(uint8_t tipo) {
 
 		default: break;
 	}
+	std::thread t([this]() {
+		lampeggia(1);
+	});
+	t.detach();
 }
 
 void Schermo::lampeggia(uint8_t volte) {
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	for (uint8_t i = 0; i < volte; i++) {
+		if (this->interrompiEsecuzione) {
+			this->interrompiEsecuzione = !this->interrompiEsecuzione;
+			return;
+		}
 		delay(1000);
 		display.invertDisplay(true);
 		delay(1000);
@@ -173,7 +182,7 @@ void Schermo::lampeggia(uint8_t volte) {
 
 void Schermo::mostraCredenziali(String SSID, String password) {
 	pulisci();
-	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(1);
 	display.setCursor(60, 0);
 	display.print("SSID");
@@ -186,5 +195,46 @@ void Schermo::mostraCredenziali(String SSID, String password) {
 	display.setCursor(0, 46);
 	display.setTextSize(2);
 	display.print(password);
+	display.display();
+	lock.unlock();
+	std::thread t([this]() {
+		std::lock_guard<std::mutex> lock(this->mutexDisplay);
+		delay(1000);
+	});
+	t.detach();
+}
+
+void Schermo::associaAccount() {
+	pulisci();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	display.setTextSize(2);
+	display.setCursor(20, 0);
+	display.print("ASSOCIA");
+	display.setTextSize(3);
+	display.setCursor(0, 32);
+	display.println("ACCOUNT");
+	display.display();
+	std::thread t([this]() {
+		lampeggia(1);
+	});
+	t.detach();
+}
+
+void Schermo::interrompi() {
+	if (!this->interrompiEsecuzione) {
+		this->interrompiEsecuzione = !this->interrompiEsecuzione;
+	}
+}
+
+void Schermo::mostraMAC(String MAC) {
+	pulisci();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	display.setTextSize(2);
+	display.setCursor(0, 0);
+	display.print("COD. CORDA");
+	display.setTextSize(2);
+	display.setCursor(0, 32);
+	display.println(MAC.substring(0,9));
+	display.println(MAC.substring(9));
 	display.display();
 }

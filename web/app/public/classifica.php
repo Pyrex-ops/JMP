@@ -68,9 +68,9 @@ redirect_to_login_if_not_logged_in() ?>
                 </div>
             </div>
         </div>
-        <h1 class="text-center" style="margin-bottom:30px"> Classifica durata</h1>
+        <h1 class="text-center" id="titoloClassifica" style="margin-bottom:30px"> Classifica durata</h1>
         <div class="col-md-12">
-            <div class="card">
+            <div class="card" id="durataCard">
                 <div class="card-body text-center">
                     <table class="table table-borderless table-classifica">
                         <thead>
@@ -86,7 +86,7 @@ redirect_to_login_if_not_logged_in() ?>
             </div>
         </div>
         <div class="col-md-12">
-            <div class="card">
+            <div class="card collapse" id="saltiCard">
                 <div class="card-body text-center">
                     <table class="table table-borderless table-classifica">
                         <thead>
@@ -196,6 +196,25 @@ redirect_to_login_if_not_logged_in() ?>
 
             trainingsContainer.appendChild(row);
         });
+
+        $('#chk').change(function(){
+    if(this.checked) {
+        const durataCard =document.getElementById("durataCard");
+        durataCard.classList.add("collapse");
+        const saltiCard =document.getElementById("saltiCard");
+        saltiCard.classList.remove("collapse");
+        const titoloClassifica = document.getElementById("titoloClassifica");
+        titoloClassifica.textContent = "Classifica salti";
+    }
+    else {
+        const durataCard =document.getElementById("durataCard");
+        durataCard.classList.remove("collapse");
+        const saltiCard =document.getElementById("saltiCard");
+        saltiCard.classList.add("collapse");
+        titoloClassifica.textContent = "Classifica durata";
+    }
+});
+
     </script>
 
 </body>

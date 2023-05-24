@@ -17,7 +17,7 @@ MotorinoGravity motorino(
 
 NewEncoderAdapter encoder(ENCODER_CLK_PIN, ENCODER_DT_PIN, ENCODER_PPR);
 TrainingManager* trainingManager = nullptr;
-BackendServer backendServer(API_URL);
+BackendServer* backendServer	 = nullptr;
 uint32_t timestampLastRevolution;
 uint32_t lastRevolutionNumber;
 
@@ -44,9 +44,15 @@ void setup() {
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;
+	schermo.connessionePersa();
 }
 
 void loop() {
+	static state_t lastState = currentState;
+	if (lastState != currentState) {
+		lastState = currentState;
+		schermo.pulisci();
+	}
 	switch (currentState) {
 		case DISCONNECTED: handleDisconnected(); break;
 		case NEW_CREDENTIALS_REQUIRED: handleNewCredentialsRequired(); break;
@@ -62,6 +68,7 @@ void handleDisconnected() {
 		wifiManager.deleteCredentials();
 		Serial.println("new credentials required");
 		//schermo.scrivi(0, "new credentials required");
+		schermo.inserisciCredenziali();
 		currentState = NEW_CREDENTIALS_REQUIRED;
 	}
 	if (wifiManager.checkConnection()) {
@@ -77,6 +84,7 @@ void handleNewCredentialsRequired() {
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;
+	schermo.connessionePersa();
 }
 
 void handleIdle() {
@@ -85,13 +93,13 @@ void handleIdle() {
 	} else if (encoder.getRevolutions() != 0) {
 		Serial.println("training started");
 		//schermo.scrivi(0, "training started");
-		encoder.reset();
+		backendServer	= new BackendServer(API_URL);
+		trainingManager = new TrainingManager(
+			backendServer, SAMPLE_SENDING_PERIOD_SECONDS, &schermo, 0, &motorino);
 		timestampLastRevolution = millis();
-		lastRevolutionNumber	= encoder.getRevolutions();
-		trainingManager			= new TrainingManager(
-			&backendServer, SAMPLE_SENDING_PERIOD_SECONDS, &schermo,
-			encoder.getRevolutions(), &motorino);
-		currentState = TRAINING;
+		encoder.reset();
+		lastRevolutionNumber = encoder.getRevolutions();
+		currentState		 = TRAINING;
 	}
 	//motorino.vibra(100);
 }
@@ -105,14 +113,22 @@ void handleTraining() {
 	if ((millis() - timestampLastRevolution) > TIMEOUT_STOP_TRAINING_MILLISECONDS) {
 		Serial.println("training ended");
 		//schermo.scrivi(0, "training ended");
+
 		encoder.reset();
 		delete (trainingManager);
+		delete (backendServer);
 		currentState = IDLE;
 	}
-	if (!wifiManager.checkConnection()) { disconnected(); }
+	if (!wifiManager.checkConnection()) {
+		encoder.reset();
+		delete (trainingManager);
+		delete (backendServer);
+		disconnected();
+	}
 }
 
 void disconnected() {
+	schermo.connessionePersa();
 	Serial.println("connection lost");
 	//schermo.scrivi(0, "connection lost");
 	lostConnectionTimestamp = millis();
