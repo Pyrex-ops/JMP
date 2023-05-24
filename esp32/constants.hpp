@@ -15,7 +15,7 @@
 #define SCHERMO_PIN_SDA 21
 #define SCHERMO_PIN_SCL 22
 
-#define API_URL "https://jmpit.serveo.net/"
+#define API_URL "http://192.168.219.52/"
 #define SCHERMO_PIN_1 21
 #define SCHERMO_PIN_2 22
 #define TIMEOUT_NEW_CREDENTIALS_MILLISECONDS 20000

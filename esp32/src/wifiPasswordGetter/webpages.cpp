@@ -314,7 +314,7 @@ const char* WifiPasswordGetter::MAIN_PAGE = R"rawliteral(
                         if (data.ssids && data.ssids.length > 0) {
                             // Populate the SSID select dropdown
                             data.ssids.forEach(ssid => {
-                                if (ssid !== "") {
+                                if (ssid.trim().length > 0) {
                                     const option = document.createElement('option');
                                     option.value = ssid;
                                     option.textContent = ssid;

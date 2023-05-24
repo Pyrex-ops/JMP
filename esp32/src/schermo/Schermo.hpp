@@ -5,6 +5,7 @@
 #include <Adafruit_SSD1306.h>
 #include <mutex>
 #include <Wire.h>
+#include "../server/Server.hpp"
 
 
 #define SCREEN_WIDTH 128  // pixel
@@ -20,6 +21,7 @@
 class Schermo {
   private:
 	std::mutex mutexDisplay;
+	bool interrompiEsecuzione; //true = interrompi esecuzione
   public:
 	/**
 	 * Costruttore della classe
@@ -37,6 +39,8 @@ class Schermo {
 	 * @param salti numeri di salti registrati
 	 * @param tempoAllenamento numero di secondi trascorsi dall'inizio
 	 * dell'allenamento
+	 *
+	 * @warning Richiamare la pulizia() prima di invocare questo metodo.
 	 */
 	void informazioniAllenamento(uint32_t salti, uint32_t tempoAllenamento, uint32_t calorie);
 	/**
@@ -57,7 +61,7 @@ class Schermo {
 	/**
 	 * Mostra a schermo l'avviso di raggiungimento obiettivo
 	 */
-	void obiettivoRaggiunto(uint8_t tipo);
+	void obiettivoRaggiunto(tipologiaObiettivo_t tipo);
 	/**
 	 * Lampeggia schermo invertendo i colori
 	 *
@@ -74,6 +78,20 @@ class Schermo {
 	 * sovrapposti
 	 */
 	void mostraCredenziali(String SSID, String password);
+	/**
+	 * Invita l'utente ad associare la corda ad un account
+	*/
+	void associaAccount();
+	/**
+	 * Interrompi tutte le operazioni
+	 * 
+	 * @warning Non interrompe il metodo begin()
+	*/
+	void interrompi();
+	/**
+	 * Mostra MAC address
+	*/
+	void mostraMAC(String MAC);
 };
 
 #endif
