@@ -27,7 +27,7 @@ function echo_tipologie_obiettivo(): void
 
 function echo_obiettivo($user)
 {
-    echo "{ name: 'Nessuno', value: '30' }";
+    echo "{ name: 'Numero di salti', value: '30' }";
 }
 
 function dettagli_allenamento($id): ?array
@@ -157,7 +157,7 @@ function echo_detail_card($categoria, $parametro, $icona)
 
 function echo_classifica_durata() {
   echo "[
-           { name: 'Joecom', durata : 900 },
+           { name: 'Alex', durata : 900 },
            { name: 'Marco', durata : 400 },
            { name: 'Giuseppe', durata : 200 }
        ]";
@@ -167,6 +167,6 @@ function echo_classifica_salti() {
   echo "[
            { name: 'Marco', salti : 11000 },
            { name: 'Giuseppe', salti : 3000 },
-           { name: 'Joecom', salti : 2000 }
+           { name: 'Alex', salti : 2000 }
        ]";
 }
