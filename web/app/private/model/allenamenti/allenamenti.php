@@ -118,9 +118,16 @@ DESC;");
     return $dettagli;
 }
 
-function check_ownership($idAllenamento, $username)
+function check_ownership($idAllenamento, $username): bool
 {
-    return true;
+    global $database;
+    $queryAssociazione = $database->prepare("SELECT allenamento.IDAllenamento FROM allenamento JOIN utente ON allenamento.IDUtente = utente.IDUtente WHERE IDAllenamento = ? AND utente.username = ?");
+    $queryAssociazione->bind_param("is",$idAllenamento,$username);
+    $queryAssociazione->execute();
+    if($queryAssociazione->get_result()->num_rows!=0){
+        return true;
+    }
+    return false;
 }
 
 function echo_detail_card($categoria, $parametro, $icona)
