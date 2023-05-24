@@ -107,7 +107,7 @@ DESC;");
                 "tipoObiettivo" => $tipo, "parametroObiettivo" => $riga["parametroObiettivo"], "valoreRaggiunto" => $riga["valoreRaggiunto"]];
         } else {
 
-            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"], "salti" => $riga["salti"],
+            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"]/60, "salti" => $riga["salti"],
                 "calorie" => $riga["calorie"], "percentualeObiettivo" => 0,
                 "tipoObiettivo" => $tipo, "parametroObiettivo" => 0, "valoreRaggiunto" => $riga["valoreRaggiunto"]];
         }

@@ -139,7 +139,7 @@ body {
 }
 
 .allenamenti-table-member {
-  vertical-align:middle;
+  vertical-align: middle;
 }
 
 .table-column-width td:nth-child(2),
@@ -155,6 +155,7 @@ body {
 .table-trainings th:first-child {
   width: 15%;
 }
+
 .table-trainings td:last-child,
 .table-trainings th:last-child {
   width: 12%;
@@ -174,6 +175,7 @@ body {
 .table-classifica th:first-child {
   width: 30%;
 }
+
 .table-classifica td:last-child,
 .table-classifica th:last-child {
   width: 30%;
