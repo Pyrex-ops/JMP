@@ -45,16 +45,20 @@ $allenamento = dettagli_allenamento($id);
                 <div class="col-6 text-center my-auto">
                   <div id="goalBarContainer"></div>
                 </div>
+                <?php $valore_raggiunto = round(floatval($allenamento["valoreRaggiunto"]),1); ?>
                 <div class="col-6 text-center" style="padding-top:40px">
                   <h5 class="card-text">
-                    <?php echo $allenamento["valoreRaggiunto"] ?>/
+                    <?php echo $valore_raggiunto ?>/
                     <?php echo $allenamento["parametroObiettivo"] ?>
+                    <?php if($allenamento["tipoObiettivo"] === "Durata allenamento") {
+                      echo(" min");
+                    } ?>
                   </h5>
                 </div>
               </div>
               <div class="row" style="padding-top:20px">
                 <div class="col-12 text-center">
-                  <?php if ($allenamento["valoreRaggiunto"] >= $allenamento["parametroObiettivo"]): ?>
+                  <?php if ($valore_raggiunto >= $allenamento["parametroObiettivo"]): ?>
                     <div class="alert alert-success" role="alert">
                       Obiettivo raggiunto. Congratulazioni!
                     </div>

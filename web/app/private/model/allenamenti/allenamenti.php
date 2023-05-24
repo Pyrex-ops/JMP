@@ -97,14 +97,17 @@ DESC;");
     while ($riga = $ris->fetch_assoc()) {
         $tipo = match ($riga["tipoObiettivo"]) {
             1 => "Numero salti",
-            2 => "Calorie spese",
-            3 => "Durata",
+            2 => "Calorie bruciate",
+            3 => "Durata allenamento",
             default => "Nessuno",
         };
         if($riga["durata"] <= 60  ) {
             $riga["durata"] = 60;
         }
         if (isset($riga["parametroObiettivo"])) {
+            if(($riga["tipoObiettivo"] == 3) && ($riga["valoreRaggiunto"] <= 1)) {
+                $riga["valoreRaggiunto"] = 1;
+            }
             $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"]/60, "salti" => $riga["salti"],
                 "calorie" => $riga["calorie"], "percentualeObiettivo" => (int)($riga["valoreRaggiunto"] / $riga["parametroObiettivo"]) * 100,
                 "tipoObiettivo" => $tipo, "parametroObiettivo" => $riga["parametroObiettivo"], "valoreRaggiunto" => $riga["valoreRaggiunto"]];
@@ -131,6 +134,9 @@ function echo_detail_card($categoria, $parametro, $icona)
     if($categoria === "Data") {
         $parametroFormattato = $parametro;
     } 
+    else if($categoria === "Durata") {
+        $parametroFormattato = round(floatval($parametro),1)." min";
+    }
     else {
         $parametroFormattato = round(floatval($parametro),1);
     }
