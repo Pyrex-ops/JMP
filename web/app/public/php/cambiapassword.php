@@ -1,4 +1,5 @@
 <?php
+global $database;
 include_once "/php/private/model/auth/sessione.php";
 include_once "/php/private/model/user/user.php";
 include_once "/php/private/model/auth/auth.php";
