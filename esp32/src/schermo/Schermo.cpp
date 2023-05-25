@@ -71,7 +71,7 @@ void Schermo::informazioniAllenamento(
 	display.setCursor(66, 45);
 	std::stringstream ss;
 	//Se è trascorso meno di un minuto allora mostriamo mm:ss, altrimenti hh:mm
-	if (tempoAllenamento < 60) {
+	if (tempoAllenamento < 3599) {
 		ss << std::setfill('0') << std::setw(2) << minuti.count() << ':'
 		   << std::setfill('0') << std::setw(2) << secondi.count() << '\n';
 	} else {

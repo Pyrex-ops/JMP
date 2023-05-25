@@ -38,7 +38,7 @@ redirect_to_dashboard_if_logged_in() ?>
     }
 
     .vertical-center {
-      min-height: 70vh;
+      min-height: 80vh;
       display: flex;
       align-items: center;
       justify-content: center;
