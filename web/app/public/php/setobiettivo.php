@@ -10,13 +10,28 @@ function cambio_obiettivo_error($error)
     header("Location: /allenamenti.php");
     exit;
 }
+
 redirect_to_login_if_not_logged_in();
-if(isset($_POST["goalType"]) && isset($_POST["goalValue"])){
+if (isset($_POST["goalType"]) && isset($_POST["goalValue"])) {
     global $database;
     $userID = get_id(get_username());
-    //ATTENZIONE VVV
-    $idObiettivo = 10;
-    //ATTENZIONE AAA - Incompleto
+    $queryIDCategoria = $database->prepare("SELECT categoriaObiettivo.IDCategoria FROM categoriaObiettivo JOIN obiettivo o on categoriaObiettivo.IDCategoria = o.IDCategoria WHERE Descrizione = ? LIMIT 1");
+    $queryIDCategoria->bind_param("s", $_POST["goalType"]);
+    $queryIDCategoria->execute();
+    $queryIDCategoria = $queryIDCategoria->get_result();
+    $idCategoria = $queryIDCategoria->fetch_assoc()["IDCategoria"];
+    $queryProssimoIDObiettivo = $database->query("SELECT IDObiettivo FROM obiettivo ORDER BY IDObiettivo DESC LIMIT 1;");
+    $prossimoIDObiettivo = $queryProssimoIDObiettivo->fetch_assoc()["IDObiettivo"];
+    $prossimoIDObiettivo++;
+    $queryCreazioneObiettivo = $database->prepare("INSERT INTO obiettivo(IDObiettivo, IDCategoria, parametro) VALUES (?,?,?)");
+    $queryCreazioneObiettivo->bind_param("iii", $prossimoIDObiettivo, $idCategoria, $_POST["goalValue"]);
+    $queryCreazioneObiettivo->execute();
     $querySetObiettivo = $database->prepare("UPDATE utente SET IDObiettivo = ? WHERE IDUtente = ?");
-    $querySetObiettivo->bind_param("ii",$idObiettivo,$userID);
+    $querySetObiettivo->bind_param("ii", $prossimoIDObiettivo, $userID);
+    $querySetObiettivo->execute();
+    $_SESSION['cambiato_obiettivo'] = "Obiettivo impostato con successo!";
+    header("Location: /allenamenti.php");
+    exit;
+} else {
+    cambio_obiettivo_error("Errore. Riprovare.");
 }
