@@ -236,7 +236,7 @@ void Schermo::mostraMAC() {
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(0, 0);
-	display.print("COD. CORDA");
+	display.print("ID CORDA");
 	display.setTextSize(2);
 	display.setCursor(0, 32);
 	String MAC = WiFi.macAddress();
