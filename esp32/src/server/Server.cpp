@@ -198,8 +198,8 @@ bool BackendServer::checkRegistered() {
 			const char* stato = jsonDocument["stato"];
 			associato	  = jsonDocument["associato"];
 
-			if (strcmp(stato, "errore") != 0) { associato = false; }
+			if (strcmp(stato, "errore") == 0) { associato = false; }
 		}
 	}
-	return true;
+	return associato;
 }
