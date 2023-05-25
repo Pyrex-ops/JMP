@@ -100,7 +100,7 @@ void handleNewCredentialsRequired() {
 }
 
 void handleUnregistered() {
-	schermo.associaAccount();
+	schermo.mostraMAC();
 	if (!wifiManager.checkConnection()) {
 		disconnected();
 	}
