@@ -6,6 +6,6 @@ include_once "/php/private/model/auth/auth.php";
 if (check_login()) {
     logout();
 }
-redirect_to_login_if_not_logged_in();
-
+header("location: /");
+exit;
 ?>

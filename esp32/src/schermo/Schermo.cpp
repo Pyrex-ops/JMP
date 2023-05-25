@@ -72,7 +72,7 @@ void Schermo::informazioniAllenamento(
 	display.setCursor(66, 45);
 	std::stringstream ss;
 	//Se è trascorso meno di un minuto allora mostriamo mm:ss, altrimenti hh:mm
-	if (tempoAllenamento < 60) {
+	if (tempoAllenamento < 3599) {
 		ss << std::setfill('0') << std::setw(2) << minuti.count() << ':'
 		   << std::setfill('0') << std::setw(2) << secondi.count() << '\n';
 	} else {
@@ -85,7 +85,7 @@ void Schermo::informazioniAllenamento(
 }
 
 void Schermo::connessionePersa() {
-	pulisci();
+	// pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(10, 0);
@@ -94,14 +94,14 @@ void Schermo::connessionePersa() {
 	display.setCursor(6, 32);
 	display.println("IN CORSO");
 	display.display();
-	std::thread t([this]() {
-		lampeggia(3);
-	});
-	t.detach();
+	// std::thread t([this]() {
+	// 	lampeggia(3);
+	// });
+	// t.detach();
 }
 
 void Schermo::inserisciCredenziali() {
-	pulisci();
+	// pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(20, 0);
@@ -118,7 +118,7 @@ void Schermo::obiettivoRaggiunto(tipologiaObiettivo_t tipo) {
 		(2, 'Calorie spese durante l'allenamento.'),
 		(3, 'Tempo di allenamento in minuti.')
 	*/
-	pulisci();
+	// pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	switch (tipo) {
 		case NUMERO_SALTI:
@@ -160,10 +160,10 @@ void Schermo::obiettivoRaggiunto(tipologiaObiettivo_t tipo) {
 
 		default: break;
 	}
-	std::thread t([this]() {
-		lampeggia(1);
-	});
-	t.detach();
+	// std::thread t([this]() {
+	// 	lampeggia(1);
+	// });
+	// t.detach();
 }
 
 void Schermo::lampeggia(uint8_t volte) {
@@ -182,7 +182,7 @@ void Schermo::lampeggia(uint8_t volte) {
 }
 
 void Schermo::mostraCredenziali(String SSID, String password) {
-	pulisci();
+	// pulisci();
 	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(1);
 	display.setCursor(0, 0);
@@ -206,7 +206,7 @@ void Schermo::mostraCredenziali(String SSID, String password) {
 }
 
 void Schermo::associaAccount() {
-	pulisci();
+	// pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(20, 0);
@@ -219,10 +219,6 @@ void Schermo::associaAccount() {
 	display.display();
 	// std::thread t([this]() {
 	// 	lampeggia(1);
-	// 	std::unique_lock<std::mutex> lock(this->mutexDisplay);
-	// 	delay(1000);
-	// 	lock.unlock();
-	// 	mostraMAC();
 	// });
 	// t.detach();
 }
@@ -231,4 +227,18 @@ void Schermo::interrompi() {
 	if (!this->interrompiEsecuzione) {
 		this->interrompiEsecuzione = !this->interrompiEsecuzione;
 	}
+}
+
+void Schermo::mostraMAC() {
+	// pulisci();
+	String MAC = WiFi.macAddress();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	display.setTextSize(2);
+	display.setCursor(0, 0);
+	display.print("ASSOCIA ID");
+	display.setTextSize(2);
+	display.setCursor(0, 32);
+	display.println(MAC.substring(0,9));
+	display.println(MAC.substring(9));
+	display.display();
 }

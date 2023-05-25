@@ -23,8 +23,10 @@ uint32_t lastRevolutionNumber;
 
 
 typedef enum {
+	BOOTSTRAP,
 	DISCONNECTED,
 	NEW_CREDENTIALS_REQUIRED,
+	UNREGISTERED,
 	IDLE,
 	TRAINING,
 } state_t;
@@ -44,13 +46,14 @@ void setup() {
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;
-	schermo.connessionePersa();
+	delay(3000);
 }
 
 void loop() {
-	static state_t lastState = currentState;
+	static state_t lastState = BOOTSTRAP;
 	if (lastState != currentState) {
 		lastState = currentState;
+		schermo.interrompi();
 		schermo.pulisci();
 	}
 	switch (currentState) {
@@ -58,33 +61,58 @@ void loop() {
 		case NEW_CREDENTIALS_REQUIRED: handleNewCredentialsRequired(); break;
 		case IDLE: handleIdle(); break;
 		case TRAINING: handleTraining(); break;
+		case UNREGISTERED: handleUnregistered(); break;
 	}
 	delay(200);
 }
 
 void handleDisconnected() {
+	schermo.connessionePersa();
 	if (millis() - lostConnectionTimestamp > TIMEOUT_NEW_CREDENTIALS_MILLISECONDS
 		|| !wifiManager.hasSavedCredentials()) {
 		wifiManager.deleteCredentials();
 		Serial.println("new credentials required");
 		//schermo.scrivi(0, "new credentials required");
-		schermo.inserisciCredenziali();
 		currentState = NEW_CREDENTIALS_REQUIRED;
 	}
 	if (wifiManager.checkConnection()) {
 		Serial.println("connected");
 		//schermo.scrivi(0, "connected");
 		encoder.reset();
-		currentState = IDLE;
+		currentState = UNREGISTERED;
 	}
 }
 
 void handleNewCredentialsRequired() {
-	wifiManager.getNewCredentials();
+	srand(time(NULL));
+	char passwordArray[LENGTH + 1];
+	for (int i = 0; i < LENGTH; i++) {
+        passwordArray[i] = CHARS[rand() % (sizeof(CHARS) - 1)];
+    }
+	passwordArray[LENGTH] = '\0';
+	String ssid = CONFIGURATION_SSID;
+	String password = passwordArray;
+	schermo.mostraCredenziali(ssid,password);
+	wifiManager.getNewCredentials(ssid,password);
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;
-	schermo.connessionePersa();
+}
+
+void handleUnregistered() {
+	schermo.mostraMAC();
+	if (!wifiManager.checkConnection()) {
+		disconnected();
+	}
+	else {
+		BackendServer server(API_URL);
+		if(server.checkRegistered()) {
+			currentState = IDLE;
+		}
+		else {
+			delay(800);
+		}
+	}
 }
 
 void handleIdle() {
@@ -128,7 +156,6 @@ void handleTraining() {
 }
 
 void disconnected() {
-	schermo.connessionePersa();
 	Serial.println("connection lost");
 	//schermo.scrivi(0, "connection lost");
 	lostConnectionTimestamp = millis();

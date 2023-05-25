@@ -25,10 +25,10 @@ void WifiManager::connect() {
 	WiFi.begin(wifi_config.SSID.c_str(), wifi_config.password.c_str());
 }
 
-void WifiManager::getNewCredentials() {
+void WifiManager::getNewCredentials(String& ssid,String& password) {
 	credentialsManager cManager(CREDENTIALS_KEY);
 	wifi_configuration_t wifi_config;
-	wifi_config = (new WifiPasswordGetter(DEFAULT_TEMPORARY_NETWORK_SSID, DEFAULT_TEMPORARY_NETWORK_PASSWORD))
+	wifi_config = (new WifiPasswordGetter(ssid.c_str(), password.c_str()))
 					  ->getWifiConfiguration();
 	cManager.newRecord(wifi_config.SSID, wifi_config.password);
 }

@@ -89,6 +89,7 @@ class Schermo {
 	 * @warning Non interrompe il metodo begin()
 	*/
 	void interrompi();
+	void mostraMAC();
 };
 
 #endif
