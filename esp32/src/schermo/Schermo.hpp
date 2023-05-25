@@ -80,6 +80,7 @@ class Schermo {
 	void mostraCredenziali(String SSID, String password);
 	/**
 	 * Invita l'utente ad associare la corda ad un account
+	 * Mostra l'ID della corda (MAC)
 	*/
 	void associaAccount();
 	/**
@@ -88,10 +89,6 @@ class Schermo {
 	 * @warning Non interrompe il metodo begin()
 	*/
 	void interrompi();
-	/**
-	 * Mostra MAC address
-	*/
-	void mostraMAC();
 };
 
 #endif

@@ -210,37 +210,25 @@ void Schermo::associaAccount() {
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(20, 0);
-	display.print("ASSOCIA");
-	display.setTextSize(3);
-	display.setCursor(0, 32);
-	display.println("ACCOUNT");
-	display.display();
-	std::thread t([this]() {
-		lampeggia(1);
-		std::unique_lock<std::mutex> lock(this->mutexDisplay);
-		delay(1000);
-		lock.unlock();
-		mostraMAC();
-	});
-	t.detach();
-}
-
-void Schermo::interrompi() {
-	if (!this->interrompiEsecuzione) {
-		this->interrompiEsecuzione = !this->interrompiEsecuzione;
-	}
-}
-
-void Schermo::mostraMAC() {
-	pulisci();
-	std::lock_guard<std::mutex> lock(this->mutexDisplay);
-	display.setTextSize(2);
-	display.setCursor(0, 0);
-	display.print("ID CORDA");
+	display.print("ASSOCIA:");
 	display.setTextSize(2);
 	display.setCursor(0, 32);
 	String MAC = WiFi.macAddress();
 	display.println(MAC.substring(0, 9));
 	display.println(MAC.substring(9));
 	display.display();
+	// std::thread t([this]() {
+	// 	lampeggia(1);
+	// 	std::unique_lock<std::mutex> lock(this->mutexDisplay);
+	// 	delay(1000);
+	// 	lock.unlock();
+	// 	mostraMAC();
+	// });
+	// t.detach();
+}
+
+void Schermo::interrompi() {
+	if (!this->interrompiEsecuzione) {
+		this->interrompiEsecuzione = !this->interrompiEsecuzione;
+	}
 }
