@@ -92,11 +92,28 @@ redirect_to_login_if_not_logged_in() ?>
         }]
       },
       options: {
-
+        elements: {
+          point:{
+            radius: 0
+          }
+        },
         scales: {
+          xAxes: [{
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 5
+            },
+            gridLines: {
+              display:false,
+            }
+          }],
           yAxes: [{
             ticks: {
-              beginAtZero: true
+              beginAtZero: true,
+              stepSize: 30
+            },
+            gridLines: {
+              display:false,
             }
           }]
         }
