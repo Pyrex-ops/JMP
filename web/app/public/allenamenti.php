@@ -198,7 +198,7 @@ redirect_to_login_if_not_logged_in() ?>
         // Function to add a workout to the list
         const trainingsContainer = document.getElementById('trainingsContainer');
         const trainingsData = <?php all_trainings() ?>;
-        const maxTrainingTime = parseInt(trainingsData.sort(
+        let maxTrainingTime = parseInt(trainingsData.sort(
             function (a, b) {
                 return parseInt(b['duration']) - parseInt(a['duration']);
             }

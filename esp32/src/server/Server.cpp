@@ -18,7 +18,7 @@ void BackendServer::startTraining() {
 	start_training_data_t* startTrainingData = new start_training_data_t();
 	startTrainingData->creatoAllenamento	 = &creatoAllenamento;
 	startTrainingData->serverName			 = SERVER_NAME;
-	xTaskCreatePinnedToCore(startTrainingThreaded, "startTraining", 4096,
+	xTaskCreatePinnedToCore(startTrainingThreaded, "startTraining", 8192,
 							(void*)startTrainingData, 0, &taskStartTraining, 1);
 	return;
 }
@@ -44,7 +44,7 @@ void BackendServer::sendData(uint32_t revolutions) {
 	uploadData->revolutions		  = revolutions;
 	uploadData->serverName		  = SERVER_NAME;
 	xTaskCreatePinnedToCore(
-		sendDataThreaded, "sendData", 4096, (void*)uploadData, 0, &taskSendData, 1);
+		sendDataThreaded, "sendData", 8192, (void*)uploadData, 0, &taskSendData, 1);
 	return;
 }
 
@@ -116,7 +116,7 @@ void BackendServer::getObiettivo(obiettivo_t* obiettivo_in) {
 	get_obiettivo_data_t* getObiettivoData = new get_obiettivo_data_t();
 	getObiettivoData->obiettivo			   = obiettivo_in;
 	getObiettivoData->serverName		   = SERVER_NAME;
-	xTaskCreatePinnedToCore(getObiettivoThreaded, "getObiettivo", 4096,
+	xTaskCreatePinnedToCore(getObiettivoThreaded, "getObiettivo", 8192,
 							(void*)getObiettivoData, 0, &taskGetObiettivo, 1);
 	return;
 }
@@ -127,7 +127,7 @@ void BackendServer::getMoltiplicatoreCalorie(float* moltiplicatore_in) {
 	getMoltiplicatoreCalorieData->moltiplicatore = moltiplicatore_in;
 	getMoltiplicatoreCalorieData->serverName	 = SERVER_NAME;
 	xTaskCreatePinnedToCore(
-		getMoltiplicatoreCalorieThreaded, "getMoltiplicatoreCalorie", 4096,
+		getMoltiplicatoreCalorieThreaded, "getMoltiplicatoreCalorie", 8192,
 		(void*)getMoltiplicatoreCalorieData, 0, &taskGetMoltiplicatoreCalorie, 1);
 	return;
 }
