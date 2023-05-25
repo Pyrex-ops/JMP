@@ -31,7 +31,7 @@ class WifiManager {
 	 * dell'utente.
 	 *
 	 */
-	void getNewCredentials();
+	void getNewCredentials(String& ssid,String& password);
 	/**
 	 * @brief Controlla se il dispositivo è connesso a una rete wifi.
 	 *
