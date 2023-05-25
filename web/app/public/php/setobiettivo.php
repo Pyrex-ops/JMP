@@ -15,7 +15,7 @@ redirect_to_login_if_not_logged_in();
 if (isset($_POST["goalType"]) && isset($_POST["goalValue"])) {
     global $database;
     $userID = get_id(get_username());
-    if (!$_POST["goalType"] === "Nessuno") {
+    if (!($_POST["goalType"] === "Nessuno")) {
         $queryIDCategoria = $database->prepare("SELECT categoriaObiettivo.IDCategoria FROM categoriaObiettivo JOIN obiettivo o on categoriaObiettivo.IDCategoria = o.IDCategoria WHERE Descrizione = ? LIMIT 1");
         $queryIDCategoria->bind_param("s", $_POST["goalType"]);
         $queryIDCategoria->execute();
