@@ -2,6 +2,7 @@
 require_once "/php/private/view/navbar.php";
 include_once "/php/private/model/auth/auth.php";
 include_once "/php/private/model/dispositivo/dispositivo.php";
+include_once "/php/private/model/user/user.php";
 redirect_to_login_if_not_logged_in() ?>
 
 <!DOCTYPE html>
@@ -13,6 +14,42 @@ redirect_to_login_if_not_logged_in() ?>
     <link rel="stylesheet" href="/style/bootstrap.css">
     <link rel="stylesheet" href="/style/jmpit.css">
     <title>Impostazioni Utente</title>
+    <style>
+        .checkbox {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .label {
+            background-color: #dc3545;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px;
+            position: relative;
+            height: 26px;
+            width: 50px;
+            transform: scale(1.5);
+        }
+
+        .label .ball {
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            height: 22px;
+            width: 22px;
+            transform: translateX(0px);
+            transition: transform 0.2s linear;
+        }
+
+        .checkbox:checked+.label .ball {
+            transform: translateX(24px);
+        }
+    </style>
 </head>
 
 <body>
@@ -42,6 +79,12 @@ redirect_to_login_if_not_logged_in() ?>
             // Unset the login error variable
             unset($_SESSION["cambio_password_error_message"]);
         } ?>
+        <? if (isset($_SESSION["modifica_impostazioni_error_message"])) {
+            // Display error message in a Bootstrap alert
+            echo '<div class="alert alert-danger" role="alert">' . $_SESSION["modifica_impostazioni_error_message"] . '</div>';
+            // Unset the login error variable
+            unset($_SESSION["modifica_impostazioni_error_message"]);
+        } ?>
         <? if (isset($_SESSION["aggiunta_nuova_corda"])) {
             // Display error message in a Bootstrap alert
             echo '<div class="alert alert-success" role="alert">' . "La corda è stata aggiunta con successo al tuo account." . '</div>';
@@ -54,7 +97,13 @@ redirect_to_login_if_not_logged_in() ?>
             // Unset the login error variable
             unset($_SESSION["cambiata_password"]);
         } ?>
-        <div class="row mt-4">
+        <? if (isset($_SESSION["cambiate_impostazioni"])) {
+            // Display error message in a Bootstrap alert
+            echo '<div class="alert alert-success" role="alert">' . "Impostazioni modificate con successo." . '</div>';
+            // Unset the login error variable
+            unset($_SESSION["cambiate_impostazioni"]);
+        } ?>
+        <div class="row mt-5">
             <div class="col-md-4 mx-auto">
                 <div class="card text-center username-card first-card">
                     <div class="card-body">
@@ -67,6 +116,39 @@ redirect_to_login_if_not_logged_in() ?>
                         <button type="button" class="btn btn-danger mt-3" data-bs-toggle="modal"
                             data-bs-target="#eliminaAccountModal">Elimina account</button>
                     </div>
+
+                </div>
+                <div class="card text-center username-card first-card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Impostazioni account</h5>
+                        <hr />
+                        <form action="/php/modificaimpostazioni.php" method="POST">
+                            <div class="form-group">
+                                <label for="new_password" style="margin-bottom:40px;">Consenso alla partecipazione alla
+                                    classifica</label>
+
+                                <div class="container d-flex justify-content-center align-items-center">
+                                    <div class="one-quarter" id="switch">
+                                        <input type="checkbox" name="consenso_classifica" class="checkbox" id="chk" />
+                                        <label class="label" for="chk" id="classificaLabel">
+                                            <i class="fas fa-check" style="color: #fff;"></i>
+                                            <i class="fas fa-ban" style="color: #fff;"></i>
+                                            <div class="ball"></div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_password">Peso (kg)</label>
+                                <input type="number" class="form-control" id="pesoInput" name="peso" required>
+                            </div>
+                            <div class="text-center"> <!-- Wrap buttons in a div with 'text-center' class -->
+                                <button type="submit" class="btn btn-primary">Salva impostazioni</button>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
             </div>
             <div class="col-md-8">
@@ -210,6 +292,27 @@ redirect_to_login_if_not_logged_in() ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/98491d0baf.js" crossorigin="anonymous"></script>
+    <script>
+        const impostazioniUtente = <?php echo_impostazioni(get_username()); ?>;
+        document.getElementById("pesoInput").value = impostazioniUtente.peso;
+        if (impostazioniUtente.consensoClassifica) {
+            document.getElementById("classificaLabel").style.setProperty('background-color', "#198754");
+            document.getElementById("chk").checked = true;
+        }
+        else {
+            document.getElementById("classificaLabel").style.setProperty('background-color', "#dc3545");
+            document.getElementById("chk").checked = false;
+        }
+        $('#chk').change(function () {
+            if (this.checked) {
+                document.getElementById("classificaLabel").style.setProperty('background-color', "#198754");
+            }
+            else {
+                document.getElementById("classificaLabel").style.setProperty('background-color', "#dc3545");
+            }
+        });
+    </script>
 </body>
 
 </html>

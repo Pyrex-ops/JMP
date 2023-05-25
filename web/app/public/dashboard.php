@@ -8,7 +8,7 @@ redirect_to_login_if_not_logged_in() ?>
 <html>
 
 <head>
-  <title>User Dashboard</title>
+  <title>Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/style/bootstrap.css">
   <link rel="stylesheet" href="/style/jmpit.css">
@@ -45,6 +45,13 @@ redirect_to_login_if_not_logged_in() ?>
           <div class="card-body text-center">
             <h5 class="card-title">Ultimi allenamenti</h5>
             <table class="table table-borderless table-column-width">
+              <thead>
+                <tr>
+                  <th><i class='fa fa-calendar'></i> </th>
+                  <th><i class="fa fa-clock"></i></th>
+                  <th><i class="fas fa-star"></i></th>
+                </tr>
+              </thead>
               <tbody id="trainingsContainer"></tbody>
             </table>
             <button onclick="location.href = '/allenamenti';" class="btn btn-primary">Vedi tutti</button>
@@ -55,6 +62,8 @@ redirect_to_login_if_not_logged_in() ?>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  <script src="https://kit.fontawesome.com/98491d0baf.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // API response with selected days (example)
     //const selectedDays = ['Lunedì', 'Mercoledì'];
@@ -126,8 +135,23 @@ redirect_to_login_if_not_logged_in() ?>
       { name: '03/05', duration: '45 min', goalReached: false },
       { name: '07/05', duration: '70 min', goalReached: true },
       { name: '10/05', duration: '30 min', goalReached: false }]*/
-      <?php last_trainings(); ?>
-      ;
+      <?php last_trainings(); ?>;
+
+    maxTrainingTime = parseInt(trainingsData.sort(
+      function (a, b) {
+        return parseInt(b['duration']) - parseInt(a['duration']);
+      }
+    )[0]['duration'])
+
+    if(maxTrainingTime===0) {
+            maxTrainingTime = 1;
+        }
+
+    trainingsData.sort(
+      function (a, b) {
+        return parseInt(b['id']) - parseInt(a['id']);
+      }
+    )
 
     trainingsData.forEach(training => {
       const row = document.createElement('tr');
@@ -140,13 +164,8 @@ redirect_to_login_if_not_logged_in() ?>
       const progressBar = document.createElement('div');
       progressBar.classList.add('progress');
       progressBar.style.height = '20px';
-      maxTrainingTime = parseInt(trainingsData.sort(
-        function (a, b) {
-          return parseInt(b['duration']) - parseInt(a['duration']);
-        }
-      )[0]['duration'])
       progressBar.innerHTML = `
-    <div class="progress-bar" role="progressbar" style="width: ${100*parseInt(training.duration)/maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
+    <div class="progress-bar" role="progressbar" style="width: ${100 * parseInt(training.duration) / maxTrainingTime}%;" aria-valuenow="${parseInt(training.duration)}" aria-valuemin="0" aria-valuemax="${maxTrainingTime}">${training.duration}</div>
   `;
       progressCell.appendChild(progressBar);
       row.appendChild(progressCell);
@@ -154,8 +173,8 @@ redirect_to_login_if_not_logged_in() ?>
       const goalCell = document.createElement('td');
       if (training.goalReached) {
         const starIcon = document.createElement('i');
-        starIcon.classList.add('star', 'goal-reached');
-        starIcon.textContent = '★';
+        starIcon.classList.add('fas', 'fa-star');
+        goalCell.appendChild(starIcon);
         goalCell.appendChild(starIcon);
       }
       row.appendChild(goalCell);
@@ -163,7 +182,6 @@ redirect_to_login_if_not_logged_in() ?>
       trainingsContainer.appendChild(row);
     });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
