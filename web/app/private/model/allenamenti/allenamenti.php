@@ -18,7 +18,7 @@ function echo_tipologie_obiettivo(): void
         $index++;
     }
     echo json_encode($arrayObiettivi);
-//    echo "[
+    //    echo "[
 //        { name: 'Numero salti', icon: 'fa-dumbbell', max: '50' },
 //        { name: 'Numero Mogus Catturati', icon: 'fa-times', max: '50' },
 //        { name: 'Numero Mogus intervistati', icon: 'fa-dumbbell', max: '100' }
@@ -51,7 +51,7 @@ function dettagli_allenamento($id): ?array
         UNIX_TIMESTAMP(MAX(misura.timestamp)) - UNIX_TIMESTAMP(MIN(misura.timestamp))
     ) AS `durata`,
     SUM(misura.numeroSalti) AS 'salti',
-    SUM(misura.numeroSalti) * utente.peso * 0.1 * 2.205 AS 'calorie',
+    SUM(misura.numeroSalti) * utente.peso * 2.205 * 0.001 AS 'calorie',
     obiettivo.IDCategoria AS `tipoObiettivo`,obiettivo.parametro AS 'parametroObiettivo',
     (
         CASE WHEN obiettivo.IDCategoria = 1 THEN(
@@ -63,7 +63,7 @@ function dettagli_allenamento($id): ?array
             misura.IDAllenamento = IDAllenam
     ) WHEN obiettivo.IDCategoria = 2 THEN(
     SELECT
-        SUM(misura.numeroSalti) * utente.peso * 0.1 * 2.205
+        SUM(misura.numeroSalti) * utente.peso * 2.205 * 0.001
     FROM
         misura
     JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
@@ -112,24 +112,38 @@ DESC;");
             3 => "Durata allenamento",
             default => "Nessuno",
         };
-        if($riga["durata"] <= 60  ) {
+        if ($riga["durata"] <= 60) {
             $riga["durata"] = 60;
         }
         if (isset($riga["parametroObiettivo"])) {
-            if(($riga["tipoObiettivo"] == 3) && ($riga["valoreRaggiunto"] <= 1)) {
+            if (($riga["tipoObiettivo"] == 3) && ($riga["valoreRaggiunto"] <= 1)) {
                 $riga["valoreRaggiunto"] = 1;
             }
-            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"]/60, "salti" => $riga["salti"],
-                "calorie" => $riga["calorie"], "percentualeObiettivo" => (int)($riga["valoreRaggiunto"] / $riga["parametroObiettivo"]) * 100,
-                "tipoObiettivo" => $tipo, "parametroObiettivo" => $riga["parametroObiettivo"], "valoreRaggiunto" => $riga["valoreRaggiunto"]];
+            $dettagli = [
+                "data" => $riga["data"],
+                "durata" => $riga["durata"] / 60,
+                "salti" => $riga["salti"],
+                "calorie" => $riga["calorie"],
+                "percentualeObiettivo" => (int) ($riga["valoreRaggiunto"] / $riga["parametroObiettivo"]) * 100,
+                "tipoObiettivo" => $tipo,
+                "parametroObiettivo" => $riga["parametroObiettivo"],
+                "valoreRaggiunto" => $riga["valoreRaggiunto"]
+            ];
         } else {
 
-            $dettagli = ["data" => $riga["data"], "durata" => $riga["durata"]/60, "salti" => $riga["salti"],
-                "calorie" => $riga["calorie"], "percentualeObiettivo" => 0,
-                "tipoObiettivo" => $tipo, "parametroObiettivo" => 0, "valoreRaggiunto" => $riga["valoreRaggiunto"]];
+            $dettagli = [
+                "data" => $riga["data"],
+                "durata" => $riga["durata"] / 60,
+                "salti" => $riga["salti"],
+                "calorie" => $riga["calorie"],
+                "percentualeObiettivo" => 0,
+                "tipoObiettivo" => $tipo,
+                "parametroObiettivo" => 0,
+                "valoreRaggiunto" => $riga["valoreRaggiunto"]
+            ];
         }
     }
-//    $details = ["data" => "25/04/1999", "durata" => 50, "salti" => 801, "calorie" => 120,
+    //    $details = ["data" => "25/04/1999", "durata" => 50, "salti" => 801, "calorie" => 120,
 //        "percentualeObiettivo" => 70, "tipoObiettivo" => "Calorie bruciate",
 //        "parametroObiettivo" => 800, "valoreRaggiunto" => 700];
     return $dettagli;
@@ -149,16 +163,14 @@ function check_ownership($idAllenamento, $username): bool
 
 function echo_detail_card($categoria, $parametro, $icona)
 {
-    if($categoria === "Data") {
+    if ($categoria === "Data") {
         $parametroFormattato = $parametro;
-    } 
-    else if($categoria === "Durata") {
-        $parametroFormattato = round(floatval($parametro),1)." min";
+    } else if ($categoria === "Durata") {
+        $parametroFormattato = round(floatval($parametro), 1) . " min";
+    } else {
+        $parametroFormattato = round(floatval($parametro), 1);
     }
-    else {
-        $parametroFormattato = round(floatval($parametro),1);
-    }
-    echo('<div class="card allenamento-detail-card">
+    echo ('<div class="card allenamento-detail-card">
     <div class="card-body">
       <div class="row">
         <div class="col-5 text-center my-auto">
@@ -180,7 +192,7 @@ function echo_classifica_durata()
     $arrayClassifica = [];
     for ($i = 0; $i < $queryClassifica->num_rows; $i++) {
         $arrayClassifica[] = $queryClassifica->fetch_assoc();
-        $arrayClassifica[$i]["durata"] = round($arrayClassifica[$i]["durata"]/60,1,PHP_ROUND_HALF_EVEN);
+        $arrayClassifica[$i]["durata"] = round($arrayClassifica[$i]["durata"] / 60, 1, PHP_ROUND_HALF_EVEN);
     }
     echo json_encode($arrayClassifica);
     //    echo "[
@@ -199,7 +211,7 @@ function echo_classifica_salti()
         $arrayClassifica[] = $queryClassifica->fetch_assoc();
     }
     echo json_encode($arrayClassifica);
-//    echo "[
+    //    echo "[
 //           { name: 'Marco', salti : 11000 },
 //           { name: 'Giuseppe', salti : 3000 },
 //           { name: 'Joecom', salti : 2000 }
