@@ -37,6 +37,11 @@ typedef struct {
 
 typedef struct {
 	String serverName;
+	float* moltiplicatore;
+} get_moltiplicatore_data_t;
+
+typedef struct {
+	String serverName;
 	obiettivo_t* obiettivo;
 } get_moltiplicatore_calorie_data_t;
 
@@ -58,6 +63,7 @@ class BackendServer {
 	void sendData(uint32_t revolutions);
 	void getObiettivo(obiettivo_t* obiettivo);
 	void getMoltiplicatoreCalorie(float* moltiplicatore);
+	bool checkRegistered();
 };
 
 #endif

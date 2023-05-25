@@ -84,7 +84,7 @@ void Schermo::informazioniAllenamento(
 }
 
 void Schermo::connessionePersa() {
-	pulisci();
+	// pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(10, 0);
@@ -93,14 +93,14 @@ void Schermo::connessionePersa() {
 	display.setCursor(6, 32);
 	display.println("IN CORSO");
 	display.display();
-	std::thread t([this]() {
-		lampeggia(3);
-	});
-	t.detach();
+	// std::thread t([this]() {
+	// 	lampeggia(3);
+	// });
+	// t.detach();
 }
 
 void Schermo::inserisciCredenziali() {
-	pulisci();
+	// pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(20, 0);
@@ -117,7 +117,7 @@ void Schermo::obiettivoRaggiunto(tipologiaObiettivo_t tipo) {
 		(2, 'Calorie spese durante l'allenamento.'),
 		(3, 'Tempo di allenamento in minuti.')
 	*/
-	pulisci();
+	// pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	switch (tipo) {
 		case NUMERO_SALTI:
@@ -159,10 +159,10 @@ void Schermo::obiettivoRaggiunto(tipologiaObiettivo_t tipo) {
 
 		default: break;
 	}
-	std::thread t([this]() {
-		lampeggia(1);
-	});
-	t.detach();
+	// std::thread t([this]() {
+	// 	lampeggia(1);
+	// });
+	// t.detach();
 }
 
 void Schermo::lampeggia(uint8_t volte) {
@@ -181,7 +181,7 @@ void Schermo::lampeggia(uint8_t volte) {
 }
 
 void Schermo::mostraCredenziali(String SSID, String password) {
-	pulisci();
+	// pulisci();
 	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(1);
 	display.setCursor(60, 0);
@@ -205,7 +205,7 @@ void Schermo::mostraCredenziali(String SSID, String password) {
 }
 
 void Schermo::associaAccount() {
-	pulisci();
+	// pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(20, 0);
@@ -214,10 +214,10 @@ void Schermo::associaAccount() {
 	display.setCursor(0, 32);
 	display.println("ACCOUNT");
 	display.display();
-	std::thread t([this]() {
-		lampeggia(1);
-	});
-	t.detach();
+	// std::thread t([this]() {
+	// 	lampeggia(1);
+	// });
+	// t.detach();
 }
 
 void Schermo::interrompi() {
@@ -227,7 +227,7 @@ void Schermo::interrompi() {
 }
 
 void Schermo::mostraMAC(String MAC) {
-	pulisci();
+	// pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(0, 0);

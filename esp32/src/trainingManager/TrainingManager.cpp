@@ -7,7 +7,9 @@ TrainingManager::TrainingManager(
 	  INITIAL_REVOLUTIONS(revolutions_in), TIMESTAMP_START_TRAINING(millis()) {
 	schermo = schermo_in;
 	server	= server_in;
+	moltiplicatoreCalorie = 0.2;
 	server->getMoltiplicatoreCalorie(&moltiplicatoreCalorie);
+	obiettivo = {NESSUNO,0};
 	server->getObiettivo(&obiettivo);
 	lastSentRevolutions = 0;
 	revolutions			= 0;
@@ -20,7 +22,7 @@ TrainingManager::TrainingManager(
 void TrainingManager::storeData(uint32_t revolutions_in) {
 	revolutions = revolutions_in - INITIAL_REVOLUTIONS;
 	schermo->informazioniAllenamento(
-		revolutions, (millis() - TIMESTAMP_START_TRAINING) * 1e-3, 0);
+		revolutions, (millis() - TIMESTAMP_START_TRAINING) * 1e-3, calcolaCalorie());
 	if (checkObiettivo()) {
 		for (int i = 0; i < 4; i++) {
 			motorino->vibraIntermittente(200, 100, 2);

@@ -121,6 +121,55 @@ void BackendServer::getObiettivo(obiettivo_t* obiettivo_in) {
 }
 
 void BackendServer::getMoltiplicatoreCalorie(float* moltiplicatore_in) {
-	// @todo call endpoint
-	*moltiplicatore_in = 1.2;
+	get_moltiplicatore_data_t* getMoltiplicatoreCalorieData = new get_moltiplicatore_data_t();
+	getMoltiplicatoreCalorieData->moltiplicatore			   = moltiplicatore_in;
+	getMoltiplicatoreCalorieData->serverName		   = SERVER_NAME;
+	xTaskCreatePinnedToCore(getMoltiplicatoreCalorieThreaded, "getMoltiplicatoreCalorie", 4096,
+							(void*)getMoltiplicatoreCalorieData, 0, &taskGetMoltiplicatoreCalorie, 1);
+	return;
+}
+
+void BackendServer::getMoltiplicatoreCalorieThreaded(void* getMoltiplicatoreCalorieData_in) {
+HTTPClient http;
+	get_moltiplicatore_data_t* getMoltiplicatoreCalorieData = static_cast<get_moltiplicatore_data_t*>(getMoltiplicatoreCalorieData_in);
+	String serverPath(getMoltiplicatoreCalorieData->serverName.c_str());
+	serverPath.concat("api/getMoltiplicatore?id=");
+	serverPath.concat(WiFi.macAddress());
+	Serial.println(serverPath);
+	http.begin(serverPath.c_str());
+	int httpResponseCode = http.GET();
+
+	float moltiplicatore = 0.2;
+
+
+	if (httpResponseCode == 200) {
+		StaticJsonDocument<200> jsonDocument;
+		String response = http.getString();
+		Serial.println(response);
+		DeserializationError error = deserializeJson(jsonDocument, response);
+
+		if (!error) {
+			// Fetch values.
+			//
+			// Most of the time, you can rely on the implicit casts.
+			// In other case, you can do doc["time"].as<long>();
+			const char* stato		= jsonDocument["stato"];
+			moltiplicatore = jsonDocument["moltiplicatore"];
+
+			Serial.print("moltiplicatore = ");
+			Serial.println(moltiplicatore);
+
+			if (strcmp(stato, "errore") != 0) {
+				moltiplicatore = 0.2;
+			}
+		}
+	}
+	*(getMoltiplicatoreCalorieData->moltiplicatore) = moltiplicatore;
+	delete (getMoltiplicatoreCalorieData_in);
+	vTaskDelete(NULL);
+}
+
+bool BackendServer::checkRegistered() {
+	//@todo call endpoint
+	return true;
 }
