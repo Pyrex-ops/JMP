@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="41.249367mm"
+   height="11.150696mm"
+   viewBox="0 0 41.249367 11.150696"
+   version="1.1"
+   id="svg176"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview178"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false" />
+  <defs
+     id="defs173" />
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-33.511956,-58.782454)">
+    <text
+       xml:space="preserve"
+       style="font-size:13.8863px;fill:#ffffff;stroke-width:1.15719"
+       x="33.407902"
+       y="69.794289"
+       id="text234"><tspan
+         sodipodi:role="line"
+         id="tspan232"
+         style="font-style:italic;font-variant:normal;font-weight:800;font-stretch:normal;font-size:13.8863px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Ultra-Bold Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:1.15719"
+         x="33.407902"
+         y="69.794289">JMPit</tspan></text>
+  </g>
+</svg>
