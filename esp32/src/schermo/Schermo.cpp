@@ -1,4 +1,5 @@
 #include "Schermo.hpp"
+#include "WiFi.h"
 #include <chrono>
 #include <iomanip>
 #include <sstream>
@@ -184,8 +185,8 @@ void Schermo::mostraCredenziali(String SSID, String password) {
 	pulisci();
 	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(1);
-	display.setCursor(60, 0);
-	display.print("SSID");
+	display.setCursor(0, 0);
+	display.print("CONNETTITI A");
 	display.setCursor(0, 16);
 	display.setTextSize(2);
 	display.print(SSID);
@@ -216,6 +217,10 @@ void Schermo::associaAccount() {
 	display.display();
 	std::thread t([this]() {
 		lampeggia(1);
+		std::unique_lock<std::mutex> lock(this->mutexDisplay);
+		delay(1000);
+		lock.unlock();
+		mostraMAC();
 	});
 	t.detach();
 }
@@ -226,7 +231,7 @@ void Schermo::interrompi() {
 	}
 }
 
-void Schermo::mostraMAC(String MAC) {
+void Schermo::mostraMAC() {
 	pulisci();
 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
@@ -234,7 +239,8 @@ void Schermo::mostraMAC(String MAC) {
 	display.print("COD. CORDA");
 	display.setTextSize(2);
 	display.setCursor(0, 32);
-	display.println(MAC.substring(0,9));
+	String MAC = WiFi.macAddress();
+	display.println(MAC.substring(0, 9));
 	display.println(MAC.substring(9));
 	display.display();
 }

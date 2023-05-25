@@ -91,7 +91,7 @@ class Schermo {
 	/**
 	 * Mostra MAC address
 	*/
-	void mostraMAC(String MAC);
+	void mostraMAC();
 };
 
 #endif
