@@ -10,7 +10,7 @@ function echo_tipologie_obiettivo(): void
     $arrayIcone = ['fa-person-running', 'fa-fire', 'fa-clock'];
     //1000 salti, 20000 calorie, 1440 minuti
     //ATTENZIONE: Ricorda che il database tratta le durate in SECONDI!
-    $arrayLimiti = [1000, 20000, 1440];
+    $arrayLimiti = [10000, 500, 120];
     $index = 0;
     $arrayObiettivi[] = ["name" => "Nessuno", "icon" => "fa-times", "max" => 0];
     while ($riga = $queryObiettivi->fetch_assoc()) {

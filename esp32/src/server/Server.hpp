@@ -64,6 +64,7 @@ class BackendServer {
 	void getObiettivo(obiettivo_t* obiettivo);
 	void getMoltiplicatoreCalorie(float* moltiplicatore);
 	bool checkRegistered();
+	void reset();
 };
 
 #endif

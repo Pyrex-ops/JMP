@@ -14,6 +14,10 @@ BackendServer::BackendServer(const char* serverName) {
 	creatoAllenamento = false;
 }
 
+void BackendServer::reset() {
+	creatoAllenamento = false;
+}
+
 void BackendServer::startTraining() {
 	start_training_data_t* startTrainingData = new start_training_data_t();
 	startTrainingData->creatoAllenamento	 = &creatoAllenamento;

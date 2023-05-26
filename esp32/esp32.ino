@@ -17,7 +17,7 @@ MotorinoGravity motorino(
 
 NewEncoderAdapter encoder(ENCODER_CLK_PIN, ENCODER_DT_PIN, ENCODER_PPR);
 TrainingManager* trainingManager = nullptr;
-BackendServer* backendServer	 = nullptr;
+BackendServer backendServer(API_URL);
 uint32_t timestampLastRevolution;
 uint32_t lastRevolutionNumber;
 
@@ -118,7 +118,6 @@ void handleIdle() {
 	} else if (encoder.getRevolutions() != 0) {
 		Serial.println("training started");
 		//schermo.scrivi(0, "training started");
-		backendServer	= new BackendServer(API_URL);
 		trainingManager = new TrainingManager(
 			backendServer, SAMPLE_SENDING_PERIOD_SECONDS, &schermo, 0, &motorino);
 		timestampLastRevolution = millis();
@@ -141,13 +140,11 @@ void handleTraining() {
 
 		encoder.reset();
 		delete (trainingManager);
-		delete (backendServer);
 		currentState = IDLE;
 	}
 	if (!wifiManager.checkConnection()) {
 		encoder.reset();
 		delete (trainingManager);
-		delete (backendServer);
 		disconnected();
 	}
 }

@@ -14,7 +14,7 @@ class TrainingManager {
 	uint32_t lastSentRevolutions;
 	const uint32_t INITIAL_REVOLUTIONS;
 	uint32_t revolutions;
-	BackendServer* server;
+	BackendServer& server;
 	MotorinoGravity* motorino;
 	float moltiplicatoreCalorie;
 	uint32_t lastSentTimestamp;
@@ -25,7 +25,7 @@ class TrainingManager {
 
 	bool checkObiettivo();
   public:
-	TrainingManager(BackendServer* server_in, uint32_t sample_period_seconds,
+	TrainingManager(BackendServer& server_in, uint32_t sample_period_seconds,
 					Schermo* schermo_in, uint32_t revolutions, MotorinoGravity* motorino_in);
 	void storeData(uint32_t revolutions);
 	~TrainingManager();
