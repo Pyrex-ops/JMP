@@ -40,13 +40,13 @@ WHERE misura.IDAllenamento IN (SELECT MAX(allenamento.IDAllenamento)
                 if (!isset($risultatoQueryControllo["timestamp"]) && $risultatoQueryAllenamentoVuoto["c"] != 0) {
                     $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente) VALUE ('$userID')");
                     http_response_code(200);
-                    echo json_encode(['stato' => 'ok']);
+                    echo json_encode(['stato' => 'ok', 'aggiunto' => true]);
                     exit;
                 } else {
                     //Assoceremo le nuove misure ad un allenamento precedente che era vuoto
                     //TODO: aggiungi questa informazione nel JSON
                     http_response_code(200);
-                    echo json_encode(['stato' => 'ok']);
+                    echo json_encode(['stato' => 'ok', 'aggiunto' => false]);
                     exit;
                 }
             } else {
