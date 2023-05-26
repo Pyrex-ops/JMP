@@ -8,6 +8,7 @@ TaskHandle_t BackendServer::taskSendData;
 TaskHandle_t BackendServer::taskStartTraining;
 TaskHandle_t BackendServer::taskGetObiettivo;
 TaskHandle_t BackendServer::taskGetMoltiplicatoreCalorie;
+std::mutex BackendServer::mutexServer;
 
 BackendServer::BackendServer(const char* serverName) {
 	SERVER_NAME		  = String(serverName);
@@ -28,6 +29,8 @@ void BackendServer::startTraining() {
 }
 
 void BackendServer::startTrainingThreaded(void* trainingData_in) {
+	mutexServer.lock();
+	delay(1000);
 	HTTPClient http;
 	start_training_data_t* trainingData =
 		static_cast<start_training_data_t*>(trainingData_in);
@@ -35,16 +38,46 @@ void BackendServer::startTrainingThreaded(void* trainingData_in) {
 	serverPath.concat("api/allenamento?id=");
 	serverPath.concat(WiFi.macAddress());
 	Serial.println(serverPath);
-	http.begin(serverPath.c_str());
-	http.GET();
-	*(trainingData->creatoAllenamento) = true;
+
+	do {
+		http.begin(serverPath.c_str());
+		int httpResponseCode = http.GET();
+		if (httpResponseCode == 200) {
+			StaticJsonDocument<200> jsonDocument;
+			String response = http.getString();
+			Serial.println(response);
+			DeserializationError error = deserializeJson(jsonDocument, response);
+
+			if (!error) {
+				// Fetch values.
+				//
+				// Most of the time, you can rely on the implicit casts.
+				// In other case, you can do doc["time"].as<long>();
+				const char* stato = jsonDocument["stato"];
+				// Print values.
+				if (strcmp(stato, "ok") == 0) {
+					(*(trainingData->creatoAllenamento)) = true;
+				} else {
+					(*(trainingData->creatoAllenamento)) = false;
+				}
+			} else {
+				(*(trainingData->creatoAllenamento)) = false;
+			}
+		}
+		if(!(*(trainingData->creatoAllenamento))) {
+			delay(1000);
+		}
+	} while (!(*(trainingData->creatoAllenamento)));
+
 	delete (trainingData);
+	http.end();
+	mutexServer.unlock();
 	vTaskDelete(NULL);
 }
 
 void BackendServer::sendData(uint32_t revolutions) {
 	upload_data_t* uploadData	  = new upload_data_t();
-	uploadData->creatoAllenamento = creatoAllenamento;
+	uploadData->creatoAllenamento = &creatoAllenamento;
 	uploadData->revolutions		  = revolutions;
 	uploadData->serverName		  = SERVER_NAME;
 	xTaskCreatePinnedToCore(
@@ -53,9 +86,11 @@ void BackendServer::sendData(uint32_t revolutions) {
 }
 
 void BackendServer::sendDataThreaded(void* upload_data_in) {
+	delay(1000);
 	HTTPClient http;
 	upload_data_t* upload_data = static_cast<upload_data_t*>(upload_data_in);
-	while (!(upload_data->creatoAllenamento)) { delay(500); }
+	while (!(*(upload_data->creatoAllenamento))) { delay(500); }
+	mutexServer.lock();
 	String serverPath(upload_data->serverName.c_str());
 	Serial.println("reached string creation");
 	serverPath.concat("api/uploadData?id=");
@@ -67,10 +102,14 @@ void BackendServer::sendDataThreaded(void* upload_data_in) {
 	http.GET();
 	Serial.println(http.getString());
 	delete (upload_data_in);
+	http.end();
+	mutexServer.unlock();
 	vTaskDelete(NULL);
 }
 
 void BackendServer::getObiettivoThreaded(void* getObiettivoData_in) {
+	mutexServer.lock();
+	delay(100);
 	HTTPClient http;
 	get_obiettivo_data_t* getObiettivoData =
 		static_cast<get_obiettivo_data_t*>(getObiettivoData_in);
@@ -113,6 +152,8 @@ void BackendServer::getObiettivoThreaded(void* getObiettivoData_in) {
 	}
 	*(getObiettivoData->obiettivo) = obiettivo;
 	delete (getObiettivoData_in);
+	http.end();
+	mutexServer.unlock();
 	vTaskDelete(NULL);
 }
 
@@ -137,6 +178,8 @@ void BackendServer::getMoltiplicatoreCalorie(float* moltiplicatore_in) {
 }
 
 void BackendServer::getMoltiplicatoreCalorieThreaded(void* getMoltiplicatoreCalorieData_in) {
+	mutexServer.lock();
+	delay(1000);
 	HTTPClient http;
 	get_moltiplicatore_data_t* getMoltiplicatoreCalorieData =
 		static_cast<get_moltiplicatore_data_t*>(getMoltiplicatoreCalorieData_in);
@@ -172,10 +215,14 @@ void BackendServer::getMoltiplicatoreCalorieThreaded(void* getMoltiplicatoreCalo
 	}
 	*(getMoltiplicatoreCalorieData->moltiplicatore) = moltiplicatore;
 	delete (getMoltiplicatoreCalorieData_in);
+	http.end();
+	mutexServer.unlock();
 	vTaskDelete(NULL);
 }
 
 bool BackendServer::checkRegistered() {
+	mutexServer.lock();
+	delay(1000);
 	HTTPClient http;
 	String serverPath(SERVER_NAME);
 	serverPath.concat("api/getAssociazione?id=");
@@ -200,10 +247,12 @@ bool BackendServer::checkRegistered() {
 			// Most of the time, you can rely on the implicit casts.
 			// In other case, you can do doc["time"].as<long>();
 			const char* stato = jsonDocument["stato"];
-			associato	  = jsonDocument["associato"];
+			associato		  = jsonDocument["associato"];
 
 			if (strcmp(stato, "errore") == 0) { associato = false; }
 		}
 	}
+	http.end();
+	mutexServer.unlock();
 	return associato;
 }

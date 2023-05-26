@@ -12,11 +12,12 @@ TrainingManager::TrainingManager(
 	obiettivo = {NESSUNO,0};
 	server.getObiettivo(&obiettivo);
 	lastSentRevolutions = 0;
-	revolutions			= 0;
+	revolutions			= 1;
 	motorino			= motorino_in;
 	lastSentTimestamp	= millis();
 	raggiuntoObiettivo	= false;
 	server.startTraining();
+	delay(1000);
 	uploadData();
 }
 

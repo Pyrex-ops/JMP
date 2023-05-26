@@ -2,6 +2,7 @@
 #define SERVER_H
 
 #include <Arduino.h>
+#include <mutex>
 
 typedef struct {
 	uint32_t jumps;
@@ -22,7 +23,7 @@ typedef struct {
 typedef struct {
 	String serverName;
 	uint32_t revolutions;
-	bool creatoAllenamento;
+	bool* creatoAllenamento;
 } upload_data_t;
 
 typedef struct {
@@ -48,6 +49,7 @@ typedef struct {
 class BackendServer {
   private:
 	bool creatoAllenamento;
+	static std::mutex mutexServer;
 	String SERVER_NAME;
 	static void sendDataThreaded(void* uploadData);
 	static void startTrainingThreaded(void* startTrainingData);

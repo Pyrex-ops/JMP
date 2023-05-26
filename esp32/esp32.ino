@@ -9,6 +9,7 @@ void handleDisconnected();
 void handleNewCredentialsRequired();
 void handleIdle();
 void handleTraining();
+void disconnected();
 
 MotorinoGravity motorino(
 	MOTORINO_PIN, MINIMUM_MOTORINO_INTENSITY, MOTORINO_LEDC_CHANNEL,
@@ -102,13 +103,8 @@ void handleUnregistered() {
 	schermo.mostraMAC();
 	if (!wifiManager.checkConnection()) {
 		disconnected();
-	} else {
-		BackendServer server(API_URL);
-		if (server.checkRegistered()) {
-			currentState = IDLE;
-		} else {
-			delay(800);
-		}
+	} else if (backendServer.checkRegistered()) {
+		currentState = IDLE;
 	}
 }
 
@@ -118,6 +114,7 @@ void handleIdle() {
 	} else if (encoder.getRevolutions() != 0) {
 		Serial.println("training started");
 		//schermo.scrivi(0, "training started");
+		backendServer.reset();
 		trainingManager = new TrainingManager(
 			backendServer, SAMPLE_SENDING_PERIOD_SECONDS, &schermo, 0, &motorino);
 		timestampLastRevolution = millis();
