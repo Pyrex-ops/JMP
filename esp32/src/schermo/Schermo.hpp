@@ -50,11 +50,6 @@ class Schermo {
 	 */
 	void connessionePersa();
 	/**
-	 * Mostra a schermo l'invito verso l'utente a fornire le credenziali di una
-	 * rete
-	 */
-	void inserisciCredenziali();
-	/**
 	 * Pulisci schermo (sembra spento)
 	 */
 	void pulisci();
@@ -89,7 +84,6 @@ class Schermo {
 	 * @warning Non interrompe il metodo begin()
 	*/
 	void interrompi();
-	void mostraMAC();
 };
 
 #endif
