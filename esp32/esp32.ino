@@ -84,16 +84,15 @@ void handleDisconnected() {
 }
 
 void handleNewCredentialsRequired() {
-	srand(time(NULL));
 	char passwordArray[LENGTH + 1];
 	for (int i = 0; i < LENGTH; i++) {
-        passwordArray[i] = CHARS[rand() % (sizeof(CHARS) - 1)];
-    }
+		passwordArray[i] = CHARS[esp_random() % (sizeof(CHARS) - 1)];
+	}
 	passwordArray[LENGTH] = '\0';
-	String ssid = CONFIGURATION_SSID;
-	String password = passwordArray;
-	schermo.mostraCredenziali(ssid,password);
-	wifiManager.getNewCredentials(ssid,password);
+	String ssid			  = CONFIGURATION_SSID;
+	String password		  = passwordArray;
+	schermo.mostraCredenziali(ssid, password);
+	wifiManager.getNewCredentials(ssid, password);
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;
@@ -103,13 +102,11 @@ void handleUnregistered() {
 	schermo.mostraMAC();
 	if (!wifiManager.checkConnection()) {
 		disconnected();
-	}
-	else {
+	} else {
 		BackendServer server(API_URL);
-		if(server.checkRegistered()) {
+		if (server.checkRegistered()) {
 			currentState = IDLE;
-		}
-		else {
+		} else {
 			delay(800);
 		}
 	}

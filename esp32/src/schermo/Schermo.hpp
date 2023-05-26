@@ -21,6 +21,7 @@
 class Schermo {
   private:
 	std::mutex mutexDisplay;
+	bool lampeggiando;
 	bool interrompiEsecuzione; //true = interrompi esecuzione
   public:
 	/**

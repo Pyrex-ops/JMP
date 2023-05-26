@@ -24,6 +24,7 @@ void TrainingManager::storeData(uint32_t revolutions_in) {
 	schermo->informazioniAllenamento(
 		revolutions, (millis() - TIMESTAMP_START_TRAINING) * 1e-3, calcolaCalorie());
 	if (checkObiettivo()) {
+		schermo->obiettivoRaggiunto(obiettivo.tipologiaObiettivo);
 		for (int i = 0; i < 4; i++) {
 			motorino->vibraIntermittente(200, 100, 2);
 			motorino->vibra(400);
