@@ -18,6 +18,7 @@ if (isset($_GET['id'])) {
             if (isset($temp)) {
                 $userID = $temp['IDUtente']; //TODO: Sarà unico. Trova un modo più pulito. Vedi se aggregare tutto in unica query (quella di sopra in questa qui sotto)
                 //Controlliamo il timestamp dell'ultimo allenamento, se è troppo recente allora non inseriamo un nuovo allenamento
+                $queryControllo = $database->query("SELECT timestamp FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento WHERE allenamento.IDUtente = $userID AND TIMESTAMPDIFF(SECOND, timestamp, NOW()) < 30 ORDER BY timestamp DESC LIMIT 1;");
                 $queryControlloAllenamentoVuoto = $database->query("SELECT COUNT(misura.IDMisura) as c
 FROM misura
 WHERE misura.IDAllenamento IN (SELECT MAX(allenamento.IDAllenamento)
@@ -25,6 +26,7 @@ WHERE misura.IDAllenamento IN (SELECT MAX(allenamento.IDAllenamento)
                                     
                                 WHERE utente.IDUtente = $userID
                                 ORDER BY allenamento.IDAllenamento DESC);");
+                $risultatoQueryControllo = $queryControllo->fetch_assoc();
                 $risultatoQueryAllenamentoVuoto = $queryControlloAllenamentoVuoto->fetch_assoc();
                 //Alternativa: inserire allenamento alla creazione dell'utente
                 //Se l'utente non ha allenamenti, facciamo inserire un allenamento.
@@ -37,7 +39,7 @@ WHERE misura.IDAllenamento IN (SELECT MAX(allenamento.IDAllenamento)
                     echo json_encode(['stato' => 'ok']);
                     exit;
                 }
-                if ($risultatoQueryAllenamentoVuoto["c"] != 0) {
+                if (!isset($risultatoQueryControllo["timestamp"]) && $risultatoQueryAllenamentoVuoto["c"] != 0) {
                     $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente,IDObiettivo) VALUES ('$userID','$idObiettivo')");
                     http_response_code(200);
                     echo json_encode(['stato' => 'ok']);
