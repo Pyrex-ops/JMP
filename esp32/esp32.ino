@@ -63,12 +63,14 @@ void loop() {
 		case IDLE: handleIdle(); break;
 		case TRAINING: handleTraining(); break;
 		case UNREGISTERED: handleUnregistered(); break;
+		case BOOTSTRAP: break;
 	}
 	delay(200);
 }
 
 void handleDisconnected() {
 	schermo.connessionePersa();
+	delay(100);
 	if (millis() - lostConnectionTimestamp > TIMEOUT_NEW_CREDENTIALS_MILLISECONDS
 		|| !wifiManager.hasSavedCredentials()) {
 		wifiManager.deleteCredentials();
@@ -77,6 +79,7 @@ void handleDisconnected() {
 		currentState = NEW_CREDENTIALS_REQUIRED;
 	}
 	if (wifiManager.checkConnection()) {
+		backendServer.connect();
 		Serial.println("connected");
 		//schermo.scrivi(0, "connected");
 		encoder.reset();
@@ -105,8 +108,7 @@ void handleUnregistered() {
 		disconnected();
 	} else if (backendServer.checkRegistered()) {
 		currentState = IDLE;
-	}
-	else {
+	} else {
 		delay(1000);
 	}
 }

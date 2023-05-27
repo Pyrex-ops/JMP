@@ -61,6 +61,7 @@ class BackendServer {
 	static TaskHandle_t taskStartTraining;
 	static TaskHandle_t taskGetObiettivo;
 	static TaskHandle_t taskGetMoltiplicatoreCalorie;
+	static const char* GIOCOMUNE_CA;
   public:
 	BackendServer(const char* serverName);
 	void startTraining();
@@ -69,6 +70,7 @@ class BackendServer {
 	void getMoltiplicatoreCalorie(float* moltiplicatore);
 	bool checkRegistered();
 	void reset();
+	void connect();
 };
 
 #endif

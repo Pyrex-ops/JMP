@@ -15,7 +15,7 @@
 #define SCHERMO_PIN_SDA 21
 #define SCHERMO_PIN_SCL 22
 
-#define API_URL "http://iot.giocomune.com/"
+#define API_URL "https://iot.giocomune.com/"
 #define SCHERMO_PIN_1 21
 #define SCHERMO_PIN_2 22
 #define TIMEOUT_NEW_CREDENTIALS_MILLISECONDS 30000

@@ -4,7 +4,7 @@ TrainingManager::TrainingManager(
 	BackendServer& server_in, uint32_t sample_period_seconds,
 	Schermo* schermo_in, uint32_t revolutions_in, MotorinoGravity* motorino_in)
 	: SAMPLE_PERIOD_MILLISECONDS(sample_period_seconds * 1000),
-	  INITIAL_REVOLUTIONS(revolutions_in), TIMESTAMP_START_TRAINING(millis()) , server(server_in){
+	  INITIAL_REVOLUTIONS(revolutions_in), server(server_in) , TIMESTAMP_START_TRAINING(millis()){
 	server.reset();
 	schermo = schermo_in;
 	moltiplicatoreCalorie = 0.2;
@@ -17,7 +17,6 @@ TrainingManager::TrainingManager(
 	lastSentTimestamp	= millis();
 	raggiuntoObiettivo	= false;
 	server.startTraining();
-	delay(1000);
 	uploadData();
 }
 
@@ -47,14 +46,14 @@ bool TrainingManager::checkObiettivo() {
 	if (!raggiuntoObiettivo) {
 		switch (obiettivo.tipologiaObiettivo) {
 			case NUMERO_SALTI:
-				raggiuntoObiettivo = revolutions > obiettivo.valore;
+				raggiuntoObiettivo = revolutions >= obiettivo.valore;
 				break;
 			case CALORIE_SPESE:
-				raggiuntoObiettivo = calcolaCalorie() > obiettivo.valore;
+				raggiuntoObiettivo = calcolaCalorie() >= obiettivo.valore;
 				break;
 			case TEMPO_ALLENAMENTO_MINUTI:
 				raggiuntoObiettivo = ((millis() - TIMESTAMP_START_TRAINING) * 1e-3
-									  > (obiettivo.valore * 60));
+									  >= (obiettivo.valore * 60));
 				break;
 			default: break;
 		}
