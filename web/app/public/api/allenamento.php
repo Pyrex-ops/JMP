@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
             if (isset($temp)) {
                 $userID = $temp['IDUtente']; //TODO: Sarà unico. Trova un modo più pulito. Vedi se aggregare tutto in unica query (quella di sopra in questa qui sotto)
                 //Controlliamo il timestamp dell'ultimo allenamento, se è troppo recente allora non inseriamo un nuovo allenamento
-                $queryControllo = $database->query("SELECT timestamp FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento WHERE allenamento.IDUtente = $userID AND TIMESTAMPDIFF(SECOND, timestamp, NOW()) < 30 ORDER BY timestamp DESC LIMIT 1;");
+                $queryControllo = $database->query("SELECT timestamp FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento WHERE allenamento.IDUtente = $userID AND TIMESTAMPDIFF(SECOND, timestamp, NOW()) < 5 ORDER BY timestamp DESC LIMIT 1;");
                 $queryControlloAllenamentoVuoto = $database->query("SELECT COUNT(misura.IDMisura) as c
 FROM misura
 WHERE misura.IDAllenamento IN (SELECT MAX(allenamento.IDAllenamento)

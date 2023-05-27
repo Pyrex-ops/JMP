@@ -30,6 +30,9 @@ if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["weig
   } elseif (!preg_match('/[A-Z]/', $password)) {
     registration_error("La password deve contenere un carattere maiuscolo.");
   }
+  if ($_POST["weight"] <= 0) {
+    registration_error("Il peso deve essere maggiore di zero.");
+  }
 
   if (does_user_exist($username)) {
     registration_error("Un utente con questo username è già registrato.");

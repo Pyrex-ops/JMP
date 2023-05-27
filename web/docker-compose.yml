@@ -3,7 +3,7 @@ services:
   php-apache:
     container_name: php-apache
     ports:
-      - "80:80"
+      - "42528:80"
     build: './build/php'
     volumes:
       - ./app/public:/var/www/html
@@ -29,7 +29,7 @@ services:
       - ./.env
     restart: unless-stopped
     container_name: phpmyadmin
-    image: phpmyadmin/phpmyadmin
+    image: lscr.io/linuxserver/phpmyadmin:latest
     ports:
       - "8080:80"
     depends_on:

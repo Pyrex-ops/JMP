@@ -40,5 +40,5 @@ if (isset($_POST["goalType"]) && isset($_POST["goalValue"])) {
     exit;
 
 } else {
-    cambio_obiettivo_error("Errore. Riprovare.");
+    cambio_obiettivo_error("Errore nella modifica dell'obiettivo. Riprovare.");
 }
