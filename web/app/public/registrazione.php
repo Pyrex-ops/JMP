@@ -34,13 +34,13 @@ redirect_to_dashboard_if_logged_in(); ?>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required>
+        <input type="password" class="form-control" id="password" name="password" required minlength="7" required pattern=".*[A-Z].*">
         <small class="text-muted">La password deve essere più lunga di 6 caratteri e contenere una lettera
           maiuscola.</small>
       </div>
       <div class="form-group">
         <label for="weight">Peso (kg)</label>
-        <input type="number" class="form-control" id="weight" name="weight" required>
+        <input type="number" class="form-control" id="weight" name="weight" required min="0">
       </div>
       <button type="submit" class="btn button btn-primary">Registrati</button>
     </form>

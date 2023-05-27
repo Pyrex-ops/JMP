@@ -141,7 +141,7 @@ redirect_to_login_if_not_logged_in() ?>
                             </div>
                             <div class="form-group">
                                 <label for="confirm_password">Peso (kg)</label>
-                                <input type="number" class="form-control" id="pesoInput" name="peso" required>
+                                <input type="number" class="form-control" id="pesoInput" name="peso" required min="0">
                             </div>
                             <div class="text-center"> <!-- Wrap buttons in a div with 'text-center' class -->
                                 <button type="submit" class="btn btn-primary">Salva impostazioni</button>
@@ -155,7 +155,11 @@ redirect_to_login_if_not_logged_in() ?>
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title text-center">Cambia password</h5>
-                        <form action="/php/cambiapassword.php" method="POST">
+                        <div class="alert alert-danger collapse" role="alert" id="passwordMismatchWarning">
+                            Le password inserite non corrispondono. Riprovare.
+                        </div>
+                        <form action="/php/cambiapassword.php" method="POST"
+                            onsubmit="return validatePasswordChangeForm()">
                             <div class="form-group">
                                 <label for="current_password">Password attuale</label>
                                 <input type="password" class="form-control" id="current_password"
@@ -164,7 +168,7 @@ redirect_to_login_if_not_logged_in() ?>
                             <div class="form-group">
                                 <label for="new_password">Nuova password</label>
                                 <input type="password" class="form-control" id="new_password" name="new_password"
-                                    required>
+                                    required minlength="7" required pattern=".*[A-Z].*">
                             </div>
                             <div class="form-group">
                                 <label for="confirm_password">Conferma nuova password</label>
@@ -220,7 +224,8 @@ redirect_to_login_if_not_logged_in() ?>
                     <form action="/php/aggiungicorda.php" method="POST">
                         <div class="form-group">
                             <label for="device_code">Codice corda</label>
-                            <input type="text" class="form-control" id="IDCorda" name="IDCorda" required>
+                            <input type="text" class="form-control" id="IDCorda" name="IDCorda" required
+                                pattern="^([A-F0-9]{2}:){5}[A-F0-9]{2}$">
                         </div>
                         <button type="submit" class="btn btn-primary">Aggiungi corda</button>
                     </form>
@@ -294,6 +299,24 @@ redirect_to_login_if_not_logged_in() ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://kit.fontawesome.com/98491d0baf.js" crossorigin="anonymous"></script>
     <script>
+        function validatePasswordChangeForm() {
+            var password1 = document.getElementById("new_password").value;
+            var password2 = document.getElementById("confirm_password").value;
+
+            if (password1 !== password2) {
+                document.getElementById("passwordMismatchWarning").classList.remove("collapse");
+                setTimeout(removePasswordMismatchWarning, 1500)
+                return false; // Prevent form submission
+            }
+
+            // Continue with form submission if passwords match
+            return true;
+        }
+
+        function removePasswordMismatchWarning() {
+            document.getElementById("passwordMismatchWarning").classList.add("collapse");
+        }
+
         const impostazioniUtente = <?php echo_impostazioni(get_username()); ?>;
         document.getElementById("pesoInput").value = impostazioniUtente.peso;
         if (impostazioniUtente.consensoClassifica) {

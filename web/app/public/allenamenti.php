@@ -18,8 +18,25 @@ redirect_to_login_if_not_logged_in() ?>
 
 <body>
     <?php echo_navbar("allenamenti") ?>
-    <h1 class="text-center" style="margin-bottom:10px"> Obiettivo corrente </h1>
+
     <div class="container mt-5 dashboard-container">
+    <? if (isset($_SESSION["cambio_obiettivo_error_message"])) {
+            // Display error message in a Bootstrap alert
+            echo '<div class="alert alert-danger" role="alert">' . $_SESSION["cambio_obiettivo_error_message"] . '</div>';
+            // Unset the login error variable
+            unset($_SESSION["cambio_obiettivo_error_message"]);
+        } ?>
+        <!-- Le righe successive servono ad avvisare l'utente che l'obiettivo
+        è stato cambiato con successo. Ho preferito commentarle perché
+        l'utente può capirlo dal fatto che l'obiettivo stampato a schermo
+        è effettivamente quello da lui scelto. -->
+        <!-- <? if (isset($_SESSION["cambiato_obiettivo"])) {
+            // Display error message in a Bootstrap alert
+            echo '<div class="alert alert-success" role="alert">' . "Obiettivo cambiato con successo." . '</div>';
+            // Unset the login error variable
+            unset($_SESSION["cambiato_obiettivo"]);
+        } ?> -->
+        <h1 class="text-center" style="margin-bottom:40px"> Obiettivo corrente </h1>
         <div class="card goal-card">
             <div class="card-body">
                 <div class="row">
@@ -36,7 +53,7 @@ redirect_to_login_if_not_logged_in() ?>
             </div>
         </div>
 
-        <h1 class="text-center" style="margin-bottom:55px"> Allenamenti </h1>
+        <h1 class="text-center" style="margin-bottom:40px;margin-top:40px;"> Allenamenti </h1>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body text-center">
@@ -78,7 +95,7 @@ redirect_to_login_if_not_logged_in() ?>
                         <div class="d-flex align-items-center">
                             <input type="range" class=" form-range flex-grow-1" id="goalValueSlider" min="1" max="300"
                                 value="1" style="width:420%;margin-right:40px">
-                            <input type="text" class="form-control" id="goalValueInput" value="1">
+                            <input type="number" class="form-control" id="goalValueInput" value="1">
 
                         </div>
                     </div>
