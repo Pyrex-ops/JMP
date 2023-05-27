@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <mutex>
+#include <HTTPClient.h>
 
 typedef struct {
 	uint32_t jumps;
@@ -50,6 +51,7 @@ class BackendServer {
   private:
 	bool creatoAllenamento;
 	static std::mutex mutexServer;
+	static HTTPClient http;
 	String SERVER_NAME;
 	static void sendDataThreaded(void* uploadData);
 	static void startTrainingThreaded(void* startTrainingData);

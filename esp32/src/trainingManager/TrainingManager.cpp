@@ -12,7 +12,7 @@ TrainingManager::TrainingManager(
 	obiettivo = {NESSUNO,0};
 	server.getObiettivo(&obiettivo);
 	lastSentRevolutions = 0;
-	revolutions			= 1;
+	revolutions			= 0;
 	motorino			= motorino_in;
 	lastSentTimestamp	= millis();
 	raggiuntoObiettivo	= false;

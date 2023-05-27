@@ -9,8 +9,11 @@ TaskHandle_t BackendServer::taskStartTraining;
 TaskHandle_t BackendServer::taskGetObiettivo;
 TaskHandle_t BackendServer::taskGetMoltiplicatoreCalorie;
 std::mutex BackendServer::mutexServer;
+HTTPClient BackendServer::http;
 
 BackendServer::BackendServer(const char* serverName) {
+	http.setReuse(true);
+	http.begin(serverName);
 	SERVER_NAME		  = String(serverName);
 	creatoAllenamento = false;
 }
@@ -30,18 +33,21 @@ void BackendServer::startTraining() {
 
 void BackendServer::startTrainingThreaded(void* trainingData_in) {
 	mutexServer.lock();
-	delay(1000);
-	HTTPClient http;
+	delay(100);
 	start_training_data_t* trainingData =
 		static_cast<start_training_data_t*>(trainingData_in);
-	String serverPath(trainingData->serverName.c_str());
+	String serverPath("/");
 	serverPath.concat("api/allenamento?id=");
 	serverPath.concat(WiFi.macAddress());
 	Serial.println(serverPath);
 
 	do {
-		http.begin(serverPath.c_str());
+		http.setURL(serverPath);
 		int httpResponseCode = http.GET();
+		Serial.print("Start training response code: ");
+		Serial.println(httpResponseCode);
+		Serial.print("Free heap: ");
+		Serial.println(ESP.getFreeHeap());
 		if (httpResponseCode == 200) {
 			StaticJsonDocument<200> jsonDocument;
 			String response = http.getString();
@@ -64,13 +70,10 @@ void BackendServer::startTrainingThreaded(void* trainingData_in) {
 				(*(trainingData->creatoAllenamento)) = false;
 			}
 		}
-		if(!(*(trainingData->creatoAllenamento))) {
-			delay(1000);
-		}
+		if (!(*(trainingData->creatoAllenamento))) { delay(1000); }
 	} while (!(*(trainingData->creatoAllenamento)));
 
 	delete (trainingData);
-	http.end();
 	mutexServer.unlock();
 	vTaskDelete(NULL);
 }
@@ -86,23 +89,25 @@ void BackendServer::sendData(uint32_t revolutions) {
 }
 
 void BackendServer::sendDataThreaded(void* upload_data_in) {
-	delay(1000);
-	HTTPClient http;
 	upload_data_t* upload_data = static_cast<upload_data_t*>(upload_data_in);
 	while (!(*(upload_data->creatoAllenamento))) { delay(500); }
 	mutexServer.lock();
-	String serverPath(upload_data->serverName.c_str());
+	delay(100);
+	String serverPath("/");
 	Serial.println("reached string creation");
 	serverPath.concat("api/uploadData?id=");
 	serverPath.concat(WiFi.macAddress());
 	serverPath.concat("&valore=");
 	serverPath.concat(upload_data->revolutions);
 	Serial.println(serverPath);
-	http.begin(serverPath.c_str());
-	http.GET();
+	http.setURL(serverPath);
+	int httpResponseCode = http.GET();
+	Serial.print("Start training response code: ");
+	Serial.println(httpResponseCode);
+	Serial.print("Free heap: ");
+	Serial.println(ESP.getFreeHeap());
 	Serial.println(http.getString());
-	delete (upload_data_in);
-	http.end();
+	delete (upload_data);
 	mutexServer.unlock();
 	vTaskDelete(NULL);
 }
@@ -110,15 +115,14 @@ void BackendServer::sendDataThreaded(void* upload_data_in) {
 void BackendServer::getObiettivoThreaded(void* getObiettivoData_in) {
 	mutexServer.lock();
 	delay(100);
-	HTTPClient http;
 	get_obiettivo_data_t* getObiettivoData =
 		static_cast<get_obiettivo_data_t*>(getObiettivoData_in);
-	String serverPath(getObiettivoData->serverName.c_str());
+	String serverPath("/");
 	obiettivo_t obiettivo = { NESSUNO, 0 };
 	serverPath.concat("api/getObiettivo?id=");
 	serverPath.concat(WiFi.macAddress());
 	Serial.println(serverPath);
-	http.begin(serverPath.c_str());
+	http.setURL(serverPath);
 	int httpResponseCode = http.GET();
 
 
@@ -151,8 +155,7 @@ void BackendServer::getObiettivoThreaded(void* getObiettivoData_in) {
 		}
 	}
 	*(getObiettivoData->obiettivo) = obiettivo;
-	delete (getObiettivoData_in);
-	http.end();
+	delete (getObiettivoData);
 	mutexServer.unlock();
 	vTaskDelete(NULL);
 }
@@ -179,15 +182,14 @@ void BackendServer::getMoltiplicatoreCalorie(float* moltiplicatore_in) {
 
 void BackendServer::getMoltiplicatoreCalorieThreaded(void* getMoltiplicatoreCalorieData_in) {
 	mutexServer.lock();
-	delay(1000);
-	HTTPClient http;
+	delay(100);
 	get_moltiplicatore_data_t* getMoltiplicatoreCalorieData =
 		static_cast<get_moltiplicatore_data_t*>(getMoltiplicatoreCalorieData_in);
-	String serverPath(getMoltiplicatoreCalorieData->serverName.c_str());
+	String serverPath("/");
 	serverPath.concat("api/getMoltiplicatore?id=");
 	serverPath.concat(WiFi.macAddress());
 	Serial.println(serverPath);
-	http.begin(serverPath.c_str());
+	http.setURL(serverPath);
 	int httpResponseCode = http.GET();
 
 	float moltiplicatore = 0.2;
@@ -214,21 +216,19 @@ void BackendServer::getMoltiplicatoreCalorieThreaded(void* getMoltiplicatoreCalo
 		}
 	}
 	*(getMoltiplicatoreCalorieData->moltiplicatore) = moltiplicatore;
-	delete (getMoltiplicatoreCalorieData_in);
-	http.end();
+	delete (getMoltiplicatoreCalorieData);
 	mutexServer.unlock();
 	vTaskDelete(NULL);
 }
 
 bool BackendServer::checkRegistered() {
 	mutexServer.lock();
-	delay(1000);
-	HTTPClient http;
-	String serverPath(SERVER_NAME);
+	delay(100);
+	String serverPath("/");
 	serverPath.concat("api/getAssociazione?id=");
 	serverPath.concat(WiFi.macAddress());
 	Serial.println(serverPath);
-	http.begin(serverPath.c_str());
+	http.setURL(serverPath);
 	int httpResponseCode = http.GET();
 
 	bool associato = false;
@@ -252,7 +252,6 @@ bool BackendServer::checkRegistered() {
 			if (strcmp(stato, "errore") == 0) { associato = false; }
 		}
 	}
-	http.end();
 	mutexServer.unlock();
 	return associato;
 }

@@ -28,8 +28,8 @@ void WifiManager::connect() {
 void WifiManager::getNewCredentials(String& ssid,String& password) {
 	credentialsManager cManager(CREDENTIALS_KEY);
 	wifi_configuration_t wifi_config;
-	wifi_config = (new WifiPasswordGetter(ssid.c_str(), password.c_str()))
-					  ->getWifiConfiguration();
+	WifiPasswordGetter wifiPasswordGetter(ssid.c_str(), password.c_str());
+	wifi_config = (wifiPasswordGetter.getWifiConfiguration());
 	cManager.newRecord(wifi_config.SSID, wifi_config.password);
 }
 

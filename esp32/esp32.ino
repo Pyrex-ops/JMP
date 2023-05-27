@@ -106,6 +106,9 @@ void handleUnregistered() {
 	} else if (backendServer.checkRegistered()) {
 		currentState = IDLE;
 	}
+	else {
+		delay(1000);
+	}
 }
 
 void handleIdle() {
