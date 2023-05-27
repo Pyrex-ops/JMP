@@ -16,7 +16,7 @@ if (isset($_GET["id"])) {
             $queryUtente->bind_param("s", $_GET["id"]);
             $queryUtente->execute();
             $pesoUtente = $queryUtente->get_result()->fetch_column(0);
-            $caloriaSingoloSalto = ($pesoUtente * 2.205 * 0.001) / 100;
+            $caloriaSingoloSalto = ($pesoUtente * 2.205 * 0.001);
             http_response_code(200);
             echo json_encode(array("stato" => "ok", "moltiplicatore" => round($caloriaSingoloSalto, 4, PHP_ROUND_HALF_EVEN)));
             exit;
