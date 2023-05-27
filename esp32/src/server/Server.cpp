@@ -242,8 +242,6 @@ void BackendServer::getMoltiplicatoreCalorieThreaded(void* getMoltiplicatoreCalo
 		Serial.println(response);
 		DeserializationError error = deserializeJson(jsonDocument, response);
 
-		float moltiplicatore;
-
 		if (!error) {
 			// Fetch values.
 			//

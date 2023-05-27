@@ -21,7 +21,7 @@ class TrainingManager {
 	void uploadData();
 	const uint32_t TIMESTAMP_START_TRAINING;
 	bool raggiuntoObiettivo;
-	int calcolaCalorie();
+	float calcolaCalorie();
 
 	bool checkObiettivo();
   public:

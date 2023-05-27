@@ -49,7 +49,7 @@ bool TrainingManager::checkObiettivo() {
 				raggiuntoObiettivo = revolutions >= obiettivo.valore;
 				break;
 			case CALORIE_SPESE:
-				raggiuntoObiettivo = calcolaCalorie() >= obiettivo.valore;
+				raggiuntoObiettivo = calcolaCalorie() >= (float)obiettivo.valore;
 				break;
 			case TEMPO_ALLENAMENTO_MINUTI:
 				raggiuntoObiettivo = ((millis() - TIMESTAMP_START_TRAINING) * 1e-3
@@ -62,8 +62,8 @@ bool TrainingManager::checkObiettivo() {
 	return false;
 }
 
-int TrainingManager::calcolaCalorie() {
-	return moltiplicatoreCalorie * revolutions;
+float TrainingManager::calcolaCalorie() {
+	return moltiplicatoreCalorie * (float)revolutions;
 }
 
 TrainingManager::~TrainingManager() {
