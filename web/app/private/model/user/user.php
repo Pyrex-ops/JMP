@@ -48,10 +48,9 @@ function duration_graph(): void
     //Prendiamo il vettore con le durate degli allenamenti e data d'inizio
     //(data allenamento, durata)
     $idUtente = get_id(get_username());
-    //TODO Limita la query agli ultimi 12 mesi
     $query = $database->prepare("SELECT DATE_FORMAT(MIN(misura.timestamp),'%d-%m') AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp)))/60 AS `durataAllenamento`
 FROM allenamento JOIN misura ON allenamento.IDAllenamento = misura.IDAllenamento JOIN utente ON allenamento.IDUtente = utente.IDUtente
-WHERE utente.IDUtente = ?
+WHERE utente.IDUtente = ? AND misura.timestamp >= NOW() - INTERVAL 12 MONTH
 GROUP BY allenamento.IDAllenamento;");
     $query->bind_param("i", $idUtente);
     $query->execute();
@@ -171,9 +170,6 @@ function successful_days_of_week(): void
 {
     global $database;
     $idUtente = get_id(get_username());
-    //TODO: Evitare di rifare questa query dato che già la facciamo sopra
-    //Forse il mapping alla stringa (Es. lunedì ecc) dovremmo farlo in php
-    //In ottica futura di gestione di altre lingue ecc
     $query = $database->prepare("SELECT ELT(WEEKDAY(DATE(MIN(misura.timestamp)))+1,'Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica') AS 'giorno',
      DATE(MIN(misura.timestamp)) AS 'dataAllenamento' FROM allenamento LEFT OUTER JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
 JOIN utente ON utente.IDUtente = allenamento.IDUtente
@@ -186,7 +182,6 @@ HAVING dataAllenamento >= NOW() + INTERVAL -7 DAY AND dataAllenamento < NOW() + 
     $risultato = $query->get_result();
     $arraySettimana = [];
     while ($riga = $risultato->fetch_assoc()) {
-        //TODO fallo nella query (where)
         $arraySettimana[] = $riga["giorno"];
     }
     echo "const selectedDays = " . json_encode($arraySettimana) . ";";

@@ -7,7 +7,6 @@ if (isset($database)) {
     if (isset($_GET['tipo'])) {
         if ($_GET['tipo'] == 1) {
             //Numero salti utente
-            //TODO: Prendi i dati dalle view
             $numSalti = $database->query("SELECT * FROM classificanumsalti");
             $arraySalti = array();
             while ($riga = $numSalti->fetch_assoc()) {
