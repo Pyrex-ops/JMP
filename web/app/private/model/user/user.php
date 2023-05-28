@@ -2,7 +2,9 @@
 
 include_once "/php/private/model/db/dbconnessione.php";
 
-
+/*
+ * Funzione per controllare se l'utente esiste
+ * */
 function does_user_exist($username): bool
 {
     global $database;
@@ -13,6 +15,9 @@ function does_user_exist($username): bool
     return $result->num_rows != 0;
 }
 
+/*
+ * Funzione per aggiungere un utente al database
+ * */
 function add_user($username, $password, $weight): void
 {
     global $database;
@@ -23,6 +28,9 @@ function add_user($username, $password, $weight): void
     $query->close();
 }
 
+/*
+ * Funzione per ottenere l'identificativo dell'utente
+ * */
 function get_id($username)
 {
     global $database;
@@ -33,6 +41,9 @@ function get_id($username)
     return $result->fetch_row()[0];
 }
 
+/*
+ * Funzione per rimuovere l'utente dal database
+ * */
 function remove_user(): void
 {
     global $database;
@@ -42,6 +53,9 @@ function remove_user(): void
     $query->execute();
 }
 
+/*
+ * Funzione per l'ottenimento dei dati che popolano il grafico dell'andamento
+ * */
 function duration_graph(): void
 {
     global $database;
@@ -65,6 +79,10 @@ GROUP BY allenamento.IDAllenamento;");
     echo "let arrayDurata = " . json_encode($arrayDurata) . ";";
 }
 
+/*
+ * Funzione per ottenere i dati che popolano il componente che mostra
+ * gli ultimi 3 allenamenti eseguiti
+ * */
 function last_trainings(): void
 {
     global $database;
@@ -116,10 +134,12 @@ LIMIT 3;");
     echo json_encode($arrayDati3allenamenti);
 }
 
+/*
+ * Funzione per ottenere la lista degli allenamenti
+ * */
 function all_trainings(): void
 {
     global $database;
-    //Prendiamo gli ultimi 3 allenamenti (che hanno un obiettivo associato) dell'utente e il relativo superamento dell'obiettivo fissato
     $idUtente = get_id(get_username());
     $query = $database->prepare("SELECT DATE(MIN(misura.timestamp)) AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp))) AS `durataAllenamento`,allenamento.IDAllenamento AS 'IdAllenam', obiettivo.IDCategoria,
 (
@@ -166,6 +186,10 @@ ORDER BY IDAllenam DESC;");
     echo json_encode($arrayDatiallenamenti);
 }
 
+/*
+ * Funzione che ritorna i giorni della settimana in cui si è svolto
+ * un allenamento
+ * */
 function successful_days_of_week(): void
 {
     global $database;
@@ -187,6 +211,9 @@ HAVING dataAllenamento >= NOW() + INTERVAL -7 DAY AND dataAllenamento < NOW() + 
     echo "const selectedDays = " . json_encode($arraySettimana) . ";";
 }
 
+/*
+ * Funzione per ottenere le impostazioni dell'account utente
+ * */
 function echo_impostazioni($user)
 {
     global $database;

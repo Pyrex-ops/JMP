@@ -3,7 +3,10 @@
 require_once("/php/private/model/db/dbconnessione.php");
 header("Content-Type: application/json");
 
-
+/*
+ * Endpoint per l'ottenimento del moltiplicatore
+ * Il moltiplicatore fornisce l'equivalente calorico di ogni salto
+ * */
 if (isset($_GET["id"])) {
     if (isset($database)) {
         $queryDispositivo = $database->prepare("SELECT IDDispositivo FROM dispositivo WHERE IDDispositivo = (?)");

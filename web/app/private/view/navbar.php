@@ -2,6 +2,9 @@
 
 include_once "/php/private/model/auth/auth.php";
 
+/*
+ * Stampa la barra di navigazione
+ * */
 function echo_navbar($active_page): void
 {
 

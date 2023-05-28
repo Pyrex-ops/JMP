@@ -2,6 +2,15 @@
 
 include_once "/php/private/model/db/dbconnessione.php";
 
+/*
+ * Funzione per l'ottenimento di un json contenente gli obiettivi
+ * Esempio di risposta:
+ * "[
+        { name: 'Numero di salti', icon: 'fa-dumbbell', max: '49' },
+        { name: 'Calorie spese', icon: 'fa-times', max: '49' },
+        { name: 'Durata in minuti', icon: 'fa-dumbbell', max: '99' }
+    ]";
+ * */
 function echo_tipologie_obiettivo(): void
 {
     global $database;
@@ -18,13 +27,13 @@ function echo_tipologie_obiettivo(): void
         $index++;
     }
     echo json_encode($arrayObiettivi);
-    //    echo "[
-//        { name: 'Numero salti', icon: 'fa-dumbbell', max: '50' },
-//        { name: 'Numero Mogus Catturati', icon: 'fa-times', max: '50' },
-//        { name: 'Numero Mogus intervistati', icon: 'fa-dumbbell', max: '100' }
-//    ]";
 }
 
+/*
+ * Funzione per ottenere un vettore contenente l'obiettivo e il parametro
+ * Esempio di risposta:
+ * { name: 'Nessuno', value: '0' }
+ * */
 function echo_obiettivo($user): void
 {
     global $database;
@@ -38,9 +47,15 @@ function echo_obiettivo($user): void
         $obiettivo["value"] = "";
     }
     echo json_encode($obiettivo);
-    //echo "{ name: 'Nessuno', value: '30' }";
 }
 
+/*
+ * Funzione per ottenere un array contenente i dettagli dell'allenamento
+ * Esempio di risposta:
+ * ["data" => "25/04/1999", "durata" => 50, "salti" => 801, "calorie" => 120,
+ *        "percentualeObiettivo" => 70, "tipoObiettivo" => "Calorie bruciate",
+ *        "parametroObiettivo" => 800, "valoreRaggiunto" => 700]
+ * */
 function dettagli_allenamento($id): ?array
 {
     global $database;
@@ -124,13 +139,12 @@ DESC;");
                 "durata" => $riga["durata"] / 60,
                 "salti" => $riga["salti"],
                 "calorie" => $riga["calorie"],
-                "percentualeObiettivo" => (int) ($riga["valoreRaggiunto"] / $riga["parametroObiettivo"]) * 100,
+                "percentualeObiettivo" => (int)($riga["valoreRaggiunto"] / $riga["parametroObiettivo"]) * 100,
                 "tipoObiettivo" => $tipo,
                 "parametroObiettivo" => $riga["parametroObiettivo"],
                 "valoreRaggiunto" => $riga["valoreRaggiunto"]
             ];
         } else {
-
             $dettagli = [
                 "data" => $riga["data"],
                 "durata" => $riga["durata"] / 60,
@@ -143,12 +157,12 @@ DESC;");
             ];
         }
     }
-    //    $details = ["data" => "25/04/1999", "durata" => 50, "salti" => 801, "calorie" => 120,
-//        "percentualeObiettivo" => 70, "tipoObiettivo" => "Calorie bruciate",
-//        "parametroObiettivo" => 800, "valoreRaggiunto" => 700];
     return $dettagli;
 }
 
+/*
+ * Funzione per controllare l'associazione utente-allenamento
+ * */
 function check_ownership($idAllenamento, $username): bool
 {
     global $database;
@@ -161,6 +175,9 @@ function check_ownership($idAllenamento, $username): bool
     return false;
 }
 
+/*
+ * Funzione per mostrare le card degli allenamenti
+ * */
 function echo_detail_card($categoria, $parametro, $icona)
 {
     if ($categoria === "Data") {
@@ -170,7 +187,7 @@ function echo_detail_card($categoria, $parametro, $icona)
     } else {
         $parametroFormattato = round(floatval($parametro), 1);
     }
-    echo ('<div class="card allenamento-detail-card">
+    echo('<div class="card allenamento-detail-card">
     <div class="card-body">
       <div class="row">
         <div class="col-5 text-center my-auto">
@@ -185,6 +202,16 @@ function echo_detail_card($categoria, $parametro, $icona)
   </div>');
 }
 
+/*
+ * Funzione per la composizione a video della classifica durata
+ * Esempio di risposta:
+ *
+ * "[
+ *         { name: 'Luca', durata : 900 },
+ *         { name: 'Marco', durata : 400 },
+ *         { name: 'Giuseppe', durata : 200 }
+ * ]"
+ */
 function echo_classifica_durata()
 {
     global $database;
@@ -195,13 +222,19 @@ function echo_classifica_durata()
         $arrayClassifica[$i]["durata"] = round($arrayClassifica[$i]["durata"] / 60, 1, PHP_ROUND_HALF_EVEN);
     }
     echo json_encode($arrayClassifica);
-    //    echo "[
-//           { name: 'Joecom', durata : 900 },
-//           { name: 'Marco', durata : 400 },
-//           { name: 'Giuseppe', durata : 200 }
-//       ]";
 }
 
+
+/*
+ * Funzione per la composizione a video della classifica salti
+ * Esempio di risposta:
+ *
+ * "[
+ *         { name: 'Luca', salti : 11000 },
+ *         { name: 'Marco', salti : 3000 },
+ *         { name: 'Giuseppe', salti : 2000 }
+ * ]"
+ */
 function echo_classifica_salti()
 {
     global $database;
@@ -211,9 +244,4 @@ function echo_classifica_salti()
         $arrayClassifica[] = $queryClassifica->fetch_assoc();
     }
     echo json_encode($arrayClassifica);
-    //    echo "[
-//           { name: 'Marco', salti : 11000 },
-//           { name: 'Giuseppe', salti : 3000 },
-//           { name: 'Joecom', salti : 2000 }
-//       ]";
 }

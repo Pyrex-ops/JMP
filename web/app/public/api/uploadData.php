@@ -2,7 +2,9 @@
 //Connessione al database
 require_once("/php/private/model/db/dbconnessione.php");
 header("Content-Type: application/json");
-
+/*
+ * Endpoint per il caricamento del numero di salti rilevati da parte del dispositivo
+ * */
 if (isset($_GET["id"]) && isset($_GET["valore"])) {
     if (isset($database)) {
         $queryDispositivo = $database->prepare("SELECT IDDispositivo FROM dispositivo WHERE IDDispositivo = (?)");

@@ -4,6 +4,10 @@ include_once "/php/private/model/auth/sessione.php";
 include_once "/php/private/model/user/user.php";
 include_once "/php/private/model/auth/auth.php";
 
+/*
+ * Funzione per mostrare il messaggio di errore
+ * sorto durante il cambio della password
+ * */
 function cambio_password_error($error)
 {
     $_SESSION['cambio_password_error_message'] = $error;

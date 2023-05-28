@@ -2,7 +2,9 @@
 
 require_once("/php/private/model/db/dbconnessione.php");
 header('Content-Type: application/json');
-
+/*
+ * Endpoint per l'avvio dell'allenamento
+ * */
 if (isset($_GET['id'])) {
     //Da id dispositivo ricavare utente e aggiungere un nuovo allenamento
     if (isset($database)) {
@@ -51,7 +53,6 @@ WHERE misura.IDAllenamento IN (SELECT MAX(allenamento.IDAllenamento)
                     exit;
                 }
             } else {
-
                 http_response_code(401);
                 echo json_encode(['stato' => 'errore']);
                 exit;

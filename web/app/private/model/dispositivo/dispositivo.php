@@ -1,6 +1,9 @@
 <?php require_once "/php/private/model/auth/sessione.php";
 include_once "/php/private/model/auth/auth.php";
 
+/*
+ * Funzione per controllare se l'utente ha un dispositivo associato
+ * */
 function has_registered_device()
 {
     global $database;
@@ -12,6 +15,9 @@ function has_registered_device()
     return $result->num_rows != 0;
 }
 
+/*
+ * Funzione per ottenere il dispositivo associato
+ * */
 function get_registered_device()
 {
     global $database;
@@ -23,6 +29,9 @@ function get_registered_device()
     return $result->fetch_row()[0];
 }
 
+/*
+ * Funzione per dissociare il dispositivo dall'account
+ * */
 function unregister_device()
 {
     global $database;
@@ -32,6 +41,9 @@ function unregister_device()
     $query->execute();
 }
 
+/*
+ * Funzione per eseguire l'associazione di un dispositivo all'account
+ * */
 function add_device($IDCOrda)
 {
     global $database;

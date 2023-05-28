@@ -3,6 +3,10 @@ include_once "/php/private/model/auth/sessione.php";
 include_once "/php/private/model/user/user.php";
 include_once "/php/private/model/auth/auth.php";
 
+/*
+ * Funzione per mostrare il messaggio di errore
+ * sorto durante il login
+ * */
 function login_error($error)
 {
     $_SESSION['login_error_message'] = $error;

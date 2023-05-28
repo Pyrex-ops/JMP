@@ -4,6 +4,10 @@ include_once "/php/private/model/user/user.php";
 include_once "/php/private/model/auth/auth.php";
 include_once "/php/private/model/dispositivo/dispositivo.php";
 
+/*
+ * Funzione per mostrare il messaggio d'errore
+ * eventualmente sorto durante la rimozione del dispositivo
+ * */
 function rimozione_corda_error($error)
 {
     $_SESSION['rimozione_corda_error_message'] = $error;

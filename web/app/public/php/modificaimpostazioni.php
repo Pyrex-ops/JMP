@@ -3,6 +3,10 @@ include_once "/php/private/model/auth/sessione.php";
 include_once "/php/private/model/user/user.php";
 include_once "/php/private/model/auth/auth.php";
 
+/*
+ * Funzione per mostrare il messaggio di errore
+ * sorto durante la modifica delle impostazioni
+ * */
 function modifica_impostazioni_error($error): void
 {
     $_SESSION['modifica_impostazioni_error_message'] = $error;

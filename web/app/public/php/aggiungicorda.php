@@ -4,6 +4,10 @@ include_once "/php/private/model/user/user.php";
 include_once "/php/private/model/auth/auth.php";
 include_once "/php/private/model/dispositivo/dispositivo.php";
 
+/*
+ * Funzione per mostrare il messaggio di errore
+ * relativo alla registrazione del dispositivo
+ * */
 function aggiunta_corda_error($error)
 {
   $_SESSION['aggiunta_corda_error_message'] = $error;
@@ -11,6 +15,10 @@ function aggiunta_corda_error($error)
   exit;
 }
 
+/*
+ * Funzione per verificare la validità del codice
+ * identificativo del dispositivo
+ * */
 function isValidMACAddress($string)
 {
   $pattern = '/^([A-F0-9]{2}:){5}[A-F0-9]{2}$/';
