@@ -16,8 +16,9 @@
 
 
 /**
-	Classe per l'utilizzo dello schermo per comunicare messaggi all'utente.
-*/
+ * @brief Classe per l'utilizzo dello schermo per comunicare messaggi all'utente.
+ * 
+ */
 class Schermo {
   private:
 	/**

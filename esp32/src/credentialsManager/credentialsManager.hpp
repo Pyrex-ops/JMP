@@ -5,10 +5,11 @@
 #include <Preferences.h>
 
 /**
-	Classe per la gestione dell'archivio Key-Value su memoria flash dell'ESP32
-	Fornisce un interfaccia più astratta rispetto alla libreria "Preferences.h"
-	Memorizza una singola coppia (SSID,password).
-*/
+ * @brief Classe per la gestione dell'archivio Key-Value su memoria flash
+ * dell'ESP32. Fornisce un interfaccia più astratta rispetto alla libreria
+ * "Preferences.h". Memorizza una singola coppia (SSID,password).
+ *
+ */
 class credentialsManager {
   private:
 	/**
