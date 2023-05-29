@@ -5,18 +5,6 @@
 #include <ESPAsyncWebServer.h>
 
 /**
- * @brief Tutti gli stati possibili del processo di configurazione del wifi.
- *
- * Lo stato è utilizzato per determinare eventuali messaggi di errore.
- *
- */
-typedef enum {
-	NO_INPUT_YET,
-	INCORRECT_PASSWORD,
-	MISSING_INPUT,
-} mainpage_status_t;
-
-/**
  * @brief Credenziali per la connessione ad una rete wifi.
  *
  */
@@ -33,29 +21,61 @@ typedef struct {
  */
 class WifiPasswordGetter {
   private:
+	/**
+	 * @brief SSID della rete a cui si connetterà l'utente.
+	 *
+	 */
 	const char* TEMPORARY_NETWORK_SSID;
+	/**
+	 * @brief Password della rete a cui si connetterà l'utente.
+	 *
+	 */
 	const char* TEMPORARY_NETWORK_PASSWORD;
+	/**
+	 * @brief Puntatore alla struct dove verranno scritte le credenziali
+	 * inserite dall'utente.
+	 *
+	 */
 	static wifi_configuration_t* wifi_config;
+	/**
+	 * @brief Web server a cui si connetterà l'utente.
+	 *
+	 */
 	AsyncWebServer server;
+	/**
+	 * @brief Avvia la rete WiFi.
+	 *
+	 */
 	void start_wifi();
+	/**
+	 * @brief Stoppa la rete WiFi.
+	 *
+	 */
 	void stop_wifi();
+	/**
+	 * @brief Numero di reti WiFi rilevate dalla scheda di rete.
+	 *
+	 */
 	static uint16_t numberOfWifiNetworks;
-	static void handlePasswordInput(AsyncWebServerRequest* request);
+	/**
+	 * @brief Pagina servita all'utente.
+	 *
+	 */
 	static const char* MAIN_PAGE;
   public:
 	/**
-	 * @brief Costruttore della classe WifiPasswordGetter
+	 * @brief Costruttore della classe WifiPasswordGetter.
 	 *
 	 * @param temporary_network_ssid SSID della rete a cui si connetterà
-	 * l'utente
-	 * @param temporary_network_password password della rete a cui si connetterà
-	 * l'utente
+	 * l'utente.
+	 * @param temporary_network_password Password della rete a cui si connetterà
+	 * l'utente.
 	 */
 	WifiPasswordGetter(const char* temporary_network_ssid, const char* temporary_network_password);
 	/**
 	 * @brief Ottieni le credenziali del wifi.
 	 *
-	 * Il microcontrollore aprirà un webserver per permettere all'utente di
+	 * Il microcontrollore aprirà un web server per permettere all'utente di
 	 * inserirle tramite un browser.
 	 *
 	 * @return wifi_configuration_t Struct con SSID e password della rete wifi a
