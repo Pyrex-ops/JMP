@@ -14,6 +14,9 @@ void NewEncoderAdapter::rotatedEncoder(
 	NewEncoderAdapter* newEncoderAdapter =
 		static_cast<NewEncoderAdapter*>(newEncoderAdapterCasted);
 	NewEncoder::EncoderState oldEncoderState, newEncoderState;
+	/*
+		Le seguenti righe normalizzano la posizione angolare in (-PPR/2,PPR/2]
+	*/
 	if (state->currentValue >= newEncoderAdapter->MAX_POS) {
 		newEncoderAdapter->clockwiseRevolutions++;
 		newEncoder->getAndSet(0, oldEncoderState, newEncoderState);

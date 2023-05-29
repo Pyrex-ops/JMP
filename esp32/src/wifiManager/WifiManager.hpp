@@ -11,9 +11,6 @@
  *
  */
 class WifiManager {
-  private:
-	bool checkCredentials(wifi_configuration_t wifi_config);
-	wifi_configuration_t getCredentialsFromUser();
   public:
 	/**
 	 * @brief Costruisce un nuovo oggetto di tipo WifiManager.
@@ -29,9 +26,11 @@ class WifiManager {
 	/**
 	 * @brief Avvia la procedura per l'ottenimento di nuove credenziali da parte
 	 * dell'utente.
-	 *
+	 * 
+	 * @param ssid SSID dell'AP a cui si connetterà l'utente.
+	 * @param password Password dell'AP a cui si connetterà l'utente.
 	 */
-	void getNewCredentials(String& ssid,String& password);
+	void getNewCredentials(String& ssid, String& password);
 	/**
 	 * @brief Controlla se il dispositivo è connesso a una rete wifi.
 	 *

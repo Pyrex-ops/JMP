@@ -4,12 +4,13 @@ TrainingManager::TrainingManager(
 	BackendServer& server_in, uint32_t sample_period_seconds,
 	Schermo* schermo_in, uint32_t revolutions_in, MotorinoGravity* motorino_in)
 	: SAMPLE_PERIOD_MILLISECONDS(sample_period_seconds * 1000),
-	  INITIAL_REVOLUTIONS(revolutions_in), server(server_in) , TIMESTAMP_START_TRAINING(millis()){
+	  INITIAL_REVOLUTIONS(revolutions_in), server(server_in),
+	  TIMESTAMP_START_TRAINING(millis()) {
 	server.reset();
-	schermo = schermo_in;
+	schermo				  = schermo_in;
 	moltiplicatoreCalorie = 0.2;
 	server.getMoltiplicatoreCalorie(&moltiplicatoreCalorie);
-	obiettivo = {NESSUNO,0};
+	obiettivo = { NESSUNO, 0 };
 	server.getObiettivo(&obiettivo);
 	lastSentRevolutions = 0;
 	revolutions			= 0;
