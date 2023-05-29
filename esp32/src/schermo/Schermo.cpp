@@ -104,6 +104,18 @@ void Schermo::connessionePersa() {
 	// t.detach();
 }
 
+void Schermo::inserisciCredenziali() {
+	// pulisci();
+	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	display.setTextSize(2);
+	display.setCursor(20, 0);
+	display.print("CONNETTI");
+	display.setTextSize(4);
+	display.setCursor(6, 32);
+	display.println("Wi-Fi");
+	display.display();
+}
+
 void Schermo::obiettivoRaggiunto(tipologiaObiettivo_t tipo) {
 	/**
 	 * (1, 'Numero di salti eseguiti durante l'allenamento.'),
@@ -234,4 +246,20 @@ void Schermo::interrompi() {
 	if (!this->interrompiEsecuzione) {
 		this->interrompiEsecuzione = !this->interrompiEsecuzione;
 	}
+}
+
+void Schermo::mostraMAC() {
+	// pulisci();
+	std::unique_lock<std::mutex> lock(this->mutexDisplay);
+
+	String MAC = WiFi.macAddress();
+	display.setTextSize(2);
+	display.setCursor(0, 0);
+	display.print("ASSOCIA ID");
+	display.setTextSize(2);
+	display.setCursor(0, 32);
+	display.println(MAC.substring(0, 9));
+	display.println(MAC.substring(9));
+	display.display();
+	lock.unlock();
 }
