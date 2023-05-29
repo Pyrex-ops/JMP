@@ -3,6 +3,11 @@
 
 #include <Arduino.h>
 
+/**
+ * @brief Interfaccia che permette di
+ * ottenere la posizione angolare e il numero di giri di un encoder rotatorio.
+ *
+ */
 class Encoder {
   public:
 	/**
