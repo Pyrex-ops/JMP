@@ -2,6 +2,8 @@
 #define SERVER_H
 
 #include <Arduino.h>
+#include <mutex>
+#include <HTTPClient.h>
 
 typedef struct {
 	uint32_t jumps;
@@ -22,7 +24,7 @@ typedef struct {
 typedef struct {
 	String serverName;
 	uint32_t revolutions;
-	bool creatoAllenamento;
+	bool* creatoAllenamento;
 } upload_data_t;
 
 typedef struct {
@@ -48,6 +50,8 @@ typedef struct {
 class BackendServer {
   private:
 	bool creatoAllenamento;
+	static std::mutex mutexServer;
+	static HTTPClient http;
 	String SERVER_NAME;
 	static void sendDataThreaded(void* uploadData);
 	static void startTrainingThreaded(void* startTrainingData);
@@ -57,6 +61,7 @@ class BackendServer {
 	static TaskHandle_t taskStartTraining;
 	static TaskHandle_t taskGetObiettivo;
 	static TaskHandle_t taskGetMoltiplicatoreCalorie;
+	static const char* GIOCOMUNE_CA;
   public:
 	BackendServer(const char* serverName);
 	void startTraining();
@@ -64,6 +69,8 @@ class BackendServer {
 	void getObiettivo(obiettivo_t* obiettivo);
 	void getMoltiplicatoreCalorie(float* moltiplicatore);
 	bool checkRegistered();
+	void reset();
+	void connect();
 };
 
 #endif

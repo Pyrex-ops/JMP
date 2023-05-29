@@ -3,7 +3,10 @@
 require_once("/php/private/model/db/dbconnessione.php");
 header("Content-Type: application/json");
 
-
+/*
+ * Endpoint per l'ottenimento del moltiplicatore
+ * Il moltiplicatore fornisce l'equivalente calorico di ogni salto
+ * */
 if (isset($_GET["id"])) {
     if (isset($database)) {
         $queryDispositivo = $database->prepare("SELECT IDDispositivo FROM dispositivo WHERE IDDispositivo = (?)");
@@ -16,7 +19,7 @@ if (isset($_GET["id"])) {
             $queryUtente->bind_param("s", $_GET["id"]);
             $queryUtente->execute();
             $pesoUtente = $queryUtente->get_result()->fetch_column(0);
-            $caloriaSingoloSalto = ($pesoUtente * 2.205 * 0.001) / 100;
+            $caloriaSingoloSalto = ($pesoUtente * 2.205 * 0.001);
             http_response_code(200);
             echo json_encode(array("stato" => "ok", "moltiplicatore" => round($caloriaSingoloSalto, 4, PHP_ROUND_HALF_EVEN)));
             exit;

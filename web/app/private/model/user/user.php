@@ -2,7 +2,9 @@
 
 include_once "/php/private/model/db/dbconnessione.php";
 
-
+/*
+ * Funzione per controllare se l'utente esiste
+ * */
 function does_user_exist($username): bool
 {
     global $database;
@@ -13,6 +15,9 @@ function does_user_exist($username): bool
     return $result->num_rows != 0;
 }
 
+/*
+ * Funzione per aggiungere un utente al database
+ * */
 function add_user($username, $password, $weight): void
 {
     global $database;
@@ -23,6 +28,9 @@ function add_user($username, $password, $weight): void
     $query->close();
 }
 
+/*
+ * Funzione per ottenere l'identificativo dell'utente
+ * */
 function get_id($username)
 {
     global $database;
@@ -33,6 +41,9 @@ function get_id($username)
     return $result->fetch_row()[0];
 }
 
+/*
+ * Funzione per rimuovere l'utente dal database
+ * */
 function remove_user(): void
 {
     global $database;
@@ -42,16 +53,18 @@ function remove_user(): void
     $query->execute();
 }
 
+/*
+ * Funzione per l'ottenimento dei dati che popolano il grafico dell'andamento
+ * */
 function duration_graph(): void
 {
     global $database;
     //Prendiamo il vettore con le durate degli allenamenti e data d'inizio
     //(data allenamento, durata)
     $idUtente = get_id(get_username());
-    //TODO Limita la query agli ultimi 12 mesi
     $query = $database->prepare("SELECT DATE_FORMAT(MIN(misura.timestamp),'%d-%m') AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp)))/60 AS `durataAllenamento`
 FROM allenamento JOIN misura ON allenamento.IDAllenamento = misura.IDAllenamento JOIN utente ON allenamento.IDUtente = utente.IDUtente
-WHERE utente.IDUtente = ?
+WHERE utente.IDUtente = ? AND misura.timestamp >= NOW() - INTERVAL 12 MONTH
 GROUP BY allenamento.IDAllenamento;");
     $query->bind_param("i", $idUtente);
     $query->execute();
@@ -66,6 +79,10 @@ GROUP BY allenamento.IDAllenamento;");
     echo "let arrayDurata = " . json_encode($arrayDurata) . ";";
 }
 
+/*
+ * Funzione per ottenere i dati che popolano il componente che mostra
+ * gli ultimi 3 allenamenti eseguiti
+ * */
 function last_trainings(): void
 {
     global $database;
@@ -75,7 +92,7 @@ function last_trainings(): void
 (
     CASE
     	WHEN obiettivo.IDCategoria = 1 THEN (
-        	SELECT IF(SUM(misura.numeroSalti)>obiettivo.parametro, 1, 0)
+        	SELECT IF(SUM(misura.numeroSalti)>=obiettivo.parametro, 1, 0)
             FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
             JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
@@ -83,7 +100,7 @@ function last_trainings(): void
             GROUP BY allenamento.IDAllenamento
         	)
     	WHEN obiettivo.IDCategoria = 2 THEN (
-        	SELECT IF(SUM(misura.numeroSalti)*utente.peso*2.205*0.001>obiettivo.parametro, 1, 0)
+        	SELECT IF(SUM(misura.numeroSalti)*utente.peso*2.205*0.001>=obiettivo.parametro, 1, 0)
             FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
             JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
@@ -91,7 +108,7 @@ function last_trainings(): void
             GROUP BY allenamento.IDAllenamento
         	)
     	WHEN obiettivo.IDCategoria = 3 THEN (
-        	SELECT IF((unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp)))/60>obiettivo.parametro, 1, 0)
+        	SELECT IF((unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp)))/60>=obiettivo.parametro, 1, 0)
             FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
             JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
@@ -117,16 +134,18 @@ LIMIT 3;");
     echo json_encode($arrayDati3allenamenti);
 }
 
+/*
+ * Funzione per ottenere la lista degli allenamenti
+ * */
 function all_trainings(): void
 {
     global $database;
-    //Prendiamo gli ultimi 3 allenamenti (che hanno un obiettivo associato) dell'utente e il relativo superamento dell'obiettivo fissato
     $idUtente = get_id(get_username());
     $query = $database->prepare("SELECT DATE(MIN(misura.timestamp)) AS 'dataAllenamento' ,(unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp))) AS `durataAllenamento`,allenamento.IDAllenamento AS 'IdAllenam', obiettivo.IDCategoria,
 (
     CASE
     	WHEN obiettivo.IDCategoria = 1 THEN (
-        	SELECT IF(SUM(misura.numeroSalti)>obiettivo.parametro, 1, 0)
+        	SELECT IF(SUM(misura.numeroSalti)>=obiettivo.parametro, 1, 0)
             FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
             JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
@@ -134,7 +153,7 @@ function all_trainings(): void
             GROUP BY allenamento.IDAllenamento
         	)
     	WHEN obiettivo.IDCategoria = 2 THEN (
-        	SELECT IF(SUM(misura.numeroSalti)*utente.peso*2.205*0.001>obiettivo.parametro, 1, 0)
+        	SELECT IF(SUM(misura.numeroSalti)*utente.peso*2.205*0.001>=obiettivo.parametro, 1, 0)
             FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
             JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
@@ -142,7 +161,7 @@ function all_trainings(): void
             GROUP BY allenamento.IDAllenamento
         	)
     	WHEN obiettivo.IDCategoria = 3 THEN (
-        	SELECT IF((unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp)))/60>obiettivo.parametro, 1, 0)
+        	SELECT IF((unix_timestamp(max(misura.timestamp)) - unix_timestamp(min(misura.timestamp)))/60>=obiettivo.parametro, 1, 0)
             FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
             JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
@@ -167,13 +186,14 @@ ORDER BY IDAllenam DESC;");
     echo json_encode($arrayDatiallenamenti);
 }
 
+/*
+ * Funzione che ritorna i giorni della settimana in cui si è svolto
+ * un allenamento
+ * */
 function successful_days_of_week(): void
 {
     global $database;
     $idUtente = get_id(get_username());
-    //TODO: Evitare di rifare questa query dato che già la facciamo sopra
-    //Forse il mapping alla stringa (Es. lunedì ecc) dovremmo farlo in php
-    //In ottica futura di gestione di altre lingue ecc
     $query = $database->prepare("SELECT ELT(WEEKDAY(DATE(MIN(misura.timestamp)))+1,'Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica') AS 'giorno',
      DATE(MIN(misura.timestamp)) AS 'dataAllenamento' FROM allenamento LEFT OUTER JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
 JOIN utente ON utente.IDUtente = allenamento.IDUtente
@@ -186,12 +206,14 @@ HAVING dataAllenamento >= NOW() + INTERVAL -7 DAY AND dataAllenamento < NOW() + 
     $risultato = $query->get_result();
     $arraySettimana = [];
     while ($riga = $risultato->fetch_assoc()) {
-        //TODO fallo nella query (where)
         $arraySettimana[] = $riga["giorno"];
     }
     echo "const selectedDays = " . json_encode($arraySettimana) . ";";
 }
 
+/*
+ * Funzione per ottenere le impostazioni dell'account utente
+ * */
 function echo_impostazioni($user)
 {
     global $database;

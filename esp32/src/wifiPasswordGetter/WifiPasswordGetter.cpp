@@ -143,6 +143,7 @@ wifi_configuration_t WifiPasswordGetter::getWifiConfiguration() {
 void WifiPasswordGetter::stop_wifi() {
 	delay(500);
 	WiFi.disconnect();
+	delay(1000);
 	WiFi.mode(WIFI_STA);
 	server.end();  //Interrompiamo il Web Server
 }

@@ -10,6 +10,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Schermo::Schermo() {}
 
 void Schermo::begin() {
+	lampeggiando			   = false;
 	this->interrompiEsecuzione = false;
 	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -43,7 +44,8 @@ void Schermo::pulisci() {
 
 void Schermo::informazioniAllenamento(
 	uint32_t salti, uint32_t tempoAllenamento, uint32_t calorie) {
-	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	if (!this->mutexDisplay.try_lock() || lampeggiando) { return; }
+
 	//Convertiamo i secondi in ore:minuti:secondi
 	auto secondi = std::chrono::seconds(tempoAllenamento);
 	auto ore	 = std::chrono::duration_cast<std::chrono::hours>(secondi);
@@ -82,11 +84,12 @@ void Schermo::informazioniAllenamento(
 	//Convertiamo lo "stringstream" in std::string e poi in String
 	display.print(ss.str().c_str());
 	display.display();
+	this->mutexDisplay.unlock();
 }
 
 void Schermo::connessionePersa() {
 	// pulisci();
-	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(10, 0);
 	display.print("CONNES.");
@@ -94,6 +97,7 @@ void Schermo::connessionePersa() {
 	display.setCursor(6, 32);
 	display.println("IN CORSO");
 	display.display();
+	lock.unlock();
 	// std::thread t([this]() {
 	// 	lampeggia(3);
 	// });
@@ -107,7 +111,9 @@ void Schermo::obiettivoRaggiunto(tipologiaObiettivo_t tipo) {
 		(3, 'Tempo di allenamento in minuti.')
 	*/
 	// pulisci();
-	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	pulisci();
+	this->mutexDisplay.lock();
+
 	switch (tipo) {
 		case NUMERO_SALTI:
 			display.setTextSize(1);
@@ -148,25 +154,36 @@ void Schermo::obiettivoRaggiunto(tipologiaObiettivo_t tipo) {
 
 		default: break;
 	}
-	// std::thread t([this]() {
-	// 	lampeggia(1);
-	// });
-	// t.detach();
+	lampeggiando = true;
+	this->mutexDisplay.unlock();
+	Serial.println("Sto per entrare nel thread lampeggio");
+	std::thread t([this]() {
+		lampeggia(1);
+	});
+	t.detach();
 }
 
 void Schermo::lampeggia(uint8_t volte) {
-	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	this->mutexDisplay.lock();
+	Serial.println("Sono entrato nel thread lampeggio");
 	for (uint8_t i = 0; i < volte; i++) {
-		if (this->interrompiEsecuzione) {
-			this->interrompiEsecuzione = !this->interrompiEsecuzione;
-			return;
-		}
+		// if (this->interrompiEsecuzione) {
+		// 	lampeggiando = false;
+		// 	this->mutexDisplay.unlock();
+		// 	pulisci();
+		// 	this->interrompiEsecuzione = !this->interrompiEsecuzione;
+		// 	return;
+		// }
 		delay(1000);
 		display.invertDisplay(true);
 		delay(1000);
 		display.invertDisplay(false);
 		delay(1000);
 	}
+	Serial.println("Sto per unlockare nel thread lampeggio");
+	lampeggiando = false;
+	this->mutexDisplay.unlock();
+	pulisci();
 }
 
 void Schermo::mostraCredenziali(String SSID, String password) {
@@ -186,16 +203,16 @@ void Schermo::mostraCredenziali(String SSID, String password) {
 	display.print(password);
 	display.display();
 	lock.unlock();
-	std::thread t([this]() {
-		std::lock_guard<std::mutex> lock(this->mutexDisplay);
-		delay(1000);
-	});
-	t.detach();
+	// std::thread t([this]() {
+	// 	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	// 	delay(1000);
+	// });
+	// t.detach();
 }
 
 void Schermo::associaAccount() {
 	// pulisci();
-	std::lock_guard<std::mutex> lock(this->mutexDisplay);
+	std::unique_lock<std::mutex> lock(this->mutexDisplay);
 	display.setTextSize(2);
 	display.setCursor(20, 0);
 	display.print("ASSOCIA:");
@@ -205,6 +222,8 @@ void Schermo::associaAccount() {
 	display.println(MAC.substring(0, 9));
 	display.println(MAC.substring(9));
 	display.display();
+	lock.unlock();
+
 	// std::thread t([this]() {
 	// 	lampeggia(1);
 	// });

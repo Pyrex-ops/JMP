@@ -4,6 +4,10 @@ include_once "/php/private/model/auth/sessione.php";
 include_once "/php/private/model/user/user.php";
 include_once "/php/private/model/auth/auth.php";
 
+/*
+ * Funzione per mostrare l'eventuale errore
+ * sorto durante il cambio dell'obiettivo
+ * */
 function cambio_obiettivo_error($error)
 {
     $_SESSION['cambio_obiettivo_error_message'] = $error;
@@ -40,5 +44,5 @@ if (isset($_POST["goalType"]) && isset($_POST["goalValue"])) {
     exit;
 
 } else {
-    cambio_obiettivo_error("Errore. Riprovare.");
+    cambio_obiettivo_error("Errore nella modifica dell'obiettivo. Riprovare.");
 }

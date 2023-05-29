@@ -9,6 +9,7 @@ void handleDisconnected();
 void handleNewCredentialsRequired();
 void handleIdle();
 void handleTraining();
+void disconnected();
 
 MotorinoGravity motorino(
 	MOTORINO_PIN, MINIMUM_MOTORINO_INTENSITY, MOTORINO_LEDC_CHANNEL,
@@ -17,7 +18,7 @@ MotorinoGravity motorino(
 
 NewEncoderAdapter encoder(ENCODER_CLK_PIN, ENCODER_DT_PIN, ENCODER_PPR);
 TrainingManager* trainingManager = nullptr;
-BackendServer* backendServer	 = nullptr;
+BackendServer backendServer(API_URL);
 uint32_t timestampLastRevolution;
 uint32_t lastRevolutionNumber;
 
@@ -62,12 +63,14 @@ void loop() {
 		case IDLE: handleIdle(); break;
 		case TRAINING: handleTraining(); break;
 		case UNREGISTERED: handleUnregistered(); break;
+		case BOOTSTRAP: break;
 	}
 	delay(200);
 }
 
 void handleDisconnected() {
 	schermo.connessionePersa();
+	delay(100);
 	if (millis() - lostConnectionTimestamp > TIMEOUT_NEW_CREDENTIALS_MILLISECONDS
 		|| !wifiManager.hasSavedCredentials()) {
 		wifiManager.deleteCredentials();
@@ -76,6 +79,7 @@ void handleDisconnected() {
 		currentState = NEW_CREDENTIALS_REQUIRED;
 	}
 	if (wifiManager.checkConnection()) {
+		backendServer.connect();
 		Serial.println("connected");
 		//schermo.scrivi(0, "connected");
 		encoder.reset();
@@ -84,16 +88,15 @@ void handleDisconnected() {
 }
 
 void handleNewCredentialsRequired() {
-	srand(time(NULL));
 	char passwordArray[LENGTH + 1];
 	for (int i = 0; i < LENGTH; i++) {
-        passwordArray[i] = CHARS[rand() % (sizeof(CHARS) - 1)];
-    }
+		passwordArray[i] = CHARS[esp_random() % (sizeof(CHARS) - 1)];
+	}
 	passwordArray[LENGTH] = '\0';
-	String ssid = CONFIGURATION_SSID;
-	String password = passwordArray;
-	schermo.mostraCredenziali(ssid,password);
-	wifiManager.getNewCredentials(ssid,password);
+	String ssid			  = CONFIGURATION_SSID;
+	String password		  = passwordArray;
+	schermo.mostraCredenziali(ssid, password);
+	wifiManager.getNewCredentials(ssid, password);
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;
@@ -103,15 +106,10 @@ void handleUnregistered() {
 	schermo.mostraMAC();
 	if (!wifiManager.checkConnection()) {
 		disconnected();
-	}
-	else {
-		BackendServer server(API_URL);
-		if(server.checkRegistered()) {
-			currentState = IDLE;
-		}
-		else {
-			delay(800);
-		}
+	} else if (backendServer.checkRegistered()) {
+		currentState = IDLE;
+	} else {
+		delay(1000);
 	}
 }
 
@@ -121,7 +119,7 @@ void handleIdle() {
 	} else if (encoder.getRevolutions() != 0) {
 		Serial.println("training started");
 		//schermo.scrivi(0, "training started");
-		backendServer	= new BackendServer(API_URL);
+		backendServer.reset();
 		trainingManager = new TrainingManager(
 			backendServer, SAMPLE_SENDING_PERIOD_SECONDS, &schermo, 0, &motorino);
 		timestampLastRevolution = millis();
@@ -144,13 +142,11 @@ void handleTraining() {
 
 		encoder.reset();
 		delete (trainingManager);
-		delete (backendServer);
 		currentState = IDLE;
 	}
 	if (!wifiManager.checkConnection()) {
 		encoder.reset();
 		delete (trainingManager);
-		delete (backendServer);
 		disconnected();
 	}
 }

@@ -2,7 +2,9 @@
 require_once("/php/private/model/db/dbconnessione.php");
 header("Content-Type: application/json");
 
-
+/*
+ * Endpoint per l'ottenimento dell'obiettivo e del relativo parametro
+ * */
 if (isset($_GET["id"])) {
     if (isset($database)) {
         $queryDispositivo = $database->prepare("SELECT IDDispositivo FROM dispositivo WHERE IDDispositivo = (?)");
@@ -21,10 +23,6 @@ if (isset($_GET["id"])) {
             $idObiettivo = $queryObiettivo->get_result();
             if ($idObiettivo->num_rows != 0) {
                 //Può essere null se non c'è un obiettivo associato all'utente
-//                $arrayObiettivo = array();
-//                while ($riga = $idObiettivo->fetch_assoc()) {
-//                    $arrayObiettivo[] = $riga;
-//                }
                 $risultato = $idObiettivo->fetch_assoc();
                 http_response_code(200);
                 echo json_encode(array("stato" => "ok", "idCategoria" => $risultato["IDCategoria"], "parametro" => $risultato["parametro"]));
