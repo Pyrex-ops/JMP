@@ -235,7 +235,7 @@
 											"top": 183,
 											"width": 510,
 											"height": 13,
-											"text": "Dispositivo"
+											"text": "JMPCorda"
 										},
 										{
 											"_type": "LabelView",
@@ -2377,7 +2377,7 @@
 											"top": 237,
 											"width": 74.8896484375,
 											"height": 13,
-											"text": "Portale Web"
+											"text": "JMPit"
 										},
 										{
 											"_type": "LabelView",
@@ -3373,7 +3373,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGHdHEjjMW/1qo="
 					},
-					"name": "Dispositivo"
+					"name": "JMPCorda"
 				},
 				{
 					"_type": "UMLUseCase",
@@ -3691,7 +3691,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGHdHEjjMW/1qo="
 					},
-					"name": "Portale Web"
+					"name": "JMPit"
 				},
 				{
 					"_type": "UMLUseCase",
@@ -8713,7 +8713,7 @@
 											"top": 829,
 											"width": 70.0654296875,
 											"height": 13,
-											"text": "Dispositivo"
+											"text": "JMPCorda"
 										},
 										{
 											"_type": "LabelView",
@@ -12749,7 +12749,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGHdHW7mMa/cGY="
 					},
-					"name": "Dispositivo"
+					"name": "JMPCorda"
 				},
 				{
 					"_type": "UMLUseCase",
