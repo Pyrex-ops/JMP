@@ -40,7 +40,6 @@ void WifiPasswordGetter::start_wifi() {
 	dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
 	dnsServer.start(53, "*", IP);
 
-	// Route for root / web page
 	server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
 		request->send_P(200, "text/html", MAIN_PAGE);
 	});
@@ -118,7 +117,7 @@ void WifiPasswordGetter::start_wifi() {
 		}
 	});
 
-	server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);	 //only when requested from AP
+	server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);
 	server.begin();
 }
 

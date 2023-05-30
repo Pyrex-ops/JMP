@@ -27,6 +27,4 @@
 #define LENGTH 8
 #define CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-// Wifi constants
-
 #endif
