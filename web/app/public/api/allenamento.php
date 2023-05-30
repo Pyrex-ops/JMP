@@ -33,16 +33,18 @@ WHERE misura.IDAllenamento IN (SELECT MAX(allenamento.IDAllenamento)
                 //Alternativa: inserire allenamento alla creazione dell'utente
                 //Se l'utente non ha allenamenti, facciamo inserire un allenamento.
                 $queryAllenamentiVuoti = $database->query("SELECT allenamento.IDAllenamento FROM allenamento JOIN utente ON allenamento.IDUtente = utente.IDUtente WHERE allenamento.IDUtente = $userID ORDER BY allenamento.IDAllenamento DESC LIMIT 1;");
-                $queryObiettivoAssociato = $database->query("SELECT IDObiettivo FROM utente WHERE IDUtente=$userID");
-                $idObiettivo = $queryObiettivoAssociato->fetch_assoc()["IDObiettivo"];
+                $queryObiettivoAssociato = $database->query("SELECT IDObiettivo,peso FROM utente WHERE IDUtente=$userID");
+                $tempArray=$queryObiettivoAssociato->fetch_assoc();
+                $idObiettivo = $tempArray["IDObiettivo"];
+                $pesoUtente = $tempArray["peso"];
                 if ($queryAllenamentiVuoti->num_rows == 0) {
-                    $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente,IDObiettivo) VALUES ('$userID','$idObiettivo')");
+                    $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente,IDObiettivo,peso) VALUES ('$userID','$idObiettivo',$pesoUtente)");
                     http_response_code(200);
                     echo json_encode(['stato' => 'ok']);
                     exit;
                 }
                 if (!isset($risultatoQueryControllo["timestamp"]) && $risultatoQueryAllenamentoVuoto["c"] != 0) {
-                    $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente,IDObiettivo) VALUES ('$userID','$idObiettivo')");
+                    $queryAllenamento = $database->query("INSERT INTO allenamento(IDUtente,IDObiettivo,peso) VALUES ('$userID','$idObiettivo',$pesoUtente)");
                     http_response_code(200);
                     echo json_encode(['stato' => 'ok']);
                     exit;
