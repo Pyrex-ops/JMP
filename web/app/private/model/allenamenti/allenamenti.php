@@ -66,7 +66,7 @@ function dettagli_allenamento($id): ?array
         UNIX_TIMESTAMP(MAX(misura.timestamp)) - UNIX_TIMESTAMP(MIN(misura.timestamp))
     ) AS `durata`,
     SUM(misura.numeroSalti) AS 'salti',
-    SUM(misura.numeroSalti) * utente.peso * 2.205 * 0.001 AS 'calorie',
+    SUM(misura.numeroSalti) * allenamento.peso * 2.205 * 0.001 AS 'calorie',
     obiettivo.IDCategoria AS `tipoObiettivo`,obiettivo.parametro AS 'parametroObiettivo',
     (
         CASE WHEN obiettivo.IDCategoria = 1 THEN(
@@ -78,7 +78,7 @@ function dettagli_allenamento($id): ?array
             misura.IDAllenamento = IDAllenam
     ) WHEN obiettivo.IDCategoria = 2 THEN(
     SELECT
-        SUM(misura.numeroSalti) * utente.peso * 2.205 * 0.001
+        SUM(misura.numeroSalti) * allenamento.peso * 2.205 * 0.001
     FROM
         misura
     JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento

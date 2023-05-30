@@ -100,7 +100,7 @@ function last_trainings(): void
             GROUP BY allenamento.IDAllenamento
         	)
     	WHEN obiettivo.IDCategoria = 2 THEN (
-        	SELECT IF(SUM(misura.numeroSalti)*utente.peso*2.205*0.001>=obiettivo.parametro, 1, 0)
+        	SELECT IF(SUM(misura.numeroSalti)*allenamento.peso*2.205*0.001>=obiettivo.parametro, 1, 0)
             FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
             JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
@@ -153,7 +153,7 @@ function all_trainings(): void
             GROUP BY allenamento.IDAllenamento
         	)
     	WHEN obiettivo.IDCategoria = 2 THEN (
-        	SELECT IF(SUM(misura.numeroSalti)*utente.peso*2.205*0.001>=obiettivo.parametro, 1, 0)
+        	SELECT IF(SUM(misura.numeroSalti)*allenamento.peso*2.205*0.001>=obiettivo.parametro, 1, 0)
             FROM misura JOIN allenamento ON misura.IDAllenamento = allenamento.IDAllenamento
             JOIN obiettivo ON allenamento.IDObiettivo = obiettivo.IDObiettivo
             JOIN utente ON allenamento.IDUtente = utente.IDUtente
