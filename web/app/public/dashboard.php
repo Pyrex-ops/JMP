@@ -62,7 +62,7 @@ redirect_to_login_if_not_logged_in() ?>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-  <script src="https://kit.fontawesome.com/98491d0baf.js" crossorigin="anonymous"></script>
+  <script src="/asset/fontawesome/js/all.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // API response with selected days (example)

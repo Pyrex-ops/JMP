@@ -3,3 +3,9 @@ RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule !.*\.html$ %{REQUEST_FILENAME}.html [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
+<IfModule mod_expires.c>
+ExpiresActive On
+<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
+ExpiresDefault "access plus 1 year"
+</FilesMatch>
+</IfModule>
