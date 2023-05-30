@@ -127,13 +127,13 @@ DESC;");
             3 => "Durata allenamento",
             default => "Nessuno",
         };
-        if ($riga["durata"] <= 60) {
-            $riga["durata"] = 60;
+        if ($riga["durata"] <= 1) {
+            $riga["durata"] = 1;
         }
         if (isset($riga["parametroObiettivo"])) {
-            if (($riga["tipoObiettivo"] == 3) && ($riga["valoreRaggiunto"] <= 1)) {
-                $riga["valoreRaggiunto"] = 1;
-            }
+            // if (($riga["tipoObiettivo"] == 3) && ($riga["valoreRaggiunto"] <= 1)) {
+            //     $riga["valoreRaggiunto"] = 1;
+            // }
             $dettagli = [
                 "data" => $riga["data"],
                 "durata" => $riga["durata"] / 60,
