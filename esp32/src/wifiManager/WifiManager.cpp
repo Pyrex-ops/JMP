@@ -14,7 +14,7 @@ void WifiManager::connect() {
 
 	wifi_configuration_t wifi_config;
 
-	WiFi.mode(WIFI_STA);  //Optional
+	WiFi.mode(WIFI_STA);
 
 	wifi_config.SSID	 = cManager.getSSID();
 	wifi_config.password = cManager.getPassword();

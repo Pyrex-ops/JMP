@@ -22,7 +22,11 @@ BackendServer backendServer(API_URL);
 uint32_t timestampLastRevolution;
 uint32_t lastRevolutionNumber;
 
-
+/**
+ * @brief Enum di tutti i possibili
+ * stati in cui può trovarsi la JMPcorda
+ *
+ */
 typedef enum {
 	BOOTSTRAP,
 	DISCONNECTED,
@@ -75,13 +79,11 @@ void handleDisconnected() {
 		|| !wifiManager.hasSavedCredentials()) {
 		wifiManager.deleteCredentials();
 		Serial.println("new credentials required");
-		//schermo.scrivi(0, "new credentials required");
 		currentState = NEW_CREDENTIALS_REQUIRED;
 	}
 	if (wifiManager.checkConnection()) {
 		backendServer.connect();
 		Serial.println("connected");
-		//schermo.scrivi(0, "connected");
 		encoder.reset();
 		currentState = UNREGISTERED;
 	}
@@ -118,7 +120,6 @@ void handleIdle() {
 		disconnected();
 	} else if (encoder.getRevolutions() != 0) {
 		Serial.println("training started");
-		//schermo.scrivi(0, "training started");
 		backendServer.reset();
 		trainingManager = new TrainingManager(
 			backendServer, SAMPLE_SENDING_PERIOD_SECONDS, &schermo, 0, &motorino);
@@ -127,7 +128,6 @@ void handleIdle() {
 		lastRevolutionNumber = encoder.getRevolutions();
 		currentState		 = TRAINING;
 	}
-	//motorino.vibra(100);
 }
 
 void handleTraining() {
@@ -138,7 +138,6 @@ void handleTraining() {
 	trainingManager->storeData(encoder.getRevolutions());
 	if ((millis() - timestampLastRevolution) > TIMEOUT_STOP_TRAINING_MILLISECONDS) {
 		Serial.println("training ended");
-		//schermo.scrivi(0, "training ended");
 
 		encoder.reset();
 		delete (trainingManager);
@@ -153,7 +152,6 @@ void handleTraining() {
 
 void disconnected() {
 	Serial.println("connection lost");
-	//schermo.scrivi(0, "connection lost");
 	lostConnectionTimestamp = millis();
 	wifiManager.connect();
 	currentState = DISCONNECTED;

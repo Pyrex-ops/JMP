@@ -96,12 +96,7 @@ void BackendServer::startTrainingThreaded(void* trainingData_in) {
 			DeserializationError error = deserializeJson(jsonDocument, response);
 
 			if (!error) {
-				// Fetch values.
-				//
-				// Most of the time, you can rely on the implicit casts.
-				// In other case, you can do doc["time"].as<long>();
 				const char* stato = jsonDocument["stato"];
-				// Print values.
 				if (strcmp(stato, "ok") == 0) {
 					(*(trainingData->creatoAllenamento)) = true;
 				} else {
@@ -174,10 +169,6 @@ void BackendServer::getObiettivoThreaded(void* getObiettivoData_in) {
 		DeserializationError error = deserializeJson(jsonDocument, response);
 
 		if (!error) {
-			// Fetch values.
-			//
-			// Most of the time, you can rely on the implicit casts.
-			// In other case, you can do doc["time"].as<long>();
 			const char* stato		= jsonDocument["stato"];
 			long tipologiaObiettivo = jsonDocument["idCategoria"];
 			long parametro			= jsonDocument["parametro"];
@@ -186,8 +177,6 @@ void BackendServer::getObiettivoThreaded(void* getObiettivoData_in) {
 			Serial.println(tipologiaObiettivo);
 			Serial.print("target = ");
 			Serial.println(parametro);
-
-			// Print values.
 			Serial.println(stato);
 			Serial.println(tipologiaObiettivo);
 			if (strcmp(stato, "errore") != 0) {
@@ -243,10 +232,6 @@ void BackendServer::getMoltiplicatoreCalorieThreaded(void* getMoltiplicatoreCalo
 		DeserializationError error = deserializeJson(jsonDocument, response);
 
 		if (!error) {
-			// Fetch values.
-			//
-			// Most of the time, you can rely on the implicit casts.
-			// In other case, you can do doc["time"].as<long>();
 			const char* stato = jsonDocument["stato"];
 			moltiplicatore	  = jsonDocument["moltiplicatore"].as<float>();
 			Serial.print("moltiplicatore = ");
@@ -281,10 +266,6 @@ bool BackendServer::checkRegistered() {
 		DeserializationError error = deserializeJson(jsonDocument, response);
 
 		if (!error) {
-			// Fetch values.
-			//
-			// Most of the time, you can rely on the implicit casts.
-			// In other case, you can do doc["time"].as<long>();
 			const char* stato = jsonDocument["stato"];
 			associato		  = jsonDocument["associato"];
 
